@@ -7,7 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,7 +20,7 @@ public class User extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
     @Column(nullable = false)
     private String username;
@@ -32,7 +35,11 @@ public class User extends AuditingFields {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
-    // id, 생성시간, 수정시간은 자동으로 등록된다.
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user")
+    private List<UserDetails> userDetails = new ArrayList<>();
+
+    // id, 생성일자, 수정일자는 자동으로 등록된다.
     private User(String username, String email, String password, RoleType roleType) {
         this.username = username;
         this.email = email;
@@ -55,11 +62,11 @@ public class User extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return this.getUser_id() != null && Objects.equals(getUser_id(), user.getUser_id());
+        return this.getUserId() != null && Objects.equals(getUserId(), user.getUserId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUser_id());
+        return Objects.hash(getUserId());
     }
 }
