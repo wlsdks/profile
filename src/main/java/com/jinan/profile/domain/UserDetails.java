@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.Objects;
+
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -37,5 +39,15 @@ public class UserDetails extends AuditingFields {
         return new UserDetails(user, provider, providerId);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDetails that)) return false;
+        return this.getUserDetailId() != null && Objects.equals(getUserDetailId(), that.getUserDetailId());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserDetailId());
+    }
 }
