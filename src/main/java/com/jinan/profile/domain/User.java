@@ -29,6 +29,7 @@ public class User extends AuditingFields {
     private String password;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
     // id, 생성시간, 수정시간은 자동으로 등록된다.
