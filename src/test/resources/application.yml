@@ -1,16 +1,23 @@
-logging:
-  level:
-    com.study.boardproject: debug
-    org.springframework.web.servlet: debug
-    org.hibernate.orm.jdbc.bind: trace
-
 spring:
-  config.activate.on-profile: test
   datasource:
-    url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:testdb;MODE=MySQL;NON_KEYWORDS=USER
+    driverClassName: org.h2.Driver
     username: sa
     password:
-    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  profiles:
+    active: test
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
     hibernate:
-      dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    properties:
+      hibernate: globally_quoted_identifiers=true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql # 더미데이터 파일 연결
+      schema-locations: classpath:table.sql # 스케마 파일 연결
