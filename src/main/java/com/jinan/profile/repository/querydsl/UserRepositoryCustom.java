@@ -1,9 +1,9 @@
 package com.jinan.profile.repository.querydsl;
 
-import com.jinan.profile.domain.User;
+import com.jinan.profile.domain.Users;
 
 public interface UserRepositoryCustom {
 
-    User findByUserId(Long userId);
+    Users findByUsersId(Long userId);
 
 }
