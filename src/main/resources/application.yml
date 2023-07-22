@@ -13,7 +13,7 @@ spring:
 
   jpa:
     defer-datasource-initialization: true
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: none
     open-in-view: false
     show-sql: true
     properties:
@@ -26,13 +26,13 @@ spring:
 
 ---
 
-spring:
-  config.activate.on-profile: test
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  jpa:
-    hibernate:
-      dialect: org.hibernate.dialect.H2Dialect
+#spring:
+#  config.activate.on-profile: test
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+#  jpa:
+#    hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect

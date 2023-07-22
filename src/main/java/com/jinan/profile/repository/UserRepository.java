@@ -1,4 +1,7 @@
 package com.jinan.profile.repository;
 
-public interface UserRepository {
+import com.jinan.profile.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 }
