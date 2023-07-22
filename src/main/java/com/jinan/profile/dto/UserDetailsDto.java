@@ -1,9 +1,7 @@
 package com.jinan.profile.dto;
 
-import com.jinan.profile.domain.User;
 import com.jinan.profile.domain.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -28,7 +26,7 @@ public record UserDetailsDto(
     public static UserDetailsDto from(UserDetails entity) {
         return new UserDetailsDto(
                 entity.getUserDetailId(),
-                UserDto.from(entity.getUser()), // UserDto의 factory method로 만들어서 가져온다.
+                UserDto.from(entity.getUsers()), // UserDto의 factory method로 만들어서 가져온다.
                 entity.getProvider(),
                 entity.getProviderId(),
                 entity.getCreatedAt(),

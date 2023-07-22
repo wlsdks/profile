@@ -1,12 +1,12 @@
 package com.jinan.profile.dto;
 
-import com.jinan.profile.domain.User;
+import com.jinan.profile.domain.Users;
 import com.jinan.profile.domain.type.RoleType;
 
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.jinan.profile.domain.User}
+ * DTO for {@link Users}
  */
 public record UserDto(
         Long userId,
@@ -26,7 +26,7 @@ public record UserDto(
     }
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
-    public static UserDto from(User entity) {
+    public static UserDto from(Users entity) {
         return new UserDto(
                 entity.getUserId(),
                 entity.getUsername(),

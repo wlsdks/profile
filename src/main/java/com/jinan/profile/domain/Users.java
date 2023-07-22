@@ -10,13 +10,12 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class User extends AuditingFields {
+public class Users extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +35,11 @@ public class User extends AuditingFields {
     private RoleType roleType;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users")
     private List<UserDetails> userDetails = new ArrayList<>();
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
-    private User(String username, String email, String password, RoleType roleType) {
+    private Users(String username, String email, String password, RoleType roleType) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -48,8 +47,8 @@ public class User extends AuditingFields {
     }
 
     // factory 메소드 of() 생성
-    public static User of(String username, String email, String password, RoleType roleType) {
-        return new User(username, email, password, roleType);
+    public static Users of(String username, String email, String password, RoleType roleType) {
+        return new Users(username, email, password, roleType);
     }
 
     /**
@@ -61,8 +60,8 @@ public class User extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return this.getUserId() != null && Objects.equals(getUserId(), user.getUserId());
+        if (!(o instanceof Users users)) return false;
+        return this.getUserId() != null && Objects.equals(getUserId(), users.getUserId());
     }
 
     @Override
