@@ -10,7 +10,6 @@ class ProfileApplicationTests {
 
 	@Test
 	void contextLoads() {
-		System.out.println("print test");
 	}
 
 
