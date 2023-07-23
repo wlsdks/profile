@@ -19,24 +19,28 @@ public class Users extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long userId;     // 유저pk
 
     @Column(nullable = false)
-    private String username;
+    private String username; // 유저명
 
     @Column(nullable = false)
-    private String email;
+    private String email;    // 이메일
 
     @Column(nullable = false)
-    private String password;
+    private String password; // 패스워드
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    private RoleType roleType; // 계정 타입
 
     @ToString.Exclude
     @OneToMany(mappedBy = "users")
     private List<UserDetails> userDetails = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users")
+    private List<Board> boards = new ArrayList<>();
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     private Users(String username, String email, String password, RoleType roleType) {
