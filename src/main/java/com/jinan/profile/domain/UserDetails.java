@@ -21,22 +21,22 @@ public class UserDetails extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "userId")
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Users users;
 
     private String provider;
 
     private String providerId;
 
     // id, 생성일자, 수정일자는 알아서 추가됨
-    private UserDetails(User user, String provider, String providerId) {
-        this.user = user;
+    private UserDetails(Users users, String provider, String providerId) {
+        this.users = users;
         this.provider = provider;
         this.providerId = providerId;
     }
 
     // factory 메소드 of() 선언
-    public static UserDetails of(User user, String provider, String providerId) {
-        return new UserDetails(user, provider, providerId);
+    public static UserDetails of(Users users, String provider, String providerId) {
+        return new UserDetails(users, provider, providerId);
     }
 
     @Override

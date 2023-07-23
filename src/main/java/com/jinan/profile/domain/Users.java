@@ -10,37 +10,40 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class User extends AuditingFields {
+public class Users extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long userId;     // 유저pk
 
     @Column(nullable = false)
-    private String username;
+    private String username; // 유저명
 
     @Column(nullable = false)
-    private String email;
+    private String email;    // 이메일
 
     @Column(nullable = false)
-    private String password;
+    private String password; // 패스워드
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    private RoleType roleType; // 계정 타입
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users")
     private List<UserDetails> userDetails = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users")
+    private List<Board> boards = new ArrayList<>();
+
     // id, 생성일자, 수정일자는 자동으로 등록된다.
-    private User(String username, String email, String password, RoleType roleType) {
+    private Users(String username, String email, String password, RoleType roleType) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -48,8 +51,8 @@ public class User extends AuditingFields {
     }
 
     // factory 메소드 of() 생성
-    public static User of(String username, String email, String password, RoleType roleType) {
-        return new User(username, email, password, roleType);
+    public static Users of(String username, String email, String password, RoleType roleType) {
+        return new Users(username, email, password, roleType);
     }
 
     /**
@@ -61,8 +64,8 @@ public class User extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return this.getUserId() != null && Objects.equals(getUserId(), user.getUserId());
+        if (!(o instanceof Users users)) return false;
+        return this.getUserId() != null && Objects.equals(getUserId(), users.getUserId());
     }
 
     @Override
