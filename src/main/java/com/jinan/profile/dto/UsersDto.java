@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * DTO for {@link Users}
  */
-public record UserDto(
+public record UsersDto(
         Long userId,
         String username,
         String password,
@@ -21,18 +21,18 @@ public record UserDto(
 
 
     // factory method of 선언
-    public static UserDto of(Long userId, String username, String password, String email, RoleType roleType, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new UserDto(userId, username, password, email, roleType, createdAt, updatedAt);
+    public static UsersDto of(Long userId, String username, String password, String email, RoleType roleType, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new UsersDto(userId, username, password, email, roleType, createdAt, updatedAt);
     }
 
     // Principal에서 사용할 factory method  of 선언
-    public static UserDto of(Long userId, String username, String password, String email, RoleType roleType) {
-        return new UserDto(userId, username, email, password, roleType, null, null);
+    public static UsersDto of(Long userId, String username, String password, String email, RoleType roleType) {
+        return new UsersDto(userId, username, email, password, roleType, null, null);
     }
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
-    public static UserDto from(Users entity) {
-        return new UserDto(
+    public static UsersDto from(Users entity) {
+        return new UsersDto(
                 entity.getUserId(),
                 entity.getUsername(),
                 entity.getPassword(),

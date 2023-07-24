@@ -1,7 +1,7 @@
 package com.jinan.profile.dto.security;
 
 import com.jinan.profile.domain.type.RoleType;
-import com.jinan.profile.dto.UserDto;
+import com.jinan.profile.dto.UsersDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,7 +25,7 @@ public record Principal(
     }
 
     // dto를 받아서 인증정보 데이터타입인 BoardPrincipal로 변환해주는 factory 메소드
-    public static Principal from(UserDto dto) {
+    public static Principal from(UsersDto dto) {
         return Principal.of(
                 dto.userId(),
                 dto.username(),
@@ -35,8 +35,8 @@ public record Principal(
         );
     }
 
-    public UserDto toDto() {
-        return UserDto.of(
+    public UsersDto toDto() {
+        return UsersDto.of(
                 userId,
                 username,
                 password,
