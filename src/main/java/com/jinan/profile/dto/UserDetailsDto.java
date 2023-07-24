@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public record UserDetailsDto(
         Long userDetailId,
-        UserDto userDto,
+        UsersDto userDto,
         String provider,
         String providerId,
         LocalDateTime createdAt,
@@ -18,7 +18,7 @@ public record UserDetailsDto(
 ) {
 
     // factory method 선언
-    public UserDetailsDto of(Long userDetailId, UserDto userDto, String provider, String providerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserDetailsDto of(Long userDetailId, UsersDto userDto, String provider, String providerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         return new UserDetailsDto(userDetailId, userDto, provider, providerId, createdAt, updatedAt);
     }
 
@@ -26,7 +26,7 @@ public record UserDetailsDto(
     public static UserDetailsDto from(UserDetails entity) {
         return new UserDetailsDto(
                 entity.getUserDetailId(),
-                UserDto.from(entity.getUsers()), // UserDto의 factory method로 만들어서 가져온다.
+                UsersDto.from(entity.getUsers()), // UserDto의 factory method로 만들어서 가져온다.
                 entity.getProvider(),
                 entity.getProviderId(),
                 entity.getCreatedAt(),
