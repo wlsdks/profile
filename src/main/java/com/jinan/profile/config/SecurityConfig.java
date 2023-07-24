@@ -54,7 +54,8 @@ public class SecurityConfig {
      */
     private AuthorizationDecision isAdmin(
             Supplier<Authentication> authenticationSupplier,
-            RequestAuthorizationContext requestAuthorizationContext) {
+            RequestAuthorizationContext requestAuthorizationContext
+    ) {
         return new AuthorizationDecision(
                 authenticationSupplier.get()
                         .getAuthorities()
@@ -63,8 +64,9 @@ public class SecurityConfig {
     }
 
     /**
-     * 이녀석은 db를 기반으로 인증정보를 불러와서 user정보를 return하는 역할을 한다.
-     * OAuth2에도 이런역할 하는게 필요한데 이걸 사용할수는 없어서 따로 만들어서 @Bean으로 등록해준다.
+     * userDetailsService 빈은 username을 인자로 받아 UserService를 통해 사용자를 검색하고, 검색된 사용자를 Principal::from을 통해 Principal 객체로 변환한다.
+     * 만약 사용자를 찾지 못하면 UsernameNotFoundException을 발생시킨다.
+     * 이 방법은 UserDetailsService 인터페이스를 직접 구현하는 방법과 기본적으로 동일한 작업을 수행하지만, 빈으로 등록함으로써 UserDetailsService의 구현을 더 유연하게 관리할 수 있다.
      */
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
