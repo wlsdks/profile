@@ -19,6 +19,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 
 import java.util.function.Supplier;
 
+//@EnableWebSecurity -> 이건 이제 안넣어도 된다.
 @Configuration
 public class SecurityConfig {
 
