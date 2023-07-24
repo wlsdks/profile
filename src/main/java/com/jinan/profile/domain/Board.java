@@ -16,7 +16,7 @@ public class Board extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long board_id;
+    private Long boardId;
 
     private String title;
 
@@ -51,13 +51,13 @@ public class Board extends AuditingFields {
     // custom Equals & hashCode 선언
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) return true; 
         if (!(o instanceof Board board)) return false;
-        return board_id != null && Objects.equals(getBoard_id(), board.getBoard_id());
+        return this.boardId != null && Objects.equals(getBoardId(), board.getBoardId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoard_id());
+        return Objects.hash(getBoardId());
     }
 }
