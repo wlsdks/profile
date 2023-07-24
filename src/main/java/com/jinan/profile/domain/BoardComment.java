@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ToString(callSuper = true)
@@ -30,6 +32,9 @@ public class BoardComment {
 
     @Column(name = "content")
     private String content;
+
+    @OneToMany(mappedBy = "boardComment")
+    private List<BoardSubComment> boardSubComments = new ArrayList<>();
 
     // 생성자 private 선언
     private BoardComment(Board board, Users users, String content) {
