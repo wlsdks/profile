@@ -30,7 +30,7 @@ public class Users extends AuditingFields {
     @Column(nullable = false)
     private String password; // 패스워드
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "role")
     @Enumerated(EnumType.STRING)
     private RoleType roleType; // 계정 타입
 
