@@ -1,5 +1,6 @@
 package com.jinan.profile.config;
 
+import com.jinan.profile.dto.security.Principal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -27,8 +28,8 @@ public class JpaConfig {
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
-                .map(BoardPrincipal.class::cast)
-                .map(BoardPrincipal::getUsername);
+                .map(Principal.class::cast)
+                .map(Principal::getUsername);
     }
 
 }
