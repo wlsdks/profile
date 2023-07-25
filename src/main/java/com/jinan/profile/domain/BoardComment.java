@@ -18,7 +18,8 @@ public class BoardComment extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardCommentId;
+    @Column(name = "board_comment_id")
+    private Long id;
 
     @ToString.Exclude
     @JoinColumn(name = "board_id")
@@ -33,6 +34,7 @@ public class BoardComment extends AuditingFields {
     @Column(name = "content")
     private String content;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "boardComment")
     private List<BoardSubComment> boardSubComments = new ArrayList<>();
 
@@ -53,11 +55,11 @@ public class BoardComment extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardComment that)) return false;
-        return that.boardCommentId != null && Objects.equals(getBoardCommentId(), that.getBoardCommentId());
+        return that.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardCommentId());
+        return Objects.hash(getId());
     }
 }

@@ -16,7 +16,8 @@ public class BoardCommentReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardCommentReportId;             // pk
+    @Column(name = "board_comment_report_id")
+    private Long id;             // pk
 
     @ToString.Exclude
     @JoinColumn(name = "comment_reporter_id")
@@ -54,12 +55,12 @@ public class BoardCommentReport {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardCommentReport that)) return false;
-        return that.boardComment != null && Objects.equals(getBoardCommentReportId(), that.getBoardCommentReportId());
+        return that.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardCommentReportId());
+        return Objects.hash(getId());
     }
 
 }

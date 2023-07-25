@@ -18,7 +18,8 @@ public class Board extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardId;
+    @Column(name = "board_id")
+    private Long id;
 
     private String title;
 
@@ -29,7 +30,7 @@ public class Board extends AuditingFields {
     private int likes;
 
     @ToString.Exclude
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
@@ -57,11 +58,11 @@ public class Board extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Board board)) return false;
-        return this.boardId != null && Objects.equals(getBoardId(), board.getBoardId());
+        return this.id != null && Objects.equals(getId(), board.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardId());
+        return Objects.hash(getId());
     }
 }
