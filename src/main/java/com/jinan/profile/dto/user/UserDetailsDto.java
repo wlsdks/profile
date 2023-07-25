@@ -1,11 +1,11 @@
-package com.jinan.profile.dto;
+package com.jinan.profile.dto.user;
 
-import com.jinan.profile.domain.UserDetails;
+import com.jinan.profile.domain.user.UserDetails;
 
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.jinan.profile.domain.UserDetails}
+ * DTO for {@link UserDetails}
  * 이렇게 설계하면 entity는 dto를 의존하지 않아서 영향을 받지 않는다.
  */
 public record UserDetailsDto(

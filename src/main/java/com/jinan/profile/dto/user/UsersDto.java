@@ -1,6 +1,6 @@
-package com.jinan.profile.dto;
+package com.jinan.profile.dto.user;
 
-import com.jinan.profile.domain.Users;
+import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.domain.type.RoleType;
 
 import java.time.LocalDateTime;

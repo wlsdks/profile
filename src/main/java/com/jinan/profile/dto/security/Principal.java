@@ -1,7 +1,7 @@
 package com.jinan.profile.dto.security;
 
 import com.jinan.profile.domain.type.RoleType;
-import com.jinan.profile.dto.UsersDto;
+import com.jinan.profile.dto.user.UsersDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

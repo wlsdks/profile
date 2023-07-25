@@ -1,12 +1,11 @@
-package com.jinan.profile.dto;
+package com.jinan.profile.dto.board;
 
-import com.jinan.profile.domain.BoardSubComment;
+import com.jinan.profile.domain.board.BoardSubComment;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.jinan.profile.domain.BoardSubComment}
+ * DTO for {@link BoardSubComment}
  */
 public record BoardSubCommentDto(
         Long boardSubCommentId,

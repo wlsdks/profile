@@ -1,15 +1,13 @@
-package com.jinan.profile.dto;
+package com.jinan.profile.dto.board;
 
-import com.jinan.profile.domain.BoardComment;
-import com.jinan.profile.domain.BoardSubComment;
+import com.jinan.profile.domain.board.BoardComment;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * DTO for {@link com.jinan.profile.domain.BoardComment}
+ * DTO for {@link BoardComment}
  */
 public record BoardCommentDto(
         Long boardCommentId,

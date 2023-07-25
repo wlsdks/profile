@@ -1,8 +1,8 @@
-package com.jinan.profile.dto;
+package com.jinan.profile.dto.board;
 
-import com.jinan.profile.domain.Board;
-import com.jinan.profile.domain.BoardSubComment;
-import com.jinan.profile.domain.Users;
+import com.jinan.profile.domain.board.Board;
+import com.jinan.profile.domain.board.BoardSubComment;
+import com.jinan.profile.dto.user.UsersDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

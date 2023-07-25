@@ -1,5 +1,6 @@
-package com.jinan.profile.domain;
+package com.jinan.profile.domain.user;
 
+import com.jinan.profile.domain.AuditingFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
