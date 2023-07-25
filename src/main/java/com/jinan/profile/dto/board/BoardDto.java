@@ -25,7 +25,7 @@ public record BoardDto(
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static BoardDto fromEntity(Board entity) {
         return new BoardDto(
-                entity.getBoardId(),
+                entity.getId(),
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),

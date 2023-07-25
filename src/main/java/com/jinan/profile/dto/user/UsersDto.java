@@ -43,7 +43,7 @@ public record UsersDto(
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static UsersDto fromEntity(Users entity) {
         return new UsersDto(
-                entity.getUserId(),
+                entity.getId(),
                 entity.getUsername(),
                 entity.getPassword(),
                 entity.getEmail(),

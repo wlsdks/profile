@@ -21,7 +21,7 @@ public record BoardSubCommentDto(
 
     public static BoardSubCommentDto fromEntity(BoardSubComment entity) {
         return new BoardSubCommentDto(
-                entity.getBoardSubCommentId(),
+                entity.getId(),
                 entity.getContent(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
