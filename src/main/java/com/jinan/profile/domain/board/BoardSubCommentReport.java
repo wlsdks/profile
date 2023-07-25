@@ -1,5 +1,6 @@
 package com.jinan.profile.domain.board;
 
+import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class BoardSubCommentReport {
+public class BoardSubCommentReport extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
