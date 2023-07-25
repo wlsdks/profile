@@ -65,4 +65,5 @@ public class BoardReport extends AuditingFields {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
 }

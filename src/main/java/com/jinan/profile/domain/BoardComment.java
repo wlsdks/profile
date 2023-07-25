@@ -34,6 +34,7 @@ public class BoardComment extends AuditingFields {
     @Column(name = "content")
     private String content;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "boardComment")
     private List<BoardSubComment> boardSubComments = new ArrayList<>();
 
