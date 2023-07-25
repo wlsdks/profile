@@ -1,53 +1,62 @@
-package com.jinan.profile.domain;
+package com.jinan.profile.domain.board;
 
+import com.jinan.profile.domain.AuditingFields;
+import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class BoardSubComment extends AuditingFields {
+public class BoardComment extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_sub_comment_id")
+    @Column(name = "board_comment_id")
     private Long id;
 
     @ToString.Exclude
-    @JoinColumn(name = "boardCommentId")
+    @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardComment boardComment;
+    private Board board;
 
     @ToString.Exclude
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
+    @Column(name = "content")
     private String content;
 
-    // 생성자 선언
-    private BoardSubComment(BoardComment boardComment, Users users, String content) {
-        this.boardComment = boardComment;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "boardComment")
+    private List<BoardSubComment> boardSubComments = new ArrayList<>();
+
+    // 생성자 private 선언
+    private BoardComment(Board board, Users users, String content) {
+        this.board = board;
         this.users = users;
         this.content = content;
     }
 
     // 생성자 factory method 선언
-    public BoardSubComment of(BoardComment boardComment, Users users, String content) {
-        return new BoardSubComment(boardComment, users, content);
+    public BoardComment of(Board board, Users users, String content) {
+        return new BoardComment(board, users, content);
     }
 
-    // equals & hashCode 최적화
+    // equals and hashCode 최적화
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BoardSubComment that)) return false;
+        if (!(o instanceof BoardComment that)) return false;
         return that.id != null && Objects.equals(getId(), that.getId());
     }
 

@@ -1,5 +1,7 @@
-package com.jinan.profile.domain;
+package com.jinan.profile.domain.board;
 
+import com.jinan.profile.domain.AuditingFields;
+import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class BoardCommentReport {
+public class BoardCommentReport extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class BoardCommentReport {
     private Users commentReported;                 // 신고당한사람
 
     @ToString.Exclude
-    @JoinColumn(name = "boardCommentId")
+    @JoinColumn(name = "board_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private BoardComment boardComment;             // 신고당한사람이 작성한 댓글정보
 

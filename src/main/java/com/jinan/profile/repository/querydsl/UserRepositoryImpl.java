@@ -1,6 +1,6 @@
 package com.jinan.profile.repository.querydsl;
 
-import com.jinan.profile.domain.Users;
+import com.jinan.profile.domain.user.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

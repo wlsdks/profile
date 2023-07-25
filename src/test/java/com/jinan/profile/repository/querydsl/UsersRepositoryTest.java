@@ -1,14 +1,12 @@
 package com.jinan.profile.repository.querydsl;
 
 import com.jinan.profile.config.QuerydslConfig;
-import com.jinan.profile.config.TestSecurityConfig;
-import com.jinan.profile.domain.Users;
+import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 @DisplayName("[Repository] 유저 테스트")

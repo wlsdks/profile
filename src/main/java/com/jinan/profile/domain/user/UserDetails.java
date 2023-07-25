@@ -1,5 +1,6 @@
-package com.jinan.profile.domain;
+package com.jinan.profile.domain.user;
 
+import com.jinan.profile.domain.AuditingFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,11 +45,11 @@ public class UserDetails extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserDetails that)) return false;
-        return this.id != null && Objects.equals(getUserDetailId(), that.getUserDetailId());
+        return this.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserDetailId());
+        return Objects.hash(getId());
     }
 }

@@ -1,6 +1,6 @@
 package com.jinan.profile.service;
 
-import com.jinan.profile.dto.UsersDto;
+import com.jinan.profile.dto.user.UsersDto;
 import com.jinan.profile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

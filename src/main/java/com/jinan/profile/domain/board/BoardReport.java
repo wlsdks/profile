@@ -1,5 +1,7 @@
-package com.jinan.profile.domain;
+package com.jinan.profile.domain.board;
 
+import com.jinan.profile.domain.AuditingFields;
+import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,7 +33,7 @@ public class BoardReport extends AuditingFields {
     private Users reported;                 // 신고당한사람
 
     @ToString.Exclude
-    @JoinColumn(name = "boardId")
+    @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;                     // 신고당한사람이 작성한 댓글정보
 

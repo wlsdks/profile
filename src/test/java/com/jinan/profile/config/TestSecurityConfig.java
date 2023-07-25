@@ -1,7 +1,7 @@
 package com.jinan.profile.config;
 
 import com.jinan.profile.domain.type.RoleType;
-import com.jinan.profile.dto.UsersDto;
+import com.jinan.profile.dto.user.UsersDto;
 import com.jinan.profile.service.UserService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
