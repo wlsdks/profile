@@ -19,20 +19,20 @@ public class MessageReport extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_report_id")
-    private Long id;
+    private Long id;                    // pk
 
     @ToString.Exclude
     @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users messageReporter;  // 신고자
+    private Users messageReporter;      // 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "message_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Message message;  // 메시지
+    private Message message;            // 메시지
 
     @Column(name = "reason")
-    private String reason; // 신고사유
+    private String reason;              // 신고사유
 
     // private 생성자 선언
     private MessageReport(Users messageReporter, Message message, String reason) {

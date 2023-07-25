@@ -18,17 +18,17 @@ public class ChatMap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_map_id")
-    private Long id;
+    private Long id;                                  // pk
 
     @ToString.Exclude
     @JoinColumn(name = "chat_map_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Users users;                              // 유저
 
     @ToString.Exclude
     @JoinColumn(name = "chat_map_chatroom_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ChatRoom chatRoom;
+    private ChatRoom chatRoom;                        // 채팅방
 
     // private 생성자 선언
     private ChatMap(Users users, ChatRoom chatRoom) {
