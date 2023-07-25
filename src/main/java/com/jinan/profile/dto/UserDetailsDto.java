@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
  */
 public record UserDetailsDto(
         Long userDetailId,
-        UsersDto userDto,
         String provider,
         String providerId,
         LocalDateTime createdAt,
@@ -18,15 +17,14 @@ public record UserDetailsDto(
 ) {
 
     // factory method 선언
-    public UserDetailsDto of(Long userDetailId, UsersDto userDto, String provider, String providerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new UserDetailsDto(userDetailId, userDto, provider, providerId, createdAt, updatedAt);
+    public static UserDetailsDto of(Long userDetailId, String provider, String providerId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new UserDetailsDto(userDetailId, provider, providerId, createdAt, updatedAt);
     }
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
-    public static UserDetailsDto from(UserDetails entity) {
+    public static UserDetailsDto fromEntity(UserDetails entity) {
         return new UserDetailsDto(
                 entity.getUserDetailId(),
-                UsersDto.from(entity.getUsers()), // UserDto의 factory method로 만들어서 가져온다.
                 entity.getProvider(),
                 entity.getProviderId(),
                 entity.getCreatedAt(),
