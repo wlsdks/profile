@@ -1,5 +1,6 @@
 package com.jinan.profile.domain.file;
 
+import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class File {
+public class File extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
