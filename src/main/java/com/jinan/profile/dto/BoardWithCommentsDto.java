@@ -40,13 +40,16 @@ public record BoardWithCommentsDto(
 
     // entity를 받아서 dto로 변환시켜주는 메서드
     public static BoardWithCommentsDto fromEntity(Board entity) {
+
+        List<BoardCommentDto> boardCommentsDto = entity.getBoardComments()
+                .stream()
+                .map(BoardCommentDto::fromEntity)
+                .collect(Collectors.toList());
+
         return new BoardWithCommentsDto(
-                entity.getBoardId(),
+                entity.getId(),
                 UsersDto.fromEntity(entity.getUsers()),
-                entity.getBoardComments()
-                        .stream()
-                        .map(BoardCommentDto::fromEntity)
-                        .collect(Collectors.toList()),
+                boardCommentsDto,
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getViews(),
