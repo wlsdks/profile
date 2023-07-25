@@ -33,7 +33,7 @@ public record BoardReportDto(
     public static BoardReportDto fromEntity(BoardReport entity) {
 
         // 일반적인 Type은 map을 못쓰니까 일단 Optional로 만들어줬다. todo: 근데 이렇게까지 할 이유가있는지 알아보자 왜냐면 애초에 리스트로 안받으니까
-        List<UsersDto> reporterList = Optional.of(entity.getReporter())
+        List<UsersDto> reporterList = Optional.ofNullable(entity.getReporter())
                 .stream()
                 .map(UsersDto::fromEntity)
                 .collect(Collectors.toList());
