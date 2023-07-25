@@ -16,7 +16,8 @@ public class BoardReport extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardReportId;              // pk
+    @Column(name = "board_report_id")
+    private Long id;              // pk
 
     @ToString.Exclude
     // 이 외래키의 이름(name값)만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
@@ -30,7 +31,7 @@ public class BoardReport extends AuditingFields {
     private Users reported;                 // 신고당한사람
 
     @ToString.Exclude
-    @JoinColumn(name = "boardId")
+    @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;                     // 신고당한사람이 작성한 댓글정보
 
@@ -57,11 +58,11 @@ public class BoardReport extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardReport that)) return false;
-        return this.boardReportId != null && Objects.equals(getBoardReportId(), that.getBoardReportId());
+        return this.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardReportId());
+        return Objects.hash(getId());
     }
 }

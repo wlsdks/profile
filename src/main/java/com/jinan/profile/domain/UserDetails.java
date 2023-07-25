@@ -16,10 +16,11 @@ public class UserDetails extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userDetailId;
+    @Column(name = "user_detail_id")
+    private Long id;
 
     @ToString.Exclude
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
@@ -43,11 +44,11 @@ public class UserDetails extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserDetails that)) return false;
-        return this.getUserDetailId() != null && Objects.equals(getUserDetailId(), that.getUserDetailId());
+        return this.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserDetailId());
+        return Objects.hash(getId());
     }
 }

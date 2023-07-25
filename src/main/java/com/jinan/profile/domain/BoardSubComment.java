@@ -16,15 +16,16 @@ public class BoardSubComment extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardSubCommentId;
+    @Column(name = "board_sub_comment_id")
+    private Long id;
 
     @ToString.Exclude
-    @JoinColumn(name = "boardCommentId")
+    @JoinColumn(name = "board_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private BoardComment boardComment;
 
     @ToString.Exclude
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
@@ -47,11 +48,11 @@ public class BoardSubComment extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardSubComment that)) return false;
-        return that.boardSubCommentId != null && Objects.equals(getBoardSubCommentId(), that.getBoardSubCommentId());
+        return that.id != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardSubCommentId());
+        return Objects.hash(getId());
     }
 }

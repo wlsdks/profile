@@ -19,7 +19,8 @@ public class Users extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;     // 유저pk
+    @Column(name = "user_id")
+    private Long id;     // 유저pk
 
     @Column(nullable = false)
     private String username; // 유저명
@@ -90,11 +91,11 @@ public class Users extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Users users)) return false;
-        return this.getUserId() != null && Objects.equals(getUserId(), users.getUserId());
+        return this.id != null && Objects.equals(getId(), users.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId());
+        return Objects.hash(getId());
     }
 }
