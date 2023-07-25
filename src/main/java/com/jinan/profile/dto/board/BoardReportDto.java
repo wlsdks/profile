@@ -38,7 +38,7 @@ public record BoardReportDto(
                 .map(UsersDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new BoardReportDto(
+        return BoardReportDto.of(
                 entity.getId(),
                 entity.getReason(),
                 reporterList,

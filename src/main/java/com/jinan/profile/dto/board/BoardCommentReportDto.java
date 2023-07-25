@@ -33,7 +33,7 @@ public record BoardCommentReportDto(
                 .map(UsersDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new BoardCommentReportDto(
+        return BoardCommentReportDto.of(
                 entity.getId(),
                 entity.getReason(),
                 commentReporterList,

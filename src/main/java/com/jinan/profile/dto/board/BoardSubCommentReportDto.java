@@ -34,7 +34,7 @@ public record BoardSubCommentReportDto(
                 .map(UsersDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new BoardSubCommentReportDto(
+        return BoardSubCommentReportDto.of(
                 entity.getId(),
                 entity.getReason(),
                 subCommentReporterList,
