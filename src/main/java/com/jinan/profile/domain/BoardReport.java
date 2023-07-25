@@ -19,7 +19,7 @@ public class BoardReport extends AuditingFields {
     private Long boardCommentReportId;      // pk
 
     @ToString.Exclude
-    @JoinColumn(name = "reporter_id")
+    @JoinColumn(name = "reporter_id") // 이 외래키의 이름만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
     @ManyToOne(fetch = FetchType.LAZY)
     private Users reporter;                 // 신고자
 
