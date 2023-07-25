@@ -1,9 +1,12 @@
 package com.jinan.profile.dto;
 
 import com.jinan.profile.domain.BoardComment;
+import com.jinan.profile.domain.BoardSubComment;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * DTO for {@link com.jinan.profile.domain.BoardComment}
@@ -11,13 +14,14 @@ import java.time.LocalDateTime;
 public record BoardCommentDto(
         Long boardCommentId,
         String content,
+        List<BoardSubCommentDto> boardSubComments,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
 
     // factory method 선언
-    public BoardCommentDto of(Long boardCommentId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new BoardCommentDto(boardCommentId, content, createdAt, updatedAt);
+    public static BoardCommentDto of(Long boardCommentId, String content, List<BoardSubCommentDto> boardSubComments, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new BoardCommentDto(boardCommentId, content, boardSubComments, createdAt, updatedAt);
     }
 
     // entity를 받아서 dto를 만들어주는 코드
@@ -25,6 +29,9 @@ public record BoardCommentDto(
         return new BoardCommentDto(
                 entity.getBoardCommentId(),
                 entity.getContent(),
+                entity.getBoardSubComments().stream()
+                        .map(BoardSubCommentDto::fromEntity)
+                        .collect(Collectors.toList()), // 순환참조가 안되도록 잘 확인하자
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
