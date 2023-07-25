@@ -24,12 +24,16 @@ public class Board extends AuditingFields {
     @Column(name = "board_id")
     private Long id;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "content")
     private String content;
 
+    @Column(name = "views")
     private int views;
 
+    @Column(name = "likes")
     private int likes;
 
     @ToString.Exclude

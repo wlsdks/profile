@@ -25,16 +25,16 @@ public class Users extends AuditingFields {
     @Column(name = "user_id")
     private Long id;     // 유저pk
 
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username; // 유저명
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;    // 이메일
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password; // 패스워드
 
-    @Column(nullable = false, name = "role")
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleType roleType; // 계정 타입
 

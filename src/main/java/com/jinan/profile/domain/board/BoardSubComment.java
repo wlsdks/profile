@@ -31,6 +31,7 @@ public class BoardSubComment extends AuditingFields {
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
+    @Column(name = "content")
     private String content;
 
     // 생성자 선언
