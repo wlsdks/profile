@@ -18,13 +18,13 @@ public record BoardDto(
 ) {
 
     // factory method of 선언
-    public BoardDto of(Long boardId, String title, String content, int views, int likes, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static BoardDto of(Long boardId, String title, String content, int views, int likes, LocalDateTime createdAt, LocalDateTime updatedAt) {
         return new BoardDto(boardId, title, content, views, likes, createdAt, updatedAt);
     }
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static BoardDto fromEntity(Board entity) {
-        return new BoardDto(
+        return BoardDto.of(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getContent(),

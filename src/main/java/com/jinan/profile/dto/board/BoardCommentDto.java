@@ -31,7 +31,7 @@ public record BoardCommentDto(
                 .map(BoardSubCommentDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new BoardCommentDto(
+        return BoardCommentDto.of(
                 entity.getId(),
                 entity.getContent(),
                 boardSubCommentsList,

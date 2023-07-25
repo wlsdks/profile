@@ -49,7 +49,7 @@ public record UsersDto(
                 .map(UserDetailsDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new UsersDto(
+        return UsersDto.of(
                 entity.getId(),
                 entity.getUsername(),
                 entity.getPassword(),

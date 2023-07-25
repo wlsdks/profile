@@ -15,12 +15,12 @@ public record BoardSubCommentDto(
 ) {
 
     // 생성자 factory method 생성
-    public BoardSubCommentDto of(Long boardSubCommentId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static BoardSubCommentDto of(Long boardSubCommentId, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         return new BoardSubCommentDto(boardSubCommentId, content, createdAt, updatedAt);
     }
 
     public static BoardSubCommentDto fromEntity(BoardSubComment entity) {
-        return new BoardSubCommentDto(
+        return BoardSubCommentDto.of(
                 entity.getId(),
                 entity.getContent(),
                 entity.getCreatedAt(),

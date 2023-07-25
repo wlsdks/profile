@@ -23,7 +23,7 @@ public record UserDetailsDto(
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static UserDetailsDto fromEntity(UserDetails entity) {
-        return new UserDetailsDto(
+        return UserDetailsDto.of(
                 entity.getId(),
                 entity.getProvider(),
                 entity.getProviderId(),

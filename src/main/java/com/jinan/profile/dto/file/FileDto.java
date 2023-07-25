@@ -27,7 +27,7 @@ public record FileDto(
 
     // entity를 받아서 dto로 만드는 메서드 선언
     public static FileDto fromEntity(File entity) {
-        return new FileDto(
+        return FileDto.of(
                 entity.getId(),
                 UsersDto.fromEntity(entity.getUsers()),
                 BoardDto.fromEntity(entity.getBoard()),

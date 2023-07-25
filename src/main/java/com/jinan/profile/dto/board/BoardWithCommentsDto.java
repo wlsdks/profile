@@ -46,7 +46,7 @@ public record BoardWithCommentsDto(
                 .map(BoardCommentDto::fromEntity)
                 .collect(Collectors.toList());
 
-        return new BoardWithCommentsDto(
+        return BoardWithCommentsDto.of(
                 entity.getId(),
                 UsersDto.fromEntity(entity.getUsers()),
                 boardCommentsDto,
