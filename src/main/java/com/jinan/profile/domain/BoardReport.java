@@ -16,10 +16,11 @@ public class BoardReport extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardCommentReportId;      // pk
+    private Long boardReportId;              // pk
 
     @ToString.Exclude
-    @JoinColumn(name = "reporter_id") // 이 외래키의 이름만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
+    // 이 외래키의 이름(name값)만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
+    @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users reporter;                 // 신고자
 
@@ -29,26 +30,26 @@ public class BoardReport extends AuditingFields {
     private Users reported;                 // 신고당한사람
 
     @ToString.Exclude
-    @JoinColumn(name = "boardCommentId")
+    @JoinColumn(name = "boardId")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardComment boardComment;      // 신고당한사람이 작성한 댓글정보
+    private Board board;                     // 신고당한사람이 작성한 댓글정보
 
     @Column(name = "reason")
-    private String reason;
+    private String reason;                   // 신고사유
 
     // todo: 생성일자는 있는데 수정일자가 없다. -> 테이블안에
 
     // private 생성자 선언
-    private BoardReport(Users reporter, Users reported, BoardComment boardComment, String reason) {
+    private BoardReport(Users reporter, Users reported, Board board, String reason) {
         this.reporter = reporter;
         this.reported = reported;
-        this.boardComment = boardComment;
+        this.board = board;
         this.reason = reason;
     }
 
     // 생성자 factory method 선언
-    public BoardReport of(Users reporter, Users reported, BoardComment boardComment, String reason) {
-        return new BoardReport(reporter, reported, boardComment, reason);
+    public BoardReport of(Users reporter, Users reported, Board board, String reason) {
+        return new BoardReport(reporter, reported, board, reason);
     }
 
     // equals & hashCode 최적화
@@ -56,12 +57,11 @@ public class BoardReport extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BoardReport that)) return false;
-        return that.boardCommentReportId != null && Objects.equals(getBoardCommentReportId(), that.getBoardCommentReportId());
+        return this.boardReportId != null && Objects.equals(getBoardReportId(), that.getBoardReportId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoardCommentReportId());
+        return Objects.hash(getBoardReportId());
     }
-
 }

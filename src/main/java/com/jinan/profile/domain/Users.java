@@ -51,10 +51,10 @@ public class Users extends AuditingFields {
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     @OneToMany(mappedBy = "reporter")
-    private List<BoardReport> reportedReports = new ArrayList<>(); // 신고자 리스트
+    private List<BoardReport> reportedReports = new ArrayList<>();      // 신고자 리스트
 
     @OneToMany(mappedBy = "reported")
-    private List<BoardReport> receivedReports = new ArrayList<>(); // 신고당한사람 리스트
+    private List<BoardReport> receivedReports = new ArrayList<>();      // 신고당한사람 리스트
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     private Users(String username, String email, String password, RoleType roleType) {
