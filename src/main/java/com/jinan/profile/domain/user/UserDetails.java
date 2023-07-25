@@ -18,18 +18,18 @@ public class UserDetails extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_detail_id")
-    private Long id;
+    private Long id;                // pk
 
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Users users;            // 유저
 
     @Column(name = "provider")
-    private String provider;
+    private String provider;        // 제공업체(kakao, google, apple)
 
     @Column(name = "provider_id")
-    private String providerId;
+    private String providerId;      // 제공업체 고유id
 
     // id, 생성일자, 수정일자는 알아서 추가됨
     private UserDetails(Users users, String provider, String providerId) {

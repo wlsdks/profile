@@ -19,25 +19,25 @@ public class BoardCommentReport extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_comment_report_id")
-    private Long id;             // pk
+    private Long id;                     // pk
 
     @ToString.Exclude
     @JoinColumn(name = "comment_reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users commentReporter;                 // 신고자
+    private Users commentReporter;       // 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "comment_reported_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users commentReported;                 // 신고당한사람
+    private Users commentReported;       // 신고당한사람
 
     @ToString.Exclude
     @JoinColumn(name = "board_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardComment boardComment;             // 신고당한사람이 작성한 댓글정보
+    private BoardComment boardComment;   // 신고당한사람이 작성한 댓글정보
 
     @Column(name = "reason")
-    private String reason;                         // 신고사유
+    private String reason;               // 신고사유
 
     // 생성자 선언
     private BoardCommentReport(Users commentReporter, Users commentReported, BoardComment boardComment, String reason) {
