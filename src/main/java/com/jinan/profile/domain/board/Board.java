@@ -1,6 +1,7 @@
 package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
+import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -40,7 +41,12 @@ public class Board extends AuditingFields {
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "board")
+    private List<File> files = new ArrayList<>();
+
     // id, 생성일자, 수정일자는 자동으로 등록된다.
+
     private Board(String title, String content, int views, int likes, Users users, List<BoardComment> boardComments) {
         this.title = title;
         this.content = content;
