@@ -25,8 +25,10 @@ public class UserDetails extends AuditingFields {
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
 
+    @Column(name = "provider")
     private String provider;
 
+    @Column(name = "provider_id")
     private String providerId;
 
     // id, 생성일자, 수정일자는 알아서 추가됨
