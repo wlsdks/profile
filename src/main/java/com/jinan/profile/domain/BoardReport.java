@@ -26,12 +26,12 @@ public class BoardReport extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "reported_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users reported;                 // 신고당한자
+    private Users reported;                 // 신고당한사람
 
     @ToString.Exclude
     @JoinColumn(name = "boardCommentId")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardComment boardComment;      // 신고당한 댓글정보
+    private BoardComment boardComment;      // 신고당한사람이 작성한 댓글정보
 
     @Column(name = "reason")
     private String reason;
