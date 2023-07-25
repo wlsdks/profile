@@ -42,6 +42,14 @@ public class Users extends AuditingFields {
     @OneToMany(mappedBy = "users")
     private List<Board> boards = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users")
+    private List<BoardComment> boardComments = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users")
+    private List<BoardSubComment> boardSubComments = new ArrayList<>();
+
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     private Users(String username, String email, String password, RoleType roleType) {
         this.username = username;
