@@ -28,17 +28,14 @@ public class Board extends AuditingFields {
 
     private int likes;
 
+    @ToString.Exclude
     @JoinColumn(name = "userId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
     private Users users;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     private Board(String title, String content, int views, int likes, Users users, List<BoardComment> boardComments) {
