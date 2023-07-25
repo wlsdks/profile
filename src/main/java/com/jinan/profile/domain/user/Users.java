@@ -23,20 +23,20 @@ public class Users extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;     // 유저pk
+    private Long id;            // 유저pk
 
     @Column(name = "username", nullable = false)
-    private String username; // 유저명
+    private String username;    // 유저명
 
     @Column(name = "email", nullable = false)
-    private String email;    // 이메일
+    private String email;       // 이메일
 
     @Column(name = "password", nullable = false)
-    private String password; // 패스워드
+    private String password;    // 패스워드
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleType roleType; // 계정 타입
+    private RoleType roleType;  // 계정 타입
 
     @ToString.Exclude
     @OneToMany(mappedBy = "users")

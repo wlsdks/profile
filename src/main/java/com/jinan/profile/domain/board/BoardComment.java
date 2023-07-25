@@ -21,24 +21,24 @@ public class BoardComment extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_comment_id")
-    private Long id;
+    private Long id;        // pk
 
     @ToString.Exclude
     @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Board board;
+    private Board board;    // 게시글
 
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Users users;    // 유저
 
     @Column(name = "content")
-    private String content;
+    private String content; // 내용
 
     @ToString.Exclude
     @OneToMany(mappedBy = "boardComment")
-    private List<BoardSubComment> boardSubComments = new ArrayList<>();
+    private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     // 생성자 private 선언
     private BoardComment(Board board, Users users, String content) {

@@ -19,20 +19,20 @@ public class BoardSubComment extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_sub_comment_id")
-    private Long id;
+    private Long id;                    // pk
 
     @ToString.Exclude
     @JoinColumn(name = "board_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BoardComment boardComment;
+    private BoardComment boardComment;  // 댓글
 
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Users users;                // 유저
 
     @Column(name = "content")
-    private String content;
+    private String content;             // 대댓글 내용
 
     // 생성자 선언
     private BoardSubComment(BoardComment boardComment, Users users, String content) {

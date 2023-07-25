@@ -22,24 +22,24 @@ public class Board extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
-    private Long id;
+    private Long id;            // pk
 
     @Column(name = "title")
-    private String title;
+    private String title;       // 제목
 
     @Column(name = "content")
-    private String content;
+    private String content;     // 내용
 
     @Column(name = "views")
-    private int views;
+    private int views;          // 조회수
 
     @Column(name = "likes")
-    private int likes;
+    private int likes;          // 좋아요 수
 
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;
+    private Users users;        // 유저
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board")

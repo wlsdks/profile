@@ -25,20 +25,20 @@ public class BoardReport extends AuditingFields {
     // 이 외래키의 이름(name값)만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
     @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users reporter;                 // 신고자
+    private Users reporter;       // 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "reported_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users reported;                 // 신고당한사람
+    private Users reported;       // 신고당한사람
 
     @ToString.Exclude
     @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Board board;                     // 신고당한사람이 작성한 댓글정보
+    private Board board;          // 신고당한사람이 작성한 댓글정보
 
     @Column(name = "reason")
-    private String reason;                   // 신고사유
+    private String reason;        // 신고사유
 
     // todo: 생성일자는 있는데 수정일자가 없다. -> 테이블안에
 
