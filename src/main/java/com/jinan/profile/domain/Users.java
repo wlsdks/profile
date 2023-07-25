@@ -67,6 +67,14 @@ public class Users extends AuditingFields {
     @OneToMany(mappedBy = "commentReported")
     private List<BoardCommentReport> commentReported = new ArrayList<>(); // 댓글 신고당한사람 리스트
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "subCommentReporter")
+    private List<BoardSubCommentReport> subCommentReporter = new ArrayList<>(); // 대댓글 신고자 리스트
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "subCommentReported")
+    private List<BoardSubCommentReport> subCommentReported = new ArrayList<>(); // 대댓글 신고당한사람 리스트
+
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     private Users(String username, String email, String password, RoleType roleType) {
