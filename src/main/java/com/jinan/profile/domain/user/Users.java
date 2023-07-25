@@ -2,6 +2,7 @@ package com.jinan.profile.domain.user;
 
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.board.*;
+import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.type.RoleType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -76,6 +77,10 @@ public class Users extends AuditingFields {
     @ToString.Exclude
     @OneToMany(mappedBy = "subCommentReported")
     private List<BoardSubCommentReport> subCommentReported = new ArrayList<>(); // 대댓글 신고당한사람 리스트
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "users")
+    private List<File> files = new ArrayList<>(); // 파일
 
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
