@@ -91,6 +91,15 @@ public class Users extends AuditingFields {
         this.roleType = roleType;
     }
 
+    //OAuth2를 적용시킬 유저의 생성자
+    private Users(String username, String email, String password, RoleType roleType, List<UserDetails> userDetails) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roleType = roleType;
+        this.userDetails = userDetails;
+    }
+
     // factory 메소드 of() 생성
     public static Users of(String username, String email, String password, RoleType roleType) {
         return new Users(username, email, password, roleType);
