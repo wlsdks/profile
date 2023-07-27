@@ -23,7 +23,7 @@ public class UserService {
      */
     public Optional<UsersDto> searchUser(String username) {
         return userRepository.findByUsername(username)
-                .map(UsersDto::from);
+                .map(UsersDto::fromEntity);
     }
 
 
