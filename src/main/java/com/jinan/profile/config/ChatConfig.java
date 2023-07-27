@@ -18,16 +18,16 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * stomp의 접속 주소 설정 (서버로 통신할때 사용할 엔드포인트를 정의한다.)
      * 클라이언트에서 sockJS를 이용할 것이기때문에 withSockJS()를 추가시켰다.
+     * cors를 적용시키기 위해 setAllowedOriginPatterns("*")를 메서드 체이닝에 추가시킨다. -> *는 보안에 취약하니 나중에 꼭 바꿔주자
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 
     /**
      * 요청과 응답에 대한 엔드포인트를 설정한다.
      * 클라이언트에서 보내는 요청은 "/pub"이고 클라이언트에게 메시지를 보내는 응답은 "/sub"이다.
-     * @param registry
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
