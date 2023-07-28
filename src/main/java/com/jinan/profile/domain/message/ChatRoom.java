@@ -28,7 +28,7 @@ public class ChatRoom {
     }
 
     // factory method 선언
-    public ChatRoom of(String chatRoomName) {
+    public static ChatRoom of(String chatRoomName) {
         return new ChatRoom(chatRoomName);
     }
 
