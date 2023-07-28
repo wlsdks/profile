@@ -48,24 +48,43 @@ function openChatWindow(room) {
     });
 
     // 해당 방의 메시지를 구독합니다.
-    stompClient.subscribe('/subscribe/rooms/' + currentRoomId, function (greeting) {
+    stompClient.subscribe('/subscribe/' + currentRoomId, function (greeting) {
         showGreeting(chatWindow, JSON.parse(greeting.body).content);  // 받은 메시지를 화면에 표시합니다.
     });
+
+    // 이전 메시지를 불러옵니다.
+    $.get("/messages/" + currentRoomId, function (data) {  // '/messages/{chatroomId}' 엔드포인트로 GET 요청을 보냅니다.
+        data.forEach(function (message) {
+            console.log("data", data);
+            showGreeting(chatWindow, message.text);  // 받아온 각 메시지를 화면에 표시합니다.
+        });
+    });
 }
+
 
 // 메시지를 전송하는 함수입니다.
 function sendMessage(room, message, chatWindow) {
     let chatRequest = {
-        senderId: 1,  // 실제 사용자 ID로 변경해야 합니다.
-        receiverId: 2,  // 실제 수신자 ID로 변경해야 합니다.
-        roomId: room.id,  // 클릭한 방의 ID를 사용합니다.
-        message: message  // 입력한 메시지를 설정합니다.
+        userId: 1,  // 실제 사용자 ID로 변경해야 합니다.
+        chatRoomId: room.id,  // 클릭한 방의 ID를 사용합니다.
+        text: message  // 입력한 메시지를 설정합니다.
     };
     // '/publish/messages' 주제로 메시지를 전송합니다.
-    stompClient.send("/publish/messages", {}, JSON.stringify(chatRequest));
+    stompClient.send("/publish", {}, JSON.stringify(chatRequest));
 
     // 메시지를 화면에 표시합니다.
     chatWindow.document.getElementById('messages').innerHTML += '<p>You: ' + message + '</p>';
+
+    // 메시지를 서버에 저장합니다.
+    $.ajax({
+        url: "/messages",  // 메시지 저장 요청을 보낼 URL입니다.
+        type: "POST",  // HTTP 메서드는 POST입니다.
+        contentType: "application/json",  // 요청 본문의 타입은 JSON입니다.
+        data: JSON.stringify(chatRequest),  // 메시지 정보를 JSON으로 변환하여 요청 본문에 포함시킵니다.
+        success: function (data) {  // 요청이 성공하면 실행할 콜백 함수입니다.
+            console.log("Message saved: ", data);  // 저장된 메시지 정보를 콘솔에 출력합니다.
+        }
+    });
 }
 
 // 메시지를 화면에 표시하는 함수입니다.
