@@ -4,9 +4,11 @@ import com.jinan.profile.domain.message.ChatRoom;
 import com.jinan.profile.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
