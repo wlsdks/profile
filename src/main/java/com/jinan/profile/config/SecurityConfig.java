@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,9 +32,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
             HttpSecurity http
     ) throws Exception {
-        return http
+        return http.csrf(AbstractHttpConfigurer::disable) // csrf를 잠시 해제시킨다.
                 .authorizeHttpRequests((authorize) -> authorize
                                 .requestMatchers("/resources/**").permitAll()         // "/resources/**" 경로에 대한 모든 요청을 허용한다.
+                                .requestMatchers("/create-room").permitAll()
                                 .requestMatchers("/admin/**").access(this::isAdmin)   // "/admin/**" 경로에 대한 요청은 "ADMIN" 역할을 가진 사용자만 접근할 수 있게한다.
                                 .requestMatchers(
                                         HttpMethod.GET,
