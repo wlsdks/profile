@@ -52,6 +52,11 @@ public class ChatController {
         return ResponseEntity.ok(roomList);  // 방 목록을 응답으로 반환합니다.
     }
 
+    /**
+     * /create-room 엔드포인트에 대한 접근 권한 설정을 확인해보세요.
+     * 현재 설정에서는 .anyRequest().authenticated()로 설정되어 있어서, 인증된 사용자만 모든 요청을 할 수 있습니다.
+     * 만약 /create-room 엔드포인트를 인증 없이 접근하려고 했다면 403 Forbidden 오류가 발생할 수 있습니다.
+     */
     // 방을 생성하는 컨트롤러 메서드
     @PostMapping("/create-room")
     public ChatRoom createRoom(@RequestBody Map<String, String> payload) {
