@@ -17,7 +17,7 @@ public class UserDetails extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_detail_id")
+    @Column(name = "user_details_id")
     private Long id;                // pk
 
     @ToString.Exclude
