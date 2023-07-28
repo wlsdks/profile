@@ -1,16 +1,24 @@
-//stomp와 sockJS관련 임포트 혹은 html에서 스크립트를 넣어야한다
+// //stomp와 sockJS관련 임포트 혹은 html에서 스크립트를 넣어야한다
 let socket = new SockJS('/ws');
 let stompClient = Stomp.over(socket);
+//
+// // 웹소켓 최초 연결함수
+// stompClient.connect({}, connect, onError);
+//
+// function connect() {
+//     setConnected(true);
+//     stompClient.subscribe('/subscribe/rooms/5', function (greeting) {
+//         showGreeting(JSON.parse(greeting.body).content);
+//         // console.log(greeting.body);
+//     });
+// }
 
-// 웹소켓 최초 연결함수
-stompClient.connect({}, onConnected, onError);
-
-// 웹소켓 연결
-function onConnected() {
-    setConnected(true);
-    // console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).content);
+function connect() {
+    stompClient.connect({}, function () {
+        setConnected(true);
+        stompClient.subscribe('/subscribe/rooms/5', function (greeting) {
+            console.log(greeting.body);
+        });
     });
 }
 
@@ -39,13 +47,23 @@ function disconnect() {
 }
 
 // 이름 전송
-function sendName() {
-    stompClient.send(
-        "/app/hello",
-        {},
-        JSON.stringify({'name': $("#name").val()})
-    );
-}
+// function sendName() {
+//     stompClient.send(
+//         "/publish/messages",
+//         {},
+//         JSON.stringify({'name': $("#name").val()})
+//     );
+// }
+
+// stompClient.send("/publish/messages",
+//     {},
+//     JSON.stringify({
+//         'message': $("#name").val(),
+//         'senderId': 7,
+//         'receiverId': 14,
+//         'roomId': 5
+//     })
+// );
 
 // 인사메시지 보여주기
 function showGreeting(message) {
