@@ -79,7 +79,8 @@
         });
     });
 
-
+    let socket = new SockJS('/ws');
+    let stompClient = Stomp.over(socket);
     let currentRoomId = null;  // 현재 방 ID를 저장할 전역 변수
     // 방 목록을 불러올 때 각 방에 대한 클릭 이벤트 추가
     function loadRoomList() {
@@ -87,7 +88,7 @@
             $("#room-list").empty();
             // 방 목록을 불러올 때 각 방에 클릭 이벤트를 추가하고, 방을 클릭하면 해당 방의 ID를 currentRoomId에 저장하고, 해당 방에 대한 웹소켓 구독을 시작합니다.
             data.forEach(function (room) {
-                let roomElement = $("<li>" + room.name + "</li>");
+                let roomElement = $("<li>" + room.chatRoomName + "</li>");
                 roomElement.click(function() {
                     currentRoomId = room.id;  // 방을 클릭하면 해당 방의 ID를 저장
                     stompClient.subscribe('/subscribe/rooms/' + currentRoomId, function(greeting) {
