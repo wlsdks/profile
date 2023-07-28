@@ -1,4 +1,4 @@
-package com.jinan.profile.service;
+package com.jinan.profile.service.message;
 
 import com.jinan.profile.dto.request.ChatRequest;
 import lombok.RequiredArgsConstructor;

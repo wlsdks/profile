@@ -1,4 +1,4 @@
-package com.jinan.profile.service;
+package com.jinan.profile.service.message;
 
 import com.jinan.profile.domain.message.ChatRoom;
 import com.jinan.profile.repository.ChatRoomRepository;
