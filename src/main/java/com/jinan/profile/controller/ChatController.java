@@ -1,7 +1,7 @@
 package com.jinan.profile.controller;
 
 import com.jinan.profile.domain.message.ChatRoom;
-import com.jinan.profile.dto.request.ChatRequest;
+import com.jinan.profile.dto.message.ChatRequest;
 import com.jinan.profile.service.message.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
