@@ -1,9 +1,8 @@
 package com.jinan.profile.controller;
 
 import com.jinan.profile.domain.message.ChatRoom;
-import com.jinan.profile.dto.request.ChatRequest;
-import com.jinan.profile.service.ChatRoomService;
-import com.jinan.profile.service.ChatService;
+import com.jinan.profile.dto.message.ChatRequest;
+import com.jinan.profile.service.message.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

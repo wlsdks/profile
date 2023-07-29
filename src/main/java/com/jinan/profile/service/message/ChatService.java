@@ -1,12 +1,14 @@
-package com.jinan.profile.service;
+package com.jinan.profile.service.message;
 
-import com.jinan.profile.dto.request.ChatRequest;
+import com.jinan.profile.dto.message.ChatRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ChatService {

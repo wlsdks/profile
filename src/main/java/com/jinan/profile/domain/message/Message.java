@@ -42,7 +42,7 @@ public class Message extends AuditingFields {
     }
 
     // 생성자 factory method of 선언
-    public Message of(Users users, ChatRoom chatRoom, String text) {
+    public static Message of(Users users, ChatRoom chatRoom, String text) {
         return new Message(users, chatRoom, text);
     }
 
