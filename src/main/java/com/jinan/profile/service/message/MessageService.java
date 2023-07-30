@@ -4,6 +4,8 @@ import com.jinan.profile.domain.message.ChatRoom;
 import com.jinan.profile.domain.message.Message;
 import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.message.MessageDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.ChatRoomRepository;
 import com.jinan.profile.repository.MessageRepository;
 import com.jinan.profile.repository.UserRepository;
@@ -26,10 +28,10 @@ public class MessageService {
     // 메시지를 저장한다.
     public MessageDto saveMessage(Long userId, Long chatRoomId, String text) {
         Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 UserId: " + userId));
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 chatRoomId: " + chatRoomId));
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.CHATROOM_NOT_FOUND));
 
         // message를 만들어준다.
         Message message = Message.of(user, chatRoom, text);
