@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,11 +35,13 @@ public class ChatController {
      * WebSocketConfig에서 등록한 applicationDestinationPrfixes와 @MessageMapping의 경로가 합쳐진다.ex: (/publish/messages)
      */
     @MessageMapping("/messages")
-    public void chat(@Valid ChatRequest chatRequest) {
+    public void chat(@Valid ChatRequest chatRequest, Authentication authentication) {
+        chatRequest.setUserName(authentication.getName());
         simpMessagingTemplate.convertAndSend(
-                "/subscribe/rooms/" + chatRequest.getRoomId(), chatRequest.getMessage()
+                "/subscribe/rooms/" + chatRequest.getRoomId(), chatRequest
         );
     }
+
 
     /**
      * 채팅방 목록을 가져오는 컨트롤러
