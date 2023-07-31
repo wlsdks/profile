@@ -44,6 +44,17 @@ CREATE TABLE IF NOT EXISTS CHAT_ROOM
     PRIMARY KEY (chatroom_id)
 );
 
+CREATE TABLE IF NOT EXISTS CHAT_MAP
+(
+    chat_map_id    BIGINT         NOT NULL    AUTO_INCREMENT,
+    chat_map_user_id  BIGINT,
+    chat_map_chatroom_id BIGINT,
+    PRIMARY KEY (chat_map_id),
+    FOREIGN KEY (chat_map_user_id) REFERENCES USERS(user_id),
+    FOREIGN KEY (chat_map_chatroom_id) REFERENCES CHAT_ROOM(chatroom_id)
+);
+
+
 CREATE TABLE IF NOT EXISTS MESSAGE
 (
     message_id   BIGINT      NOT NULL    AUTO_INCREMENT,
