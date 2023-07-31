@@ -2,7 +2,7 @@
 let currentUser = null;
 
 // '/main/current-user' 엔드포인트로 GET 요청을 보내 현재 로그인한 사용자의 정보를 가져옵니다.
-$.get("/main/current-user", function (data) {
+$.get("/current-user", function (data) {
     currentUser = data;  // 받아온 사용자 정보를 currentUser 변수에 저장합니다.
 
     // '/ws' 엔드포인트에 연결하는 새 SockJS 소켓을 생성합니다.

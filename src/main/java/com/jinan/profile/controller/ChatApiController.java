@@ -2,6 +2,8 @@ package com.jinan.profile.controller;
 
 import com.jinan.profile.domain.message.ChatRoom;
 import com.jinan.profile.dto.message.ChatRequest;
+import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.message.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,14 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class ChatController {
+public class ChatApiController {
 
     /**
      * SimpMessagingTemplate은 @EnableWebSocketMessageBroker를 통해서 등록되는 Bean이다. Broker로 메시지를 전달한다.
      */
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatRoomService chatRoomService;
+    private final UserService userService;
 
 
     /**
@@ -59,6 +62,12 @@ public class ChatController {
     public ChatRoom createRoom(@RequestBody Map<String, String> payload) {
         String name = payload.get("name");
         return chatRoomService.createRoom(name);
+    }
+
+    @GetMapping("/current-user")
+    public UsersDto currentUser(Authentication authentication) {
+        String username = authentication.getName();
+        return userService.findByUsername(username);
     }
 
 }

@@ -22,19 +22,10 @@ import java.util.List;
 @Controller
 public class ChatMainController {
 
-    private final UserService userService;
 
     @GetMapping("/page")
     public String rootPage() {
         return "mainPage";
-    }
-
-    // 현재 로그인한 사용자의 정보를 반환한다
-    @ResponseBody
-    @GetMapping("/current-user")
-    public UsersDto currentUser(Authentication authentication) {
-        String username = authentication.getName();
-        return userService.findByUsername(username);
     }
 
 }
