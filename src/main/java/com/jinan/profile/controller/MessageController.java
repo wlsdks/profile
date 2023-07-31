@@ -23,8 +23,8 @@ public class MessageController {
 
     // 특정 채팅방의 모든 메시지를 가져오는 컨트롤러 메서드
     @GetMapping("/messages/{chatroomId}")
-    public List<MessageDto> getMessagesByChatroomId(@PathVariable Long chatroomId) {
-        return messageService.getMessageByChatroomId(chatroomId);
+    public List<MessageDto> getMessages(@PathVariable Long chatroomId) {
+        return messageService.findByChatRoomId(chatroomId);
     }
 
 }
