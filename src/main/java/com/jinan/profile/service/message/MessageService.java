@@ -53,7 +53,7 @@ public class MessageService {
     /**
      * 특정 채팅방의 모든 메시지를 가져온다.
      */
-    public List<MessageDto> getMessageByChatroomId(Long chatroomId) {
+    public List<MessageDto> findByChatRoomId(Long chatroomId) {
         return messageRepository.findByChatRoomId(chatroomId)
                 .stream()
                 .map(MessageDto::fromEntity)

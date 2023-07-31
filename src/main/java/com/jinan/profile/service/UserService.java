@@ -1,6 +1,9 @@
 package com.jinan.profile.service;
 
+import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,5 +30,10 @@ public class UserService {
     }
 
 
+    public UsersDto findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(UsersDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+    }
 
 }
