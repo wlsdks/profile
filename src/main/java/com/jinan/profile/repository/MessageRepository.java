@@ -1,6 +1,6 @@
 package com.jinan.profile.repository;
 
-import com.jinan.profile.domain.message.Message;
+import com.jinan.profile.domain.chat.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

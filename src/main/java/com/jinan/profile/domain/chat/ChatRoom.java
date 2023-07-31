@@ -1,4 +1,4 @@
-package com.jinan.profile.domain.message;
+package com.jinan.profile.domain.chat;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,13 +1,10 @@
 package com.jinan.profile.dto.message;
 
-import com.jinan.profile.domain.message.ChatMap;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.dto.user.UsersDto;
 
-import java.io.Serializable;
-
 /**
- * DTO for {@link com.jinan.profile.domain.message.ChatMap}
+ * DTO for {@link com.jinan.profile.domain.chat.ChatMap}
  */
 public record ChatMapDto(
         Long id,

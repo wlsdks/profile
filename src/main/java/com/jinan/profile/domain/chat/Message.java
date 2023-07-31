@@ -1,4 +1,4 @@
-package com.jinan.profile.domain.message;
+package com.jinan.profile.domain.chat;
 
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.Users;

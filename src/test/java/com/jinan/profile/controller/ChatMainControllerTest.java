@@ -1,6 +1,7 @@
 package com.jinan.profile.controller;
 
 import com.jinan.profile.config.TestSecurityConfig;
+import com.jinan.profile.controller.chat.ChatMainController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
