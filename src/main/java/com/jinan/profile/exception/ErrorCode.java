@@ -20,7 +20,8 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "1008", "서버에 에러가 발생했습니다."),
 
     // 채팅 예외처리
-    CHATROOM_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다.")
+    CHATROOM_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다."),
+    CHATMAP_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다.")
     ;
 
 

@@ -83,20 +83,12 @@ class MessageServiceTest {
     @Test
     void test() {
         //given
-
-        //todo: 1. userId
         Users testUser = Users.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
-
-        //todo: 2. chatroomId
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
         ChatMap testChatMap = ChatMap.of(testUser, testChatRoom);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
         when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.of(testChatRoom));
-//        when(chatMapRepository.save(testChatMap)).thenReturn(testChatMap);
-
-        //todo: 채팅방에 입장한 순간 채팅방과 유저는 매핑되어야 한다. 근데 이제 채팅을 쳤을때 저장하는게 맞을것같다.
-        //todo: 그럼 채팅을 입력했을때 save되면서 최초에만 동작해야한다.
 
         //when
         messageService.saveMessage(1L, 1L, "test message");
