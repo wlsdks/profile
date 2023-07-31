@@ -37,7 +37,7 @@ public class ChatMap {
     }
 
     // 생성자 factory method of
-    public ChatMap of(Users users, ChatRoom chatRoom) {
+    public static ChatMap of(Users users, ChatRoom chatRoom) {
         return new ChatMap(users, chatRoom);
     }
 
