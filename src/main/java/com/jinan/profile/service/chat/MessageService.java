@@ -35,16 +35,15 @@ public class MessageService {
         // 1. user를 찾아온다.
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
-
         // 2. 채팅방을 찾아온다.
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.CHATROOM_NOT_FOUND));
 
         // 3. 유저-채팅방 매핑을 하고 db에 저장한다.
         chatMapValidateAndSave(user, chatRoom);
+
         // 4. 메시지를 만들고 db에 저장한다.
         Message savedMessage = messageSave(text, user, chatRoom);
-
         // 5. 저장한 메시지를 controller에 dto형태로 반환한다.
         return MessageDto.fromEntity(savedMessage);
     }
@@ -63,7 +62,7 @@ public class MessageService {
      * 유저-채팅방 매핑정보가 있는지 확인하고 없다면 만들어서 저장한다.
      */
     private void chatMapValidateAndSave(Users user, ChatRoom chatRoom) {
-        chatMapRepository.findByUsers(user)
+        chatMapRepository.findByUsersAndChatRoom(user, chatRoom)
                 .orElseGet(() -> {
                     ChatMap newChatMap = ChatMap.of(user, chatRoom);
                     return chatMapRepository.save(newChatMap);
