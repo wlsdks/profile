@@ -64,6 +64,9 @@ public class ChatApiController {
         return chatRoomService.createRoom(name);
     }
 
+    /**
+     * 채팅방에서 지금 채팅보내는 유저정보를 받아오는 컨트롤러 시큐리티로부터 정보를 받아온다.
+     */
     @GetMapping("/current-user")
     public UsersDto currentUser(Authentication authentication) {
         String username = authentication.getName();
