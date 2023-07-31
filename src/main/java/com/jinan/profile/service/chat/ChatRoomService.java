@@ -1,6 +1,6 @@
-package com.jinan.profile.service.message;
+package com.jinan.profile.service.chat;
 
-import com.jinan.profile.domain.message.ChatRoom;
+import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

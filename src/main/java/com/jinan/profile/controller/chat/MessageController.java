@@ -1,9 +1,8 @@
-package com.jinan.profile.controller;
+package com.jinan.profile.controller.chat;
 
-import com.jinan.profile.domain.message.Message;
 import com.jinan.profile.dto.message.MessageDto;
 import com.jinan.profile.dto.message.MessageRequestDto;
-import com.jinan.profile.service.message.MessageService;
+import com.jinan.profile.service.chat.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,5 +25,4 @@ public class MessageController {
     public List<MessageDto> getMessages(@PathVariable Long chatroomId) {
         return messageService.findByChatRoomId(chatroomId);
     }
-
 }

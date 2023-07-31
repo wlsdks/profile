@@ -1,13 +1,12 @@
 package com.jinan.profile.dto.message;
 
-import com.jinan.profile.domain.message.MessageReport;
+import com.jinan.profile.domain.chat.MessageReport;
 import com.jinan.profile.dto.user.UsersDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.jinan.profile.domain.message.MessageReport}
+ * DTO for {@link com.jinan.profile.domain.chat.MessageReport}
  */
 public record MessageReportDto(
         Long id,

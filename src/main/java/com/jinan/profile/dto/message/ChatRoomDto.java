@@ -1,11 +1,9 @@
 package com.jinan.profile.dto.message;
 
-import com.jinan.profile.domain.message.ChatRoom;
-
-import java.io.Serializable;
+import com.jinan.profile.domain.chat.ChatRoom;
 
 /**
- * DTO for {@link com.jinan.profile.domain.message.ChatRoom}
+ * DTO for {@link com.jinan.profile.domain.chat.ChatRoom}
  */
 public record ChatRoomDto(
         Long id,
