@@ -1,8 +1,8 @@
-package com.jinan.profile.service.message;
+package com.jinan.profile.service.chat;
 
 import com.jinan.profile.config.TestSecurityConfig;
-import com.jinan.profile.domain.message.ChatMap;
-import com.jinan.profile.domain.message.ChatRoom;
+import com.jinan.profile.domain.chat.ChatMap;
+import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.domain.type.RoleType;
 import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.message.ChatRoomDto;
@@ -14,7 +14,6 @@ import com.jinan.profile.repository.ChatRoomRepository;
 import com.jinan.profile.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

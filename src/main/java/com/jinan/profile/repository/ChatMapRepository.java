@@ -1,6 +1,6 @@
 package com.jinan.profile.repository;
 
-import com.jinan.profile.domain.message.ChatMap;
+import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.domain.user.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 

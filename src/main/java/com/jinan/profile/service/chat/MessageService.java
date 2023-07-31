@@ -1,9 +1,9 @@
-package com.jinan.profile.service.message;
+package com.jinan.profile.service.chat;
 
-import com.jinan.profile.domain.message.ChatMap;
+import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.repository.ChatMapRepository;
-import com.jinan.profile.domain.message.ChatRoom;
-import com.jinan.profile.domain.message.Message;
+import com.jinan.profile.domain.chat.ChatRoom;
+import com.jinan.profile.domain.chat.Message;
 import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.message.MessageDto;
 import com.jinan.profile.exception.ErrorCode;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional

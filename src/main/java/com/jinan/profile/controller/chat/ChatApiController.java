@@ -1,10 +1,10 @@
-package com.jinan.profile.controller;
+package com.jinan.profile.controller.chat;
 
-import com.jinan.profile.domain.message.ChatRoom;
+import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.dto.message.ChatRequest;
 import com.jinan.profile.dto.user.UsersDto;
 import com.jinan.profile.service.UserService;
-import com.jinan.profile.service.message.ChatRoomService;
+import com.jinan.profile.service.chat.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
