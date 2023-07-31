@@ -4,8 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ChatRequest {
     /** 송신자 id */
@@ -24,11 +26,16 @@ public class ChatRequest {
     @NotBlank
     private String message;
 
+    /** 사용자 이름 */
+    @NotBlank
+    private String userName;
+
     // 생성자
-    public ChatRequest(@NotNull Long senderId, @NotNull Long receiverId, @NotNull Long roomId, String message) {
+    public ChatRequest(@NotNull Long senderId, @NotNull Long receiverId, @NotNull Long roomId, String message, String userName) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.roomId = roomId;
         this.message = message;
+        this.userName = userName;
     }
 }
