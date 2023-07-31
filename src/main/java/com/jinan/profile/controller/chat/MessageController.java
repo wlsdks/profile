@@ -1,5 +1,6 @@
 package com.jinan.profile.controller.chat;
 
+import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.message.MessageDto;
 import com.jinan.profile.dto.message.MessageRequestDto;
 import com.jinan.profile.service.chat.MessageService;
