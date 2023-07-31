@@ -20,12 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Profile("test")
 @AutoConfigureMockMvc // 이걸 달아줘야 MockMvc에 주입이 된다.
 @Import(TestSecurityConfig.class)
-@WebMvcTest(MainController.class)
-class MainControllerTest {
+@WebMvcTest(ChatMainController.class)
+class ChatMainControllerTest {
 
     private MockMvc mockMvc;
 
-    public MainControllerTest(@Autowired MockMvc mockMvc) {
+    public ChatMainControllerTest(@Autowired MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 
