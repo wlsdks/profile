@@ -5,10 +5,7 @@ import com.jinan.profile.domain.board.*;
 import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.type.RoleType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +89,7 @@ public class Users extends AuditingFields {
     }
 
     //OAuth2를 적용시킬 유저의 생성자
+    @Builder
     private Users(String username, String email, String password, RoleType roleType, List<UserDetails> userDetails) {
         this.username = username;
         this.email = email;
