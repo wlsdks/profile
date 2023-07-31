@@ -62,7 +62,7 @@ $.get("/main/current-user", function (data) {
         $.get("/messages/" + currentRoomId, function (data) {
             // 받아온 각 메시지를 화면에 표시합니다.
             data.forEach(function (data) {
-                console.log("data", data);  // 메시지의 내용을 콘솔에 출력합니다.
+                // console.log("requestDto: ", data);  // 메시지의 내용을 콘솔에 출력합니다.
                 showGreeting(chatWindow, data);
             });
         });
@@ -98,7 +98,7 @@ $.get("/main/current-user", function (data) {
             data: JSON.stringify(chatRequest),
             success: function (data) {
                 // 저장된 메시지 정보를 콘솔에 출력합니다.
-                console.log("Message saved: ", data);
+                // console.log("Message saved: ", data);
             }
         });
     }
@@ -127,7 +127,7 @@ $.get("/main/current-user", function (data) {
                 data: JSON.stringify({name: roomName}),
                 success: function (data) {
                     // 생성된 방 정보를 콘솔에 출력합니다.
-                    console.log("Room created: ", data);
+                    // console.log("Room created: ", data);
                     // 방 목록을 다시 불러옵니다.
                     loadRoomList();
                 }
