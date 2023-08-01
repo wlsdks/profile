@@ -21,7 +21,12 @@ public enum ErrorCode {
 
     // 채팅 예외처리
     CHATROOM_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다."),
-    CHATMAP_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다.")
+    CHATMAP_NOT_FOUND(404, "2001", "채팅방을 찾을수 없습니다."),
+
+    // 로그인 예외처리
+    TOKEN_NOT_VALID(404, "3001", "유효하지 않은 토큰입니다."),
+    TOKEN_NOT_FOUND(404, "3002", "존재하지 않은 토큰입니다..")
+
     ;
 
 
