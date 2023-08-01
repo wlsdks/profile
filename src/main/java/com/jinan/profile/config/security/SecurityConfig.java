@@ -61,10 +61,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()                           // 그 외의 모든 요청은 인증된 사용자만 접근할 수 있도록 설정하였다.
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 이렇게 하면 JWT를 사용하는 OAuth2 리소스 서버를 설정할 수 있다.
-                // Customizer.withDefaults()는 JWT 설정의 기본값을 사용하도록 지시한다.
-                // 만약 커스텀 JWT 설정이 필요하다면, Customizer.withDefaults() 대신에 적절한 설정을 제공해야 한다.
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthorizationFilter(), BasicAuthenticationFilter.class) // jwtAuthorizationFilter() 직접 작성해야함
                 .formLogin(AbstractHttpConfigurer::disable)
