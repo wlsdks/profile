@@ -1,11 +1,12 @@
 package com.jinan.profile.repository.querydsl;
 
+import com.jinan.profile.domain.user.QUser;
 import com.jinan.profile.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.jinan.profile.domain.user.QUsers.users;
+import static com.jinan.profile.domain.user.QUser.user;
 
 
 @RequiredArgsConstructor
@@ -16,11 +17,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public User findByUsersId(Long userId) {
+    public User findByUserId(Long userId) {
         // 사용할때 QUser를 static import하는것을 잊지말자
-        return queryFactory.select(users)
-                .from(users)
-                .where(users.id.eq(userId))
+        return queryFactory.select(user)
+                .from(user)
+                .where(user.id.eq(userId))
                 .fetchOne();
     }
 

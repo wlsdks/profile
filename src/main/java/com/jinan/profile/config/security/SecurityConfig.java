@@ -1,39 +1,42 @@
 package com.jinan.profile.config.security;
 
 import com.jinan.profile.config.security.jwt.JwtAuthorizationFilter;
-import com.jinan.profile.dto.security.Principal;
-import com.jinan.profile.service.UserService;
+import com.jinan.profile.dto.security.SecurityUserDetailsDto;
+import com.jinan.profile.dto.user.UserDto;
+import com.jinan.profile.repository.UserRepository;
+import com.jinan.profile.service.security.SecurityUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
-//@EnableWebSecurity -> 이건 이제 안넣어도 된다.
 @Configuration
 public class SecurityConfig {
 
@@ -52,7 +55,9 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(
-            HttpSecurity http
+            HttpSecurity http,
+            CustomAuthenticationFilter customAuthenticationFilter,
+            JwtAuthorizationFilter jwtAuthorizationFilter
     ) throws Exception {
         log.debug("[+] WebSecurityConfig Start !!! ");
         return http
@@ -68,15 +73,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()                           // 그 외의 모든 요청은 인증된 사용자만 접근할 수 있도록 설정하였다.
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 이렇게 하면 JWT를 사용하는 OAuth2 리소스 서버를 설정할 수 있다.
-                // Customizer.withDefaults()는 JWT 설정의 기본값을 사용하도록 지시한다.
-                // 만약 커스텀 JWT 설정이 필요하다면, Customizer.withDefaults() 대신에 적절한 설정을 제공해야 한다.
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+//            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(jwtAuthorizationFilter(), BasicAuthenticationFilter.class) // jwtAuthorizationFilter() 직접 작성해야함
+                .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class) // jwtAuthorizationFilter() 직접 작성해야함
                 .formLogin(AbstractHttpConfigurer::disable)
-//                .formLogin(Customizer.withDefaults())
-                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // customAuthenticationFilter 직접 작성해야함
+//            .formLogin(Customizer.withDefaults())
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // customAuthenticationFilter 직접 작성해야함
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                 ).build();
@@ -87,17 +89,20 @@ public class SecurityConfig {
      * 과정: CustomAuthenticationFilter → AuthenticationManager(interface) → CustomAuthenticationProvider(implements)
      */
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(Collections.singletonList(customAuthenticationProvider()));
+    public AuthenticationManager authenticationManager(CustomAuthenticationProvider customAuthenticationProvider) {
+        return new ProviderManager(Collections.singletonList(customAuthenticationProvider));
     }
 
     /**
      * '인증' 제공자로 사용자의 이름과 비밀번호가 요구된다.
-     *  과정: CustomAuthenticationFilter → AuthenticationManager(interface) → CustomAuthenticationProvider(implements)
+     * 과정: CustomAuthenticationFilter → AuthenticationManager(interface) → CustomAuthenticationProvider(implements)
      */
     @Bean
-    public CustomAuthenticationProvider customAuthenticationProvider() {
-        return new CustomAuthenticationProvider(bCryptPasswordEncoder());
+    public CustomAuthenticationProvider customAuthenticationProvider(SecurityUserService securityUserService) {
+        return new CustomAuthenticationProvider(
+                userDetailsService(securityUserService),
+                bCryptPasswordEncoder()
+        );
     }
 
     /**
@@ -113,8 +118,8 @@ public class SecurityConfig {
      * @return CustomAuthenticationFilter
      */
     @Bean
-    public CustomAuthenticationFilter customAuthenticationFilter() {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager());
+    public CustomAuthenticationFilter customAuthenticationFilter(AuthenticationManager authenticationManager) {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/user/login");     // 접근 URL
         customAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.setAuthenticationFailureHandler(customLoginFailureHandler());    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
@@ -167,27 +172,37 @@ public class SecurityConfig {
         );
     }
 
-    /**
-     * userDetailsService 빈은 username을 인자로 받아 UserService를 통해 사용자를 검색하고, 검색된 사용자를 Principal::from을 통해 Principal 객체로 변환한다.
-     * 만약 사용자를 찾지 못하면 UsernameNotFoundException을 발생시킨다.
-     * 이 방법은 UserDetailsService 인터페이스를 직접 구현하는 방법과 기본적으로 동일한 작업을 수행하지만, 빈으로 등록함으로써 UserDetailsService의 구현을 더 유연하게 관리할 수 있다.
-     */
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return username -> userService
-                .searchUser(username)
-                .map(Principal::from)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - userId: " + username));
+    public SecurityUserService securityUserService(UserRepository userRepository) {
+        return userDto -> userRepository
+                .findByUsername(userDto.username())
+                .map(UserDto::fromEntity);
     }
 
-    /**
-     * password 인코더 구현
-     * spring security 암호화 모듈을 사용한다.
-     */
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public UserDetailsService userDetailsService(SecurityUserService securityUserService) {
+        return username -> {
+            UserDto userDto = UserDto.of(username);
+
+            // 사용자 정보가 존재하지 않는 경우
+            if (username == null || username.equals("")) {
+                return securityUserService.login(userDto)
+                        .map(user -> new SecurityUserDetailsDto(
+                                user,
+                                Collections.singleton(new SimpleGrantedAuthority(user.username()))))
+                        .orElseThrow(() -> new AuthenticationServiceException(username));
+            } else {  // 비밀번호가 틀린 경우
+                return securityUserService.login(userDto)
+                        .map(user -> new SecurityUserDetailsDto(
+                                user,
+                                Collections.singleton(new SimpleGrantedAuthority(user.username()))))
+                        .orElseThrow(() -> new BadCredentialsException(username));
+            }
+        };
     }
+
 
 
 }
+
+

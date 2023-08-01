@@ -8,13 +8,13 @@ import com.jinan.profile.dto.user.UserDto;
  */
 public record ChatMapDto(
         Long id,
-        UserDto users,
+        UserDto user,
         ChatRoomDto chatRoom
 ) {
 
     // 생성자 factory method of선언
-    public static ChatMapDto of(Long id, UserDto users, ChatRoomDto chatRoom) {
-        return new ChatMapDto(id, users, chatRoom);
+    public static ChatMapDto of(Long id, UserDto user, ChatRoomDto chatRoom) {
+        return new ChatMapDto(id, user, chatRoom);
     }
 
     // entity를 dto로 변환하는 factory method

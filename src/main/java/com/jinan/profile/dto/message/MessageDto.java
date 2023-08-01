@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public record MessageDto(
         Long id,
-        UserDto users,
+        UserDto user,
         ChatRoomDto chatRoom,
         String text,
         LocalDateTime createdAt,
@@ -18,8 +18,8 @@ public record MessageDto(
 ) {
 
     // 생성자 factory method 선언
-    public static MessageDto of(Long id, UserDto users, ChatRoomDto chatRoom, String text, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new MessageDto(id, users, chatRoom, text, createdAt, updatedAt);
+    public static MessageDto of(Long id, UserDto user, ChatRoomDto chatRoom, String text, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new MessageDto(id, user, chatRoom, text, createdAt, updatedAt);
     }
 
     // entity를 dto로 변환하는 메서드

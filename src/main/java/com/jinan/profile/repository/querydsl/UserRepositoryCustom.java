@@ -4,6 +4,6 @@ import com.jinan.profile.domain.user.User;
 
 public interface UserRepositoryCustom {
 
-    User findByUsersId(Long userId);
+    User findByUserId(Long userId);
 
 }

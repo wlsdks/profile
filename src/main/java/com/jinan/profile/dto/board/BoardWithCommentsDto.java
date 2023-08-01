@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public record BoardWithCommentsDto(
         Long id,
-        UserDto users,
+        UserDto user,
         List<BoardCommentDto> boardComments,
         String title,
         String content,
@@ -26,7 +26,7 @@ public record BoardWithCommentsDto(
     // 생성자 factory method 생성
     public static BoardWithCommentsDto of(
             Long id,
-            UserDto users,
+            UserDto user,
             List<BoardCommentDto> boardComments,
             String title,
             String content,
@@ -35,7 +35,7 @@ public record BoardWithCommentsDto(
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        return new BoardWithCommentsDto(id, users, boardComments, title, content, views, likes, createdAt, updatedAt);
+        return new BoardWithCommentsDto(id, user, boardComments, title, content, views, likes, createdAt, updatedAt);
     }
 
     // entity를 받아서 dto로 변환시켜주는 메서드

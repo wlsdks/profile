@@ -11,6 +11,6 @@ public interface ChatMapRepository extends JpaRepository<ChatMap, Long> {
 
 //    Optional<ChatMap> findByUsers(Users users);
 
-    Optional<ChatMap> findByUsersAndChatRoom(User user, ChatRoom chatRoom);
+    Optional<ChatMap> findByUserAndChatRoom(User user, ChatRoom chatRoom);
 
 }
