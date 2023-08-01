@@ -1,4 +1,4 @@
-package com.jinan.profile.config;
+package com.jinan.profile.config.security;
 
 import com.jinan.profile.dto.security.Principal;
 import com.jinan.profile.service.UserService;
@@ -28,6 +28,7 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import java.util.Collections;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -86,7 +87,7 @@ public class SecurityConfig {
      */
     @Bean
     public AuthenticationManager authenticationManager() {
-        return new ProviderManager(customAuthenticationProvider());
+        return new ProviderManager(Collections.singletonList(customAuthenticationProvider()));
     }
 
     /**
