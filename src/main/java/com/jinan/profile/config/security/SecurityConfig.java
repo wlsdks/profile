@@ -1,8 +1,6 @@
 package com.jinan.profile.config.security;
 
 import com.jinan.profile.config.security.jwt.JwtAuthorizationFilter;
-import com.jinan.profile.dto.security.Principal;
-import com.jinan.profile.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +13,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -167,27 +160,27 @@ public class SecurityConfig {
         );
     }
 
-    /**
-     * userDetailsService 빈은 username을 인자로 받아 UserService를 통해 사용자를 검색하고, 검색된 사용자를 Principal::from을 통해 Principal 객체로 변환한다.
-     * 만약 사용자를 찾지 못하면 UsernameNotFoundException을 발생시킨다.
-     * 이 방법은 UserDetailsService 인터페이스를 직접 구현하는 방법과 기본적으로 동일한 작업을 수행하지만, 빈으로 등록함으로써 UserDetailsService의 구현을 더 유연하게 관리할 수 있다.
-     */
-    @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return username -> userService
-                .searchUser(username)
-                .map(Principal::from)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - userId: " + username));
-    }
-
-    /**
-     * password 인코더 구현
-     * spring security 암호화 모듈을 사용한다.
-     */
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+//    /**
+//     * userDetailsService 빈은 username을 인자로 받아 UserService를 통해 사용자를 검색하고, 검색된 사용자를 Principal::from을 통해 Principal 객체로 변환한다.
+//     * 만약 사용자를 찾지 못하면 UsernameNotFoundException을 발생시킨다.
+//     * 이 방법은 UserDetailsService 인터페이스를 직접 구현하는 방법과 기본적으로 동일한 작업을 수행하지만, 빈으로 등록함으로써 UserDetailsService의 구현을 더 유연하게 관리할 수 있다.
+//     */
+//    @Bean
+//    public UserDetailsService userDetailsService(UserService userService) {
+//        return username -> userService
+//                .searchUser(username)
+//                .map(Principal::from)
+//                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다 - userId: " + username));
+//    }
+//
+//    /**
+//     * password 인코더 구현
+//     * spring security 암호화 모듈을 사용한다.
+//     */
+//    @Bean
+//    PasswordEncoder passwordEncoder() {
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    }
 
 
 }

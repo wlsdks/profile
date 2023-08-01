@@ -62,7 +62,7 @@ public class MessageService {
      * 유저-채팅방 매핑정보가 있는지 확인하고 없다면 만들어서 저장한다.
      */
     private void chatMapValidateAndSave(User user, ChatRoom chatRoom) {
-        chatMapRepository.findByUsersAndChatRoom(user, chatRoom)
+        chatMapRepository.findByUserAndChatRoom(user, chatRoom)
                 .orElseGet(() -> {
                     ChatMap newChatMap = ChatMap.of(user, chatRoom);
                     return chatMapRepository.save(newChatMap);

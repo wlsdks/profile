@@ -99,7 +99,7 @@ public class User extends AuditingFields {
         this.userStatus = userStatus;
     }
     // factory 메소드 of() 생성
-    public User of(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+    public static User of(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
         return new User(loginId, password, username, email, roleType, userStatus);
     }
 

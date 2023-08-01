@@ -32,6 +32,7 @@ public class TestSecurityConfig {
     private UserDto createUsersDto() {
         return UserDto.of(
                 10L,
+                "wlsdks12",
                 "wlsdks123",
                 "{noop}pw",
                 "wlsdks123@naver.com",

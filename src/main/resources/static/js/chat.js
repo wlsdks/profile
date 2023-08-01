@@ -105,7 +105,7 @@ $.get("/current-user", function (data) {
 
     // 메시지를 화면에 표시하는 함수입니다.
     function showGreeting(chatWindow, chatRequest) {
-        chatWindow.document.getElementById('messages').innerHTML += '<p>' + chatRequest.users.username + ': ' + chatRequest.text + '</p>';
+        chatWindow.document.getElementById('messages').innerHTML += '<p>' + chatRequest.user.username + ': ' + chatRequest.text + '</p>';
     }
 
     // 페이지 로드 완료 시 실행할 함수입니다.

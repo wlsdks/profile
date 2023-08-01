@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security.jwt.constant;
+package com.jinan.profile.dto.codes;
 
 /**
  * JWT관련 상수로 사용되는 파일
