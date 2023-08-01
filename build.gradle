@@ -64,6 +64,11 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 	implementation 'org.json:json:20210307'
 
+	// XML처리를 위한 JAXB 의존성 추가
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+
 	// test
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
