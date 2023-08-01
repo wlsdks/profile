@@ -1,7 +1,8 @@
 package com.jinan.profile.config;
 
+import com.jinan.profile.config.security.SecurityConfig;
 import com.jinan.profile.domain.type.RoleType;
-import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.service.UserService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -28,8 +29,8 @@ public class TestSecurityConfig {
     }
 
     // 테스트용 UsersDto를 만들어 준다.
-    private UsersDto createUsersDto() {
-        return UsersDto.of(
+    private UserDto createUsersDto() {
+        return UserDto.of(
                 10L,
                 "wlsdks123",
                 "{noop}pw",

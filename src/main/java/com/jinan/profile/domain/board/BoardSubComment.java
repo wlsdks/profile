@@ -1,7 +1,7 @@
 package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,21 +29,21 @@ public class BoardSubComment extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;                // 유저
+    private User user;                // 유저
 
     @Column(name = "content")
     private String content;             // 대댓글 내용
 
     // 생성자 선언
-    private BoardSubComment(BoardComment boardComment, Users users, String content) {
+    private BoardSubComment(BoardComment boardComment, User user, String content) {
         this.boardComment = boardComment;
-        this.users = users;
+        this.user = user;
         this.content = content;
     }
 
     // 생성자 factory method 선언
-    public BoardSubComment of(BoardComment boardComment, Users users, String content) {
-        return new BoardSubComment(boardComment, users, content);
+    public BoardSubComment of(BoardComment boardComment, User user, String content) {
+        return new BoardSubComment(boardComment, user, content);
     }
 
     // equals & hashCode 최적화

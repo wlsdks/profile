@@ -2,7 +2,7 @@ package com.jinan.profile.controller.chat;
 
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.dto.message.ChatRequest;
-import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.chat.ChatRoomService;
 import jakarta.validation.Valid;
@@ -68,7 +68,7 @@ public class ChatApiController {
      * 채팅방에서 지금 채팅보내는 유저정보를 받아오는 컨트롤러 시큐리티로부터 정보를 받아온다.
      */
     @GetMapping("/current-user")
-    public UsersDto currentUser(Authentication authentication) {
+    public UserDto currentUser(Authentication authentication) {
         String username = authentication.getName();
         return userService.findByUsername(username);
     }

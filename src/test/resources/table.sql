@@ -1,10 +1,12 @@
 CREATE TABLE IF NOT EXISTS USERS
 (
     user_id     BIGINT         NOT NULL    AUTO_INCREMENT,
+    login_id    VARCHAR(45)    NOT NULL,
+    password    VARCHAR(45)    NOT NULL,
     username    VARCHAR(45)    NOT NULL,
     email       VARCHAR(45)    NOT NULL,
-    password    VARCHAR(45)    NOT NULL,
-    role        VARCHAR(45)    NOT NULL,
+    role        VARCHAR(16)    NOT NULL,
+    status      VARCHAR(16)    NOT NULL,
     created_at  TIMESTAMP      NOT NULL,
     updated_at  TIMESTAMP      NOT NULL,
     PRIMARY KEY (user_id)

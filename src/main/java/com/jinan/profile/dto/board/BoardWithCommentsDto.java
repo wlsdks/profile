@@ -2,7 +2,7 @@ package com.jinan.profile.dto.board;
 
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.board.BoardSubComment;
-import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.dto.user.UserDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public record BoardWithCommentsDto(
         Long id,
-        UsersDto users,
+        UserDto users,
         List<BoardCommentDto> boardComments,
         String title,
         String content,
@@ -26,7 +26,7 @@ public record BoardWithCommentsDto(
     // 생성자 factory method 생성
     public static BoardWithCommentsDto of(
             Long id,
-            UsersDto users,
+            UserDto users,
             List<BoardCommentDto> boardComments,
             String title,
             String content,
@@ -48,7 +48,7 @@ public record BoardWithCommentsDto(
 
         return BoardWithCommentsDto.of(
                 entity.getId(),
-                UsersDto.fromEntity(entity.getUsers()),
+                UserDto.fromEntity(entity.getUser()),
                 boardCommentsDto,
                 entity.getTitle(),
                 entity.getContent(),

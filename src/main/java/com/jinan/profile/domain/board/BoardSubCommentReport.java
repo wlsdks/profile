@@ -1,7 +1,7 @@
 package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,12 +24,12 @@ public class BoardSubCommentReport extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "board_sub_reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users subCommentReporter;        // 대댓글 신고자
+    private User subCommentReporter;        // 대댓글 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "board_sub_reported_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users subCommentReported;        // 대댓글 신고당한자
+    private User subCommentReported;        // 대댓글 신고당한자
 
     @ToString.Exclude
     @JoinColumn(name = "board_sub_comment_id")
@@ -40,7 +40,7 @@ public class BoardSubCommentReport extends AuditingFields {
     private String reason;                   // 신고사유
 
     // 생성자 선언
-    private BoardSubCommentReport(Users subCommentReporter, Users subCommentReported, BoardSubComment boardSubComment, String reason) {
+    private BoardSubCommentReport(User subCommentReporter, User subCommentReported, BoardSubComment boardSubComment, String reason) {
         this.subCommentReporter = subCommentReporter;
         this.subCommentReported = subCommentReported;
         this.boardSubComment = boardSubComment;
@@ -48,7 +48,7 @@ public class BoardSubCommentReport extends AuditingFields {
     }
 
     // 생성자 factory method 선언
-    public BoardSubCommentReport of(Users subCommentReporter, Users subCommentReported, BoardSubComment boardSubComment, String reason) {
+    public BoardSubCommentReport of(User subCommentReporter, User subCommentReported, BoardSubComment boardSubComment, String reason) {
         return new BoardSubCommentReport(subCommentReporter, subCommentReported, boardSubComment, reason);
     }
 

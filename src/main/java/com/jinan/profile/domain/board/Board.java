@@ -2,7 +2,7 @@ package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.file.File;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class Board extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;        // 유저
+    private User user;        // 유저
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board")
@@ -51,18 +51,18 @@ public class Board extends AuditingFields {
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
 
-    private Board(String title, String content, int views, int likes, Users users, List<BoardComment> boardComments) {
+    private Board(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
         this.title = title;
         this.content = content;
         this.views = views;
         this.likes = likes;
-        this.users = users;
+        this.user = user;
         this.boardComments = boardComments;
     }
 
     // 생성자 factory 메소드
-    public Board of(String title, String content, int views, int likes, Users users, List<BoardComment> boardComments) {
-        return new Board(title, content, views, likes, users, boardComments);
+    public Board of(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
+        return new Board(title, content, views, likes, user, boardComments);
     }
 
     // custom Equals & hashCode 선언

@@ -23,7 +23,7 @@ public class UserDetails extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;            // 유저
+    private User user;            // 유저
 
     @Column(name = "provider")
     private String provider;        // 제공업체(kakao, google, apple)
@@ -32,15 +32,15 @@ public class UserDetails extends AuditingFields {
     private String providerId;      // 제공업체 고유id
 
     // id, 생성일자, 수정일자는 알아서 추가됨
-    private UserDetails(Users users, String provider, String providerId) {
-        this.users = users;
+    private UserDetails(User user, String provider, String providerId) {
+        this.user = user;
         this.provider = provider;
         this.providerId = providerId;
     }
 
     // factory 메소드 of() 선언
-    public static UserDetails of(Users users, String provider, String providerId) {
-        return new UserDetails(users, provider, providerId);
+    public static UserDetails of(User user, String provider, String providerId) {
+        return new UserDetails(user, provider, providerId);
     }
 
     @Override

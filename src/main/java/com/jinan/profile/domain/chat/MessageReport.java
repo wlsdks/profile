@@ -1,7 +1,7 @@
 package com.jinan.profile.domain.chat;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class MessageReport extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users messageReporter;      // 신고자
+    private User messageReporter;      // 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "message_id")
@@ -35,14 +35,14 @@ public class MessageReport extends AuditingFields {
     private String reason;              // 신고사유
 
     // private 생성자 선언
-    private MessageReport(Users messageReporter, Message message, String reason) {
+    private MessageReport(User messageReporter, Message message, String reason) {
         this.messageReporter = messageReporter;
         this.message = message;
         this.reason = reason;
     }
 
     // factory method of 선언
-    public MessageReport of(Users messageReporter, Message message, String reason) {
+    public MessageReport of(User messageReporter, Message message, String reason) {
         return new MessageReport(messageReporter, message, reason);
     }
 
