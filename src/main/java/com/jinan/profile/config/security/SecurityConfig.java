@@ -1,5 +1,9 @@
 package com.jinan.profile.config.security;
 
+import com.jinan.profile.config.security.custom.CustomAuthFailureHandler;
+import com.jinan.profile.config.security.custom.CustomAuthSuccessHandler;
+import com.jinan.profile.config.security.custom.CustomAuthenticationFilter;
+import com.jinan.profile.config.security.custom.CustomAuthenticationProvider;
 import com.jinan.profile.config.security.jwt.JwtAuthorizationFilter;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
@@ -22,18 +26,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j

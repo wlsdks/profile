@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config.security.custom;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;

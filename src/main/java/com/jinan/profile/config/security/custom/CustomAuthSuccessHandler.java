@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config.security.custom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;

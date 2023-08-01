@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config.security.custom;
 
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import jakarta.annotation.Resource;

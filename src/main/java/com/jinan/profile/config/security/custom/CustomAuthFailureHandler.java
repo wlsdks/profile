@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config.security.custom;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
