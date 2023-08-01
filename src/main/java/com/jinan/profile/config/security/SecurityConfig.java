@@ -172,6 +172,11 @@ public class SecurityConfig {
         );
     }
 
+    /**
+     * 유저정보를 받아오는 메서드
+     * @param userRepository
+     * @return UserDto
+     */
     @Bean
     public SecurityUserService securityUserService(UserRepository userRepository) {
         return userDto -> userRepository
@@ -179,6 +184,11 @@ public class SecurityConfig {
                 .map(UserDto::fromEntity);
     }
 
+    /**
+     * 시큐리티의 UserDetailsService를 구현한 메서드 사용자 정보를 통해 구분해서 로그인했는지 안했는지 판단한다.
+     * @param securityUserService
+     * @return
+     */
     @Bean
     public UserDetailsService userDetailsService(SecurityUserService securityUserService) {
         return username -> {
