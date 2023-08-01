@@ -22,8 +22,6 @@ import java.util.HashMap;
 @Configuration
 public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private final ObjectMapper objectMapper;
-
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,
@@ -37,6 +35,7 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
         UserDto userDto = ((SecurityUserDetailsDto) authentication.getPrincipal()).getUserDto();
 
         // 2. 조회한 데이터를 JSONObject 형태로 파싱한다.
+        ObjectMapper objectMapper = new ObjectMapper();
         JSONObject userDtoObject = new JSONObject(objectMapper.writeValueAsString(userDto));
 
         HashMap<String, Object> responseMap = new HashMap<>();
