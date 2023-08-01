@@ -19,7 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(
+            AuthenticationManager authenticationManager
+    ) {
         super(authenticationManager);
     }
 
@@ -27,8 +29,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
      * 지정된 url로 form을 전송했을 경우 파라미터의 정보를 가져온다.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws AuthenticationException {
+
         UsernamePasswordAuthenticationToken authRequest;
+
         try {
             authRequest = getAuthRequest(request);
             setDetails(request, authRequest);
@@ -42,10 +49,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     /**
      * Request로 받은 ID, PW를 기반으로 토큰을 발급한다.
      */
-    private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) throws Exception {
+    private UsernamePasswordAuthenticationToken getAuthRequest(
+            HttpServletRequest request
+    ) throws Exception {
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+
             UserDto user = objectMapper.readValue(request.getInputStream(), UserDto.class);
             log.debug("1.CustomAuthenticationFilter :: username: " + user.username() + "userPw: " + user.password());
             // ID, PW를 기반으로 토큰 발급
