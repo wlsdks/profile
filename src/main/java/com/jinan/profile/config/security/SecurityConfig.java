@@ -1,5 +1,6 @@
 package com.jinan.profile.config.security;
 
+import com.jinan.profile.config.security.jwt.JwtAuthorizationFilter;
 import com.jinan.profile.dto.security.Principal;
 import com.jinan.profile.service.UserService;
 import lombok.extern.slf4j.Slf4j;
