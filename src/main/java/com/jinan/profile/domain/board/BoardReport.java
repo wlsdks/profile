@@ -1,7 +1,7 @@
 package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,12 +25,12 @@ public class BoardReport extends AuditingFields {
     // 이 외래키의 이름(name값)만 테이블명과 일치하면 된다. 하단의 필드명은 단순히 JPA에서 사용하기 위함이라 테이블과 관련이 없다.
     @JoinColumn(name = "reporter_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users reporter;       // 신고자
+    private User reporter;       // 신고자
 
     @ToString.Exclude
     @JoinColumn(name = "reported_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users reported;       // 신고당한사람
+    private User reported;       // 신고당한사람
 
     @ToString.Exclude
     @JoinColumn(name = "board_id")
@@ -43,7 +43,7 @@ public class BoardReport extends AuditingFields {
     // todo: 생성일자는 있는데 수정일자가 없다. -> 테이블안에
 
     // private 생성자 선언
-    private BoardReport(Users reporter, Users reported, Board board, String reason) {
+    private BoardReport(User reporter, User reported, Board board, String reason) {
         this.reporter = reporter;
         this.reported = reported;
         this.board = board;
@@ -51,7 +51,7 @@ public class BoardReport extends AuditingFields {
     }
 
     // 생성자 factory method 선언
-    public BoardReport of(Users reporter, Users reported, Board board, String reason) {
+    public BoardReport of(User reporter, User reported, Board board, String reason) {
         return new BoardReport(reporter, reported, board, reason);
     }
 
