@@ -13,42 +13,50 @@ import java.util.Objects;
 
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "USERS")
 @Getter
 @Entity
-public class Users extends AuditingFields {
+public class User extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;            // 유저pk
 
+    @Column(name = "login_id", nullable = false)
+    private String loginId;     // 로그인 ID
+
+    @Column(name = "password", nullable = false)
+    private String password;    // 로그인 비밀번호
+
     @Column(name = "username", nullable = false)
-    private String username;    // 유저명
+    private String username;    // 유저실명
 
     @Column(name = "email", nullable = false)
     private String email;       // 이메일
-
-    @Column(name = "password", nullable = false)
-    private String password;    // 패스워드
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleType roleType;  // 계정 타입
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     @ToString.Exclude
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<UserDetails> userDetails = new ArrayList<>();          // OAuth2 유저 상세정보
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<Board> boards = new ArrayList<>();                     // 게시글
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<BoardComment> boardComments = new ArrayList<>();       // 댓글
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     @ToString.Exclude
@@ -76,31 +84,23 @@ public class Users extends AuditingFields {
     private List<BoardSubCommentReport> subCommentReported = new ArrayList<>(); // 대댓글 신고당한사람 리스트
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<File> files = new ArrayList<>(); // 파일
 
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
-    private Users(String username, String email, String password, RoleType roleType) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.roleType = roleType;
-    }
-
-    //OAuth2를 적용시킬 유저의 생성자
     @Builder
-    private Users(String username, String email, String password, RoleType roleType, List<UserDetails> userDetails) {
+    private User(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+        this.loginId = loginId;
+        this.password = password;
         this.username = username;
         this.email = email;
-        this.password = password;
         this.roleType = roleType;
-        this.userDetails = userDetails;
+        this.userStatus = userStatus;
     }
-
     // factory 메소드 of() 생성
-    public static Users of(String username, String email, String password, RoleType roleType) {
-        return new Users(username, email, password, roleType);
+    public User of(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+        return new User(loginId, password, username, email, roleType, userStatus);
     }
 
     /**
@@ -112,8 +112,8 @@ public class Users extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Users users)) return false;
-        return this.id != null && Objects.equals(getId(), users.getId());
+        if (!(o instanceof User user)) return false;
+        return this.id != null && Objects.equals(getId(), user.getId());
     }
 
     @Override

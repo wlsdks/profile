@@ -2,7 +2,7 @@ package com.jinan.profile.domain.file;
 
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.board.Board;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class File extends AuditingFields {
     @ToString.Exclude
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;  // 유저정보
+    private User user;  // 유저정보
 
     @ToString.Exclude
     @JoinColumn(name = "board_id")
@@ -39,16 +39,16 @@ public class File extends AuditingFields {
     private String fileUrl;  // 파일url
 
     // 생성자 선언
-    private File(Users users, Board board, String fileName, String fileUrl) {
-        this.users = users;
+    private File(User user, Board board, String fileName, String fileUrl) {
+        this.user = user;
         this.board = board;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
     }
 
     // 생성자 factory method 선언
-    public static File of(Users users, Board board, String fileName, String fileUrl) {
-        return new File(users, board, fileName, fileUrl);
+    public static File of(User user, Board board, String fileName, String fileUrl) {
+        return new File(user, board, fileName, fileUrl);
     }
 
     // equals & hashCode 최적화

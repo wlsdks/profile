@@ -1,10 +1,10 @@
 package com.jinan.profile.service.chat;
 
 import com.jinan.profile.domain.chat.ChatMap;
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.repository.ChatMapRepository;
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.domain.chat.Message;
-import com.jinan.profile.domain.user.Users;
 import com.jinan.profile.dto.message.MessageDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
@@ -33,7 +33,7 @@ public class MessageService {
      */
     public MessageDto saveMessage(Long userId, Long chatRoomId, String text) {
         // 1. user를 찾아온다.
-        Users user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
         // 2. 채팅방을 찾아온다.
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
@@ -61,7 +61,7 @@ public class MessageService {
     /**
      * 유저-채팅방 매핑정보가 있는지 확인하고 없다면 만들어서 저장한다.
      */
-    private void chatMapValidateAndSave(Users user, ChatRoom chatRoom) {
+    private void chatMapValidateAndSave(User user, ChatRoom chatRoom) {
         chatMapRepository.findByUsersAndChatRoom(user, chatRoom)
                 .orElseGet(() -> {
                     ChatMap newChatMap = ChatMap.of(user, chatRoom);
@@ -72,7 +72,7 @@ public class MessageService {
     /**
      * user, chatRoom, text를 받아서 메시지를 만들고 db에 저장한다.
      */
-    private Message messageSave(String text, Users user, ChatRoom chatRoom) {
+    private Message messageSave(String text, User user, ChatRoom chatRoom) {
         Message message = Message.of(user, chatRoom, text);
         Message savedMessage = messageRepository.save(message);
         return savedMessage;

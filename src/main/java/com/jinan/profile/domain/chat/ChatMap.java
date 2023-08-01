@@ -1,6 +1,6 @@
 package com.jinan.profile.domain.chat;
 
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class ChatMap {
     @ToString.Exclude
     @JoinColumn(name = "chat_map_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Users users;                              // 유저
+    private User user;                              // 유저
 
     @ToString.Exclude
     @JoinColumn(name = "chat_map_chatroom_id")
@@ -31,14 +31,14 @@ public class ChatMap {
     private ChatRoom chatRoom;                        // 채팅방
 
     // private 생성자 선언
-    private ChatMap(Users users, ChatRoom chatRoom) {
-        this.users = users;
+    private ChatMap(User user, ChatRoom chatRoom) {
+        this.user = user;
         this.chatRoom = chatRoom;
     }
 
     // 생성자 factory method of
-    public static ChatMap of(Users users, ChatRoom chatRoom) {
-        return new ChatMap(users, chatRoom);
+    public static ChatMap of(User user, ChatRoom chatRoom) {
+        return new ChatMap(user, chatRoom);
     }
 
     // equals & hashCode 최적화

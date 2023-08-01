@@ -1,7 +1,7 @@
 package com.jinan.profile.dto.message;
 
 import com.jinan.profile.domain.chat.Message;
-import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.dto.user.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public record MessageDto(
         Long id,
-        UsersDto users,
+        UserDto users,
         ChatRoomDto chatRoom,
         String text,
         LocalDateTime createdAt,
@@ -18,7 +18,7 @@ public record MessageDto(
 ) {
 
     // 생성자 factory method 선언
-    public static MessageDto of(Long id, UsersDto users, ChatRoomDto chatRoom, String text, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static MessageDto of(Long id, UserDto users, ChatRoomDto chatRoom, String text, LocalDateTime createdAt, LocalDateTime updatedAt) {
         return new MessageDto(id, users, chatRoom, text, createdAt, updatedAt);
     }
 
@@ -26,7 +26,7 @@ public record MessageDto(
     public static MessageDto fromEntity(Message entity) {
         return MessageDto.of(
                 entity.getId(),
-                UsersDto.fromEntity(entity.getUsers()),
+                UserDto.fromEntity(entity.getUser()),
                 ChatRoomDto.fromEntity(entity.getChatRoom()),
                 entity.getText(),
                 entity.getCreatedAt(),

@@ -4,10 +4,10 @@ import com.jinan.profile.config.TestSecurityConfig;
 import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.domain.type.RoleType;
-import com.jinan.profile.domain.user.Users;
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.message.ChatRoomDto;
 import com.jinan.profile.dto.message.MessageDto;
-import com.jinan.profile.dto.user.UsersDto;
+import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.ChatMapRepository;
 import com.jinan.profile.repository.ChatRoomRepository;
@@ -47,7 +47,7 @@ class MessageServiceTest {
     @Test
     void saveMessage() {
         //given
-        Users testUser = Users.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
+        User testUser = User.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
@@ -60,14 +60,14 @@ class MessageServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(MessageDto.class);
         assertThat(actual.text()).isEqualTo("test message");
-        assertThat(actual.users()).isEqualTo(UsersDto.fromEntity(testUser));
+        assertThat(actual.users()).isEqualTo(UserDto.fromEntity(testUser));
     }
 
     @DisplayName("존재하지않는 사용자가 메시지를 입력해서 보내면 예외가 발생한다.")
     @Test
     void saveMessageException() {
         //given
-        Users testUser = Users.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
+        User testUser = User.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
 
         when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.of(testChatRoom));
@@ -83,7 +83,7 @@ class MessageServiceTest {
     @Test
     void test() {
         //given
-        Users testUser = Users.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
+        User testUser = User.of("jinan", "wlsdks12@naver.com", "wlsdks12", RoleType.ADMIN);
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
         ChatMap testChatMap = ChatMap.of(testUser, testChatRoom);
 
@@ -97,7 +97,7 @@ class MessageServiceTest {
         //then
         assertThat(actual).isNotNull();
         assertThat(actual.text()).isEqualTo("test message");
-        assertThat(actual.users()).isEqualTo(UsersDto.fromEntity(testUser));
+        assertThat(actual.users()).isEqualTo(UserDto.fromEntity(testUser));
         assertThat(actual.chatRoom()).isEqualTo(ChatRoomDto.fromEntity(testChatRoom));
 
     }
