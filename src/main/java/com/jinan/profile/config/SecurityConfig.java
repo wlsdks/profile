@@ -100,12 +100,13 @@ public class SecurityConfig {
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter(AuthenticationManager authenticationManager) {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/user/login");     // 접근 URL
+        customAuthenticationFilter.setFilterProcessesUrl("/user/login");     // 접근 URL
         customAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.setAuthenticationFailureHandler(customLoginFailureHandler());    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.afterPropertiesSet();
         return customAuthenticationFilter;
     }
+
 
     /**
      * 2. authenticate 의 인증 메서드를 제공하는 매니져로'Provider'의 인터페이스를 의미한다.
@@ -146,7 +147,7 @@ public class SecurityConfig {
                 return securityUserService.login(userDto)
                         .map(user -> new SecurityUserDetailsDto(
                                 user,
-                                Collections.singleton(new SimpleGrantedAuthority(user.username()))))
+                                Collections.singleton(new SimpleGrantedAuthority(user.roleType().toString()))))
                         .orElseThrow(() -> new AuthenticationServiceException(loginId));
             } else {  // 비밀번호가 틀린 경우
                 return securityUserService.login(userDto)

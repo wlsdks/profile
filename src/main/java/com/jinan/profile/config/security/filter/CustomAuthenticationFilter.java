@@ -2,6 +2,7 @@ package com.jinan.profile.config.security.filter;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
@@ -63,18 +64,21 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
 
             UserDto user = objectMapper.readValue(request.getInputStream(), UserDto.class);
             log.debug("1.CustomAuthenticationFilter :: loginId: " + user.loginId() + "userPw: " + user.password());
 
             // ID, PW를 기반으로 UsernamePasswordAuthenticationToken 토큰 발급
-            return new UsernamePasswordAuthenticationToken(user.username(), user.password());
+            return new UsernamePasswordAuthenticationToken(user.loginId(), user.password());
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new ProfileApplicationException(ErrorCode.IO_ERROR);
         }
+
     }
+
 
 }

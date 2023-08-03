@@ -1,6 +1,7 @@
 package com.jinan.profile.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jinan.profile.config.security.jwt.TokenUtils;
 import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
@@ -42,6 +43,7 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
 
         // 2. 조회한 데이터를 JSONObject 형태로 파싱한다.
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         JSONObject userDtoObject = new JSONObject(objectMapper.writeValueAsString(userDto));
 
         HashMap<String, Object> responseMap = new HashMap<>();
