@@ -19,14 +19,14 @@ public record UserDto(
         UserStatus status,
         String email,
         RoleType roleType,
-        List<UserDetailsDto> userDetails, // 계정에서의 참조는 없앤다.
+//        List<UserDetailsDto> userDetails, // 계정에서의 참조는 없앤다.
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
 
     // factory method of 선언
-    public static UserDto of(Long userId, String loginId, String username, String password, UserStatus status, String email, RoleType roleType, List<UserDetailsDto> userDetails, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new UserDto(userId, loginId, username, password, status, email, roleType, userDetails, createdAt, updatedAt);
+    public static UserDto of(Long userId, String loginId, String username, String password, UserStatus status, String email, RoleType roleType, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new UserDto(userId, loginId, username, password, status, email, roleType, createdAt, updatedAt);
     }
 
     // security에서 사용할 팩토리 메서드
@@ -34,7 +34,6 @@ public record UserDto(
         return new UserDto(
                 null,
                 loginId,
-                null,
                 null,
                 null,
                 null,
@@ -56,7 +55,6 @@ public record UserDto(
                 email,
                 roleType,
                 null,
-                null,
                 null
         );
     }
@@ -64,11 +62,11 @@ public record UserDto(
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static UserDto fromEntity(User entity) {
 
-        // stream으로 데이터를 변환해서 받아준다.
-        List<UserDetailsDto> userDetails = entity.getUserDetails()
-                .stream()
-                .map(UserDetailsDto::fromEntity)
-                .collect(Collectors.toList());
+//        // stream으로 데이터를 변환해서 받아준다.
+//        List<UserDetailsDto> userDetails = entity.getUserDetails()
+//                .stream()
+//                .map(UserDetailsDto::fromEntity)
+//                .collect(Collectors.toList());
 
         return UserDto.of(
                 entity.getId(),
@@ -78,7 +76,7 @@ public record UserDto(
                 entity.getUserStatus(),
                 entity.getEmail(),
                 entity.getRoleType(),
-                userDetails,
+//                userDetails,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

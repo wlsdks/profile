@@ -31,7 +31,7 @@ public class SecurityUserDetailsDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userDto.username();
+        return userDto.loginId();
     }
 
     @Override
