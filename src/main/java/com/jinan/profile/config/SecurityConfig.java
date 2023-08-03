@@ -5,8 +5,11 @@ import com.jinan.profile.config.security.handler.CustomAuthSuccessHandler;
 import com.jinan.profile.config.security.filter.CustomAuthenticationFilter;
 import com.jinan.profile.config.security.handler.CustomAuthenticationProvider;
 import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.UserRepository;
 import com.jinan.profile.service.security.SecurityUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -77,30 +81,20 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/token/**").permitAll()
-//                        .requestMatchers("/create-room").permitAll()
-//                        .requestMatchers("/admin/**").access(this::isAdmin)
-//                        .requestMatchers(
-//                                HttpMethod.GET,
-//                                "/"
-//                        ).permitAll()
-//                        .anyRequest().authenticated()
+                        .requestMatchers("/main").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout(logout -> logout
-//                        .logoutSuccessUrl("/")
-//                )
                 .build();
     }
 
     /**
      * 1. 커스텀을 수행한 '인증' 필터로 접근 URL, 데이터 전달방식(form) 등 인증 과정 및 인증 후 처리에 대한 설정을 구성하는 메서드다.
      * 이 메서드는 사용자 정의 인증 필터를 생성한다. 이 필터는 로그인 요청을 처리하고, 인증 성공/실패 핸들러를 설정한다.
+     *
      * @return CustomAuthenticationFilter
      */
     @Bean
@@ -143,22 +137,23 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService(SecurityUserService securityUserService) {
-        return username -> {
-            UserDto userDto = UserDto.of(username);
+        return loginId -> {
+            // todo: 여기서 dto에 넘기는값이 그냥 id만 보내는게 문제가 username이있어야하는데
+            UserDto userDto = UserDto.of(loginId);
 
             // 사용자 정보가 존재하지 않는 경우
-            if (username == null || username.equals("")) {
+            if (loginId == null || loginId.equals("")) {
                 return securityUserService.login(userDto)
                         .map(user -> new SecurityUserDetailsDto(
                                 user,
                                 Collections.singleton(new SimpleGrantedAuthority(user.username()))))
-                        .orElseThrow(() -> new AuthenticationServiceException(username));
+                        .orElseThrow(() -> new AuthenticationServiceException(loginId));
             } else {  // 비밀번호가 틀린 경우
                 return securityUserService.login(userDto)
                         .map(user -> new SecurityUserDetailsDto(
                                 user,
-                                Collections.singleton(new SimpleGrantedAuthority(user.username()))))
-                        .orElseThrow(() -> new BadCredentialsException(username));
+                                Collections.singleton(new SimpleGrantedAuthority(user.roleType().toString()))))
+                        .orElseThrow(() -> new BadCredentialsException(loginId));
             }
         };
     }
@@ -169,9 +164,15 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityUserService securityUserService(UserRepository userRepository) {
-        return userDto -> userRepository
-                .findByUsername(userDto.username())
-                .map(UserDto::fromEntity);
+        return userDto -> {
+            // user를 찾아온다.
+            User user = userRepository
+                    .findByLoginId(userDto.loginId())
+                    .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+            // user를 dto로 변환하고 Optional로 감싸준다.
+            return Optional.of(UserDto.fromEntity(user));
+        };
     }
 
     /**
