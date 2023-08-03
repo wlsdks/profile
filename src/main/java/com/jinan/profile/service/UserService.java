@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +35,17 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .map(UserDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    /**
+     * 모든 유저를 조회한다.
+     */
+    public List<UserDto> selectUserList(UserDto userDto) {
+        return userRepository.findAll()
+                .stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList()
+                );
     }
 
 }

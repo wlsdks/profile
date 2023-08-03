@@ -1,8 +1,10 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config.security.filter;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.dto.user.UserDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * 아이디와 비밀번호 기반의 데이터를 Form 데이터로 전송을 받아 '인증'을 담당하는 필터이다.
+ * UsernamePasswordAuthenticationFilter를 상속받아 사용자 정의 인증 필터를 구현했다.
+ * 이 필터는 사용자가 로그인 폼을 통해 제출한 사용자 이름과 비밀번호를 가지고 인증을 시도하며, 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 Authentication 객체를 생성하여 SecurityContext에 저장한다.
+ * 이렇게 SecurityContext에 저장된 사용자의 정보와 권한은 애플리케이션의 다른 부분에서 사용될 수 있다.
  */
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -26,7 +30,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     /**
-     * 지정된 url로 form을 전송했을 경우 파라미터의 정보를 가져온다.
+     * 이 메서드는 사용자가 로그인을 시도할 때 호출된다.
+     * HTTP 요청에서 사용자 이름과 비밀번호를 추출하여 UsernamePasswordAuthenticationToken 객체를 생성하고, 이를 AuthenticationManager에 전달하여 인증을 시도한다.
+     * 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 Authentication 객체를 반환하고, 인증이 실패하면 AuthenticationException을 던진다.
      */
     @Override
     public Authentication attemptAuthentication(
@@ -40,14 +46,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             authRequest = getAuthRequest(request);
             setDetails(request, authRequest);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ProfileApplicationException(ErrorCode.BUSINESS_EXCEPTION_ERROR);
         }
 
+        // Authentication 객체를 반환한다.
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     /**
-     * Request로 받은 ID, PW를 기반으로 토큰을 발급한다.
+     * 이 메서드는 HTTP 요청에서 사용자 이름과 비밀번호를 추출하여 UsernamePasswordAuthenticationToken 객체를 생성하는 역할을 한다.
+     * HTTP 요청의 입력 스트림에서 JSON 형태의 사용자 이름과 비밀번호를 읽어 UserDto 객체를 생성하고, 이를 기반으로 UsernamePasswordAuthenticationToken 객체를 생성한다.
      */
     private UsernamePasswordAuthenticationToken getAuthRequest(
             HttpServletRequest request
@@ -58,13 +66,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
 
             UserDto user = objectMapper.readValue(request.getInputStream(), UserDto.class);
-            log.debug("1.CustomAuthenticationFilter :: username: " + user.username() + "userPw: " + user.password());
-            // ID, PW를 기반으로 토큰 발급
+            log.debug("1.CustomAuthenticationFilter :: loginId: " + user.loginId() + "userPw: " + user.password());
+
+            // ID, PW를 기반으로 UsernamePasswordAuthenticationToken 토큰 발급
             return new UsernamePasswordAuthenticationToken(user.username(), user.password());
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         } catch (Exception e) {
-            throw new Exception(e.getMessage(), e.getCause());
+            throw new ProfileApplicationException(ErrorCode.IO_ERROR);
         }
     }
 

@@ -1,5 +1,6 @@
-package com.jinan.profile.config.security.jwt;
+package com.jinan.profile.config.security.filter;
 
+import com.jinan.profile.config.security.jwt.TokenUtils;
 import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.util.List;
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -38,7 +37,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 1. 토큰이 필요하지 않은 API URL에 대해서 배열로 구성한다.
         List<String> list = Arrays.asList(
                 "/api/v1/user/login",
-                "/api/v1/test/generateToken"
+                "/api/v1/token/generateToken"
         );
 
         // 2. 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.
@@ -101,37 +100,34 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     /**
      * 토큰 관련 Exception 발생 시 예외 응답값 구성
-     *
-     * @param e Exception
-     * @return JSONObject
      */
     private JSONObject jsonResponseWrapper(Exception e) {
 
-        String resultMsg = "";
+        String resultMessage = "";
         // JWT 토큰 만료
         if (e instanceof ExpiredJwtException) {
-            resultMsg = "TOKEN Expired";
+            resultMessage = "TOKEN Expired";
         }
         // JWT 허용된 토큰이 아님
         else if (e instanceof SignatureException) {
-            resultMsg = "TOKEN SignatureException Login";
+            resultMessage = "TOKEN SignatureException Login";
         }
         // JWT 토큰내에서 오류 발생 시
         else if (e instanceof JwtException) {
-            resultMsg = "TOKEN Parsing JwtException";
+            resultMessage = "TOKEN Parsing JwtException";
         }
         // 이외 JTW 토큰내에서 오류 발생
         else {
-            resultMsg = "OTHER TOKEN ERROR";
+            resultMessage = "OTHER TOKEN ERROR";
         }
 
         HashMap<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("status", 401);
         jsonMap.put("code", "9999");
-        jsonMap.put("message", resultMsg);
+        jsonMap.put("message", resultMessage);
         jsonMap.put("reason", e.getMessage());
         JSONObject jsonObject = new JSONObject(jsonMap);
-        logger.error(resultMsg, e);
+        logger.error(resultMessage, e);
         return jsonObject;
     }
 
