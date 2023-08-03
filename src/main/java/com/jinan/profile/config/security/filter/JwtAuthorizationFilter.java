@@ -1,5 +1,6 @@
-package com.jinan.profile.config.security.jwt;
+package com.jinan.profile.config.security.filter;
 
+import com.jinan.profile.config.security.jwt.TokenUtils;
 import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -26,7 +26,6 @@ import java.util.List;
  */
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
 
     @Override
     protected void doFilterInternal(
@@ -101,9 +100,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     /**
      * 토큰 관련 Exception 발생 시 예외 응답값 구성
-     *
-     * @param e Exception
-     * @return JSONObject
      */
     private JSONObject jsonResponseWrapper(Exception e) {
 

@@ -1,11 +1,8 @@
-package com.jinan.profile.config.security.custom;
+package com.jinan.profile.config.security.handler;
 
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
-import jakarta.annotation.Resource;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +20,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     /**
      * 커스텀 AuthenticationProvider를 구현한 메서드
-     * 사용자 인증을 처리한다.
-     * 사용자가 제공한 인증 정보(여기서는 사용자 이름과 비밀번호)를 받아서 검증하고, 인증이 성공하면 인증된 사용자의 정보를 담은 Authentication 객체를 반환한다.
-     * @throws AuthenticationException
+     * 이 메서드는 사용자 인증을 처리한다.
+     * Authentication 객체를 받아 사용자 이름과 비밀번호를 추출하고, UserDetailsService를 사용하여 사용자 정보를 로드하고, 로드된 사용자의 비밀번호와 사용자가 제출한 비밀번호를 비교하여 인증을 처리한다.
+     * 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 UsernamePasswordAuthenticationToken 객체를 반환하고, 인증이 실패하면 BadCredentialsException을 던진다.
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -45,7 +42,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // Spring security - UserDetailsService를 통해 DB에서 username으로 사용자 조회
         SecurityUserDetailsDto securityUserDetailsDto = (SecurityUserDetailsDto) userDetailsService.loadUserByUsername(username);
 
-        if (!(securityUserDetailsDto.getPassword().equalsIgnoreCase(userPassword) && securityUserDetailsDto.getPassword().equalsIgnoreCase(userPassword))) {
+        // 대소문자를 구분하는 matches() 메서드로 db와 사용자가 제출한 비밀번호를 비교
+        if (!passwordEncoder.matches(userPassword, securityUserDetailsDto.getPassword())) {
             throw new BadCredentialsException(securityUserDetailsDto.getUsername() + "Invalid password");
         }
 

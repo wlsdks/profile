@@ -1,9 +1,8 @@
-package com.jinan.profile.config.security.custom;
+package com.jinan.profile.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +21,17 @@ import java.util.HashMap;
 @Configuration
 public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    /**
+     * 이 메서드는 HTTP 요청, HTTP 응답, 그리고 인증 객체를 인자로 받는다.
+     * 인증 객체에서 사용자 정보를 가져와 JSON 형태로 변환하고, 이를 클라이언트에 응답한다.
+     * 코드를 살펴보면, 사용자의 상태에 따라 응답을 다르게 구성하고 있다. 사용자의 상태가 '휴먼 상태'인 경우와 그렇지 않은 경우에 대해 각각 다른 응답을 구성하고 있다.
+     */
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
-    ) throws ServletException, IOException {
+    ) throws IOException {
 
         log.debug("3.CustomLoginSuccessHandler");
 
@@ -66,11 +70,11 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
         // 4. 구성한 응답값을 전달한다.
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        PrintWriter printWriter = response.getWriter();
-        printWriter.print(jsonObject); // 최종 저장된 '사용자 정보', '사이트 정보'를 Front에 전달
-        printWriter.flush();
-        printWriter.close();
-    }
 
+        try (PrintWriter printWriter = response.getWriter()){
+            printWriter.print(jsonObject); // 최종 저장된 '사용자 정보', '사이트 정보'를 Front에 전달
+            printWriter.flush();
+        }
+    }
 
 }
