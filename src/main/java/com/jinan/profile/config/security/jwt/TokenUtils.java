@@ -19,7 +19,9 @@ import java.util.Map;
 public class TokenUtils {
 
     //    @Value(value = "${custom.jwt-secret-key}")
-    private static final String jwtSecretKey = "exampleSecretKey";
+//    private static final String jwtSecretKey = "exampleSecretKey";
+    private static final String jwtSecretKey = "thisIsASecretKeyUsedForJwtTokenGenerationAndItIsLongEnoughToMeetTheRequirementOf256Bits";
+
 
     /**
      * 사용자 pk를 기준으로 JWT 토큰을 발급하여 반환해 준다.
