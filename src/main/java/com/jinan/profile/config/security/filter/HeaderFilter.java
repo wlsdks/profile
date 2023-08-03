@@ -29,7 +29,7 @@ public class HeaderFilter implements Filter {
         res.setHeader("Access-Control-Max-Age", "3600"); // 사전 요청의 결과를 캐시할 시간을 지정한다.
         res.setHeader(
                 "Access-Control-Allow-Headers", // 서버가 허용하는 HTTP요청 헤더를 지정한다.
-                "X-Requested-With, Content-Type, Authorization, X-XSRF-token"
+                "X-Requested-With, Content-Type, AUTHORIZATION, X-XSRF-token"
         );
         res.setHeader("Access-Control-Allow-Credentials", "false"); // 이 헤더는 자격 증명을 포함한 요청을 허용할지를 지정한다. false는 허용하지 않는다는 의미다.
 

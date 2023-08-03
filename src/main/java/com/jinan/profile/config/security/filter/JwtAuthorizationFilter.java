@@ -11,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,14 +31,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
         // 1. 토큰이 필요하지 않은 API URL에 대해서 배열로 구성한다.
         List<String> list = Arrays.asList(
                 "/api/v1/user/login",
-                "/api/v1/token/generateToken"
+                "/api/v1/token/generateToken",
+                "/user/login",  // 로그인 페이지의 URL을 추가합니다.
+                "/login"  // 로그인 페이지의 URL을 추가합니다.
         );
 
         // 2. 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.

@@ -1,6 +1,8 @@
 package com.jinan.profile.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jinan.profile.config.security.jwt.TokenUtils;
+import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,7 +64,7 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
             jsonObject = new JSONObject(responseMap);
 
             //TODO: 추후 JWT 발급에 사용
-//            String token = TokenUtils.generateJwtToken(usersDto);
+//            String token = TokenUtils.generateJwtToken(userDto);
 //            jsonObject.put("token", token);
 //            response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
         }

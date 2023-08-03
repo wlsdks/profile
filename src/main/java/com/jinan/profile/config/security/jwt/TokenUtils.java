@@ -30,7 +30,7 @@ public class TokenUtils {
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())                                  // Header 구성
                 .setClaims(createClaims(userDto))                           // Payload - Claims구성
-                .setSubject(String.valueOf(userDto.userId()))               // Payload - Subjects구성
+                .setSubject(String.valueOf(userDto.loginId()))               // Payload - Subjects구성
                 .signWith(SignatureAlgorithm.HS256, createSignature())      // Signature 구성
                 .setExpiration(createExpiredDate());                        // Expired Date 구성
 
@@ -135,7 +135,7 @@ public class TokenUtils {
      */
     public static String getUserIdFromToken(String token) {
         Claims claims = getClaimsFormToken(token);
-        return claims.get("userId").toString();
+        return claims.get("loginId").toString();
     }
 
 }
