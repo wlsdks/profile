@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .login-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .login-form input, .login-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .login-form button {
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="login-form">
+    <div>
+        <label>Username: </label>
+        <input type="text" id="username"/>
+    </div>
+    <div>
+        <label>Password: </label>
+        <input type="password" id="password"/>
+    </div>
+    <div>
+        <button id="login">Login</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // 로그인 버튼 클릭 이벤트
+        $('#login').click(function() {
+            let username = $('#username').val();
+            let password = $('#password').val();
+
+            // 로그인 요청 처리
+            $.ajax({
+                url: '/user/login',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    loginId: username,
+                    password: password
+                }),
+                success: function(data) {
+                    // Store the JWT token only when login is successful
+                    localStorage.setItem('jwt', data.jwt);
+                    console.log("data", data);
+
+                    // Redirect to the specified URL
+                    window.location.href = data.redirectUrl;
+
+                    // After login, send a request with the JWT token
+                    $.ajax({
+                        url: '/api/user/profile',
+                        type: 'GET',
+                        headers: {
+                            'AUTHORIZATION': 'Bearer ' + localStorage.getItem('jwt')
+                        },
+                        success: function(response) {
+                            // Handle success
+                            console.log(response);
+                        },
+                        error: function(error) {
+                            // Handle error
+                            console.log(error);
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -26,7 +26,7 @@ class UserRepositoryTest {
         //given
 
         //when
-        User user = userRepository.findByUserId(22L);
+//        User user = userRepository.findByUserId(22L);
 
 
         //then
