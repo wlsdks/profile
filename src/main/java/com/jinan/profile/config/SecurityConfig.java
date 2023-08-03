@@ -1,4 +1,4 @@
-package com.jinan.profile.config.security;
+package com.jinan.profile.config;
 
 import com.jinan.profile.config.security.handler.CustomAuthFailureHandler;
 import com.jinan.profile.config.security.handler.CustomAuthSuccessHandler;
@@ -77,23 +77,25 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/token/**").permitAll()
-                        .requestMatchers("/create-room").permitAll()
-                        .requestMatchers("/admin/**").access(this::isAdmin)
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/token/**").permitAll()
+//                        .requestMatchers("/create-room").permitAll()
+//                        .requestMatchers("/admin/**").access(this::isAdmin)
+//                        .requestMatchers(
+//                                HttpMethod.GET,
+//                                "/"
+//                        ).permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/")
-                ).build();
+//                .logout(logout -> logout
+//                        .logoutSuccessUrl("/")
+//                )
+                .build();
     }
 
     /**

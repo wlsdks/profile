@@ -18,6 +18,7 @@ import java.util.Map;
 @Slf4j
 public class TokenUtils {
 
+    //    @Value(value = "${custom.jwt-secret-key}")
     private static final String jwtSecretKey = "exampleSecretKey";
 
     /**

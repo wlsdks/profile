@@ -1,6 +1,5 @@
 package com.jinan.profile.config;
 
-import com.jinan.profile.config.security.SecurityConfig;
 import com.jinan.profile.domain.type.RoleType;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.service.UserService;
