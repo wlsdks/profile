@@ -1,28 +1,17 @@
 package com.jinan.profile.config;
 
+import com.jinan.profile.config.security.filter.CustomAuthenticationFilter;
+import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
 import com.jinan.profile.config.security.handler.CustomAuthFailureHandler;
 import com.jinan.profile.config.security.handler.CustomAuthSuccessHandler;
-import com.jinan.profile.config.security.filter.CustomAuthenticationFilter;
 import com.jinan.profile.config.security.handler.CustomAuthenticationProvider;
-import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
-import com.jinan.profile.domain.user.User;
-import com.jinan.profile.dto.security.SecurityUserDetailsDto;
-import com.jinan.profile.dto.user.UserDto;
-import com.jinan.profile.exception.ErrorCode;
-import com.jinan.profile.exception.ProfileApplicationException;
-import com.jinan.profile.repository.UserRepository;
-import com.jinan.profile.service.security.SecurityUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,7 +26,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -84,9 +72,11 @@ public class SecurityConfig {
                         .requestMatchers("/main").authenticated()
                         .anyRequest().permitAll()
                 )
+                // 1. 먼저, JwtAuthorizationFilter가 실행되어 요청 헤더에서 JWT 토큰을 추출하고 이 토큰을 검증한다.
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
+                // 2. CustomAuthenticationFilter가 실행되어 사용자 이름과 비밀번호를 사용하여 인증을 수행한다. 이 필터는 주로 로그인 요청을 처리하는 데 사용된다.
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -98,11 +88,15 @@ public class SecurityConfig {
      * @return CustomAuthenticationFilter
      */
     @Bean
-    public CustomAuthenticationFilter customAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter customAuthenticationFilter(
+            AuthenticationManager authenticationManager,
+            CustomAuthSuccessHandler customAuthSuccessHandler,
+            CustomAuthFailureHandler customAuthFailureHandler
+    ) {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setFilterProcessesUrl("/user/login");     // 접근 URL
-        customAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
-        customAuthenticationFilter.setAuthenticationFailureHandler(customLoginFailureHandler());    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
+        customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthSuccessHandler);    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
+        customAuthenticationFilter.setAuthenticationFailureHandler(customAuthFailureHandler);    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.afterPropertiesSet();
         return customAuthenticationFilter;
     }
@@ -124,92 +118,38 @@ public class SecurityConfig {
      * 과정: CustomAuthenticationFilter → AuthenticationManager(interface) → CustomAuthenticationProvider(implements)
      */
     @Bean
-    public CustomAuthenticationProvider customAuthenticationProvider(SecurityUserService securityUserService) {
+    public CustomAuthenticationProvider customAuthenticationProvider(UserDetailsService userDetailsService) {
         return new CustomAuthenticationProvider(
-                userDetailsService(securityUserService),
-                bCryptPasswordEncoder()
+                userDetailsService
         );
-    }
-
-    /**
-     * 3-1. 시큐리티의 UserDetailsService를 구현한 메서드 사용자 정보를 통해 구분해서 로그인했는지 안했는지 판단한다.
-     * 이 메서드는 사용자 정보를 로드하는 서비스를 생성한다.
-     * 사용자 이름을 기반으로 사용자 정보를 데이터베이스에서 조회하고, 조회된 사용자 정보를 사용하여 SecurityUserDetailsDto 객체를 생성한다.
-     */
-    @Bean
-    public UserDetailsService userDetailsService(SecurityUserService securityUserService) {
-        return loginId -> {
-            // todo: 여기서 dto에 넘기는값이 그냥 id만 보내는게 문제가 username이있어야하는데
-            UserDto userDto = UserDto.of(loginId);
-
-            // 사용자 정보가 존재하지 않는 경우
-            if (loginId == null || loginId.equals("")) {
-                return securityUserService.login(userDto)
-                        .map(user -> new SecurityUserDetailsDto(
-                                user,
-                                Collections.singleton(new SimpleGrantedAuthority(user.roleType().toString()))))
-                        .orElseThrow(() -> new AuthenticationServiceException(loginId));
-            } else {  // 비밀번호가 틀린 경우
-                return securityUserService.login(userDto)
-                        .map(user -> new SecurityUserDetailsDto(
-                                user,
-                                Collections.singleton(new SimpleGrantedAuthority(user.roleType().toString()))))
-                        .orElseThrow(() -> new BadCredentialsException(loginId));
-            }
-        };
-    }
-
-    /**
-     * 3-2. 유저정보를 받아오는 메서드
-     * 이 메서드는 사용자 정보를 데이터베이스에서 조회하는 서비스를 생성한다.
-     */
-    @Bean
-    public SecurityUserService securityUserService(UserRepository userRepository) {
-        return userDto -> {
-            // user를 찾아온다.
-            User user = userRepository
-                    .findByLoginId(userDto.loginId())
-                    .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
-
-            // user를 dto로 변환하고 Optional로 감싸준다.
-            return Optional.of(UserDto.fromEntity(user));
-        };
-    }
-
-    /**
-     * 3-3. 비밀번호를 암호화하기 위한 BCrypt 인코딩을 통하여 비밀번호에 대한 암호화를 수행한다.
-     * 이 메서드는 비밀번호를 암호화하는 인코더를 생성한다. BCrypt 알고리즘을 사용하여 비밀번호를 암호화한다.
-     */
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     /**
      * 4. Spring Security 기반의 사용자의 정보가 맞을 경우 수행이 되며 결과값을 리턴해주는 Handler
      * customLoginSuccessHandler: 이 메서드는 인증 성공 핸들러를 생성한다. 인증 성공 핸들러는 인증 성공시 수행할 작업을 정의한다.
      */
-    @Bean
-    public CustomAuthSuccessHandler customLoginSuccessHandler() {
-        return new CustomAuthSuccessHandler();
-    }
+//    @Bean
+//    public CustomAuthSuccessHandler customLoginSuccessHandler() {
+//        return new CustomAuthSuccessHandler();
+//    }
 
     /**
      * 5. Spring Security 기반의 사용자의 정보가 맞지 않을 경우 수행이 되며 결과값을 리턴해주는 Handler
      * customLoginFailureHandler: 이 메서드는 인증 실패 핸들러를 생성한다. 인증 실패 핸들러는 인증 실패시 수행할 작업을 정의한다.
      */
-    @Bean
-    public CustomAuthFailureHandler customLoginFailureHandler() {
-        return new CustomAuthFailureHandler();
-    }
+//    @Bean
+//    public CustomAuthFailureHandler customLoginFailureHandler() {
+//        return new CustomAuthFailureHandler();
+//    }
 
     /**
      * "JWT 토큰을 통하여서 사용자를 인증한다." -> 이 메서드는 JWT 인증 필터를 생성한다.
      * JWT 인증 필터는 요청 헤더의 JWT 토큰을 검증하고, 토큰이 유효하면 토큰에서 사용자의 정보와 권한을 추출하여 SecurityContext에 저장한다.
      */
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter();
-    }
+//    @Bean
+//    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+//        return new JwtAuthorizationFilter();
+//    }
 
     /**
      * isAdmin 메소드는 Supplier<Authentication>와 RequestAuthorizationContext를 인자로 받아서 "ADMIN" 역할을 가진 사용자인지 확인한다.

@@ -24,9 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public CustomAuthenticationFilter(
-            AuthenticationManager authenticationManager
-    ) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
@@ -51,7 +49,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         }
 
         // Authentication 객체를 반환한다.
-        return this.getAuthenticationManager().authenticate(authRequest);
+        Authentication authenticate = this.getAuthenticationManager().authenticate(authRequest);
+        return authenticate;
     }
 
     /**
@@ -70,8 +69,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             UserDto user = objectMapper.readValue(request.getInputStream(), UserDto.class);
             log.debug("1.CustomAuthenticationFilter :: loginId: " + user.loginId() + "userPw: " + user.password());
 
-            // ID, PW를 기반으로 UsernamePasswordAuthenticationToken 토큰 발급
-            return new UsernamePasswordAuthenticationToken(user.loginId(), user.password());
+            /**
+             * ID, PW를 기반으로 UsernamePasswordAuthenticationToken 토큰을 발급한다.
+             * UsernamePasswordAuthenticationToken 객체가 처음 생성될 때 authenticated 필드는 기본적으로 false로 설정된다.
+             */
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.loginId(), user.password());
+            return authenticationToken;
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         } catch (Exception e) {

@@ -2,12 +2,12 @@ package com.jinan.profile.config.security.jwt;
 
 import com.jinan.profile.dto.user.UserDto;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.xml.bind.DatatypeConverter;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
-import java.util.Calendar;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,23 +20,29 @@ public class TokenUtils {
 
     //    @Value(value = "${custom.jwt-secret-key}")
 //    private static final String jwtSecretKey = "exampleSecretKey";
+    // 상수
     private static final String jwtSecretKey = "thisIsASecretKeyUsedForJwtTokenGenerationAndItIsLongEnoughToMeetTheRequirementOf256Bits";
+    private static final String JWT_TYPE = "JWT";
+    private static final String ALGORITHM = "HS256";
+    private static final String LOGIN_ID = "loginId";
+    private static final String USERNAME = "username";
 
 
     /**
      * 사용자 pk를 기준으로 JWT 토큰을 발급하여 반환해 준다.
      */
     public static String generateJwtToken(UserDto userDto) {
+        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Generate a key
+
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())                                  // Header 구성
                 .setClaims(createClaims(userDto))                           // Payload - Claims구성
                 .setSubject(String.valueOf(userDto.loginId()))               // Payload - Subjects구성
-                .signWith(SignatureAlgorithm.HS256, createSignature())      // Signature 구성
+                .signWith(key, SignatureAlgorithm.HS256)                    // Signature 구성
                 .setExpiration(createExpiredDate());                        // Expired Date 구성
 
         return builder.compact();
     }
-
     /**
      * 토큰을 기반으로 사용자의 정보를 반환해주는 메서드
      */
@@ -45,18 +51,18 @@ public class TokenUtils {
             Claims claims = getClaimsFormToken(token);
 
             log.info("expireTime : " + claims.getExpiration());
-            log.info("loginId : " + claims.get("loginId"));
-            log.info("username : " + claims.get("username"));
+            log.info("loginId : " + claims.get(LOGIN_ID));
+            log.info("username : " + claims.get(USERNAME));
 
             return true;
         } catch (ExpiredJwtException expiredJwtException) {
-            log.error("Token Expired");
+            log.error("Token Expired", expiredJwtException);
             return false;
         } catch (JwtException jwtException) {
-            log.error("Token Tampered");
+            log.error("Token Tampered", jwtException);
             return false;
         } catch (NullPointerException npe) {
-            log.error("Token is null");
+            log.error("Token is null", npe);
             return false;
         }
     }
@@ -72,14 +78,13 @@ public class TokenUtils {
 
     /**
      * 토큰의 만료기간을 지정하는 함수
-     * @return Calendar
+     * @return Date
      */
     private static Date createExpiredDate() {
-        // 토큰의 만료기간은 30일로 지정
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.HOUR, 8); // 8시간
-        //c.add(Calendar.DATE,1); // 1일
-        return c.getTime();
+        // 토큰의 만료기간은 8시간으로 지정
+        Instant now = Instant.now();
+        Instant expiryDate = now.plus(Duration.ofHours(8));
+        return Date.from(expiryDate);
     }
 
     /**
@@ -88,8 +93,8 @@ public class TokenUtils {
     private static Map<String, Object> createHeader() {
         Map<String, Object> header = new HashMap<>();
 
-        header.put("typ", "JWT");
-        header.put("alg", "HS256");
+        header.put("typ", JWT_TYPE);
+        header.put("alg", ALGORITHM);
         header.put("regDate", System.currentTimeMillis());
         return header;
     }
@@ -106,18 +111,9 @@ public class TokenUtils {
         log.info("loginId : " + userDto.loginId());
         log.info("username : " + userDto.username());
 
-        claims.put("loginId", userDto.loginId());
-        claims.put("username", userDto.username());
+        claims.put(LOGIN_ID, userDto.loginId());
+        claims.put(USERNAME, userDto.username());
         return claims;
-    }
-
-    /**
-     * JWT 서명(Signature) 발급을 해주는 메서드
-     * @return Key
-     */
-    private static Key createSignature() {
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(jwtSecretKey);
-        return new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 
     /**
@@ -125,8 +121,8 @@ public class TokenUtils {
      * @return Claims : Claims
      */
     private static Claims getClaimsFormToken(String token) {
-        return Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
-                .parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecretKey.getBytes()))
+                .build().parseClaimsJws(token).getBody();
     }
 
     /**
@@ -135,7 +131,7 @@ public class TokenUtils {
      */
     public static String getUserIdFromToken(String token) {
         Claims claims = getClaimsFormToken(token);
-        return claims.get("loginId").toString();
+        return claims.get(LOGIN_ID).toString();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.jinan.profile.controller.user;
 
 import com.jinan.profile.domain.user.User;
+import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
@@ -33,13 +34,12 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public UserDto getProfile() {
-        UserDetails userDetails = userService.getAuthenticatedUser();
+        SecurityUserDetailsDto userDetails = userService.getAuthenticatedUser();
         String username = userDetails.getUsername();
 
         // Use the username to fetch the user's profile from the database
         return Optional.ofNullable(userService.findByUsername(username))
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
-
 
 }

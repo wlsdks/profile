@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 @Configuration
 public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
@@ -66,9 +68,9 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
             jsonObject = new JSONObject(responseMap);
 
             //TODO: 추후 JWT 발급에 사용
-//            String token = TokenUtils.generateJwtToken(userDto);
-//            jsonObject.put("token", token);
-//            response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
+            String token = TokenUtils.generateJwtToken(userDto);
+            jsonObject.put("token", token);
+            response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
         }
 
         // 4. 구성한 응답값을 전달한다.

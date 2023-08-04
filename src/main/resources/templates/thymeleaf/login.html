@@ -65,9 +65,10 @@
                     loginId: username,
                     password: password
                 }),
-                success: function(data) {
+                success: function(data, textStatus, jqXHR) {
                     // Store the JWT token only when login is successful
-                    localStorage.setItem('jwt', data.jwt);
+                    let jwt = jqXHR.getResponseHeader('AUTHORIZATION').split(' ')[1];
+                    localStorage.setItem('jwt', jwt);
                     console.log("data", data);
 
                     // Redirect to the specified URL

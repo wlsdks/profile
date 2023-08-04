@@ -1,10 +1,12 @@
 package com.jinan.profile.service;
 
 import com.jinan.profile.domain.user.User;
+import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.UserRepository;
+import com.jinan.profile.service.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -58,22 +60,20 @@ public class UserService {
      * 또한, 이 코드는 UserDetails 객체에서 사용자의 정보를 가져와 User 객체를 새로 생성하고 있다.
      * 만약 UserDetails 객체가 이미 User 객체를 나타내고 있다면, 즉 UserDetails 객체가 User 클래스의 인스턴스라면, UserDetails 객체를 직접 User 타입으로 캐스팅하여 반환할 수 있다.
      */
-    public UserDetails getAuthenticatedUser() {
+    public SecurityUserDetailsDto getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             throw new SecurityException("No authentication data provided");
         }
 
         Object principal = authentication.getPrincipal();
-        if (!(principal instanceof UserDetails)) {
-            throw new SecurityException("Principal is not an instance of UserDetails");
+        if (!(principal instanceof SecurityUserDetailsDto)) {
+            throw new SecurityException("Principal is not an instance of SecurityUserDetailsDto");
         }
 
-        // Cast principal to UserDetails
-
-        return (UserDetails) principal;
+        // Cast principal to SecurityUserDetailsDto
+        return (SecurityUserDetailsDto) principal;
     }
-
 
 
 }

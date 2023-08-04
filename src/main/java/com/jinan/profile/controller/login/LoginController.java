@@ -56,25 +56,14 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Generate JWT token
-        String jwt = TokenUtils.generateJwtToken(userDto);
-
-        // Create a cookie
-        /**
-         * HttpOnly 쿠키는 XSS(Cross-Site Scripting) 공격을 방지하기 위해 사용되며, 이 쿠키는 JavaScript를 통해 액세스할 수 없습니다.
-         */
-        Cookie cookie = new Cookie("jwt", jwt);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-
         // Create response
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("jwt", jwt);  // Add the JWT token to the response
         responseMap.put("redirectUrl", "/main/rootPage");
 
         // Return the response
         return ResponseEntity.ok(responseMap);
     }
+
 
     /**
      * [API] 사용자 리스트 조회
