@@ -1,68 +1,57 @@
 package com.jinan.profile.controller.login;
 
-import com.jinan.profile.config.security.jwt.TokenUtils;
+import com.jinan.profile.config.security.jwt.JwtToken;
 import com.jinan.profile.dto.codes.SuccessCode;
 import com.jinan.profile.dto.response.ApiResponse;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RequestMapping("/api/user")
+@RestController
 public class LoginController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-
 
     /**
-     * [View] 로그인 페이지를 엽니다.
+     * 로그인 요청을 받는 메서드를 만든다.
      */
-    @GetMapping("/login")
-    public String login() {
-        return "login";
+    @PostMapping("/login")
+    public ResponseEntity<JwtToken> loginSuccess(@RequestBody Map<String, String> loginForm) {
+
+        JwtToken token = userService.login(loginForm.get("loginId"), loginForm.get("password"));
+        return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/user/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto, HttpServletResponse response) {
-
-        // Authenticate user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDto.loginId(),
-                        userDto.password()
-                )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Create response
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("redirectUrl", "/main/rootPage");
-
-        // Return the response
-        return ResponseEntity.ok(responseMap);
-    }
+//    @PostMapping("/user/login")
+//    public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto, HttpServletResponse response) {
+//
+//        // Authenticate user
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        userDto.loginId(),
+//                        userDto.password()
+//                )
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        // Create response
+//        Map<String, String> responseMap = new HashMap<>();
+//        responseMap.put("redirectUrl", "/main/rootPage");
+//
+//        // Return the response
+//        return ResponseEntity.ok(responseMap);
+//    }
 
 
     /**

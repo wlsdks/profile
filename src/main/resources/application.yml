@@ -31,6 +31,9 @@ spring:
     mode: HTML
     cache: false # default true, 개발 시에는 false로 두는 것이 좋음
 
+jwt:
+  secret: 7d6965be-87b3-4306-86e5-7d25afb02b6e
+
 ---
 
 #spring:
