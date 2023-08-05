@@ -1,12 +1,10 @@
 package com.jinan.profile.dto.user;
 
-import com.jinan.profile.domain.type.RoleType;
+import com.jinan.profile.domain.user.constant.UserRoleEnum;
 import com.jinan.profile.domain.user.User;
-import com.jinan.profile.domain.user.UserStatus;
+import com.jinan.profile.domain.user.constant.UserStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * DTO for {@link User}
@@ -18,15 +16,15 @@ public record UserDto(
         String password,
         UserStatus status,
         String email,
-        RoleType roleType,
+        UserRoleEnum role,
 //        List<UserDetailsDto> userDetails, // 계정에서의 참조는 없앤다.
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
 
     // factory method of 선언
-    public static UserDto of(Long userId, String loginId, String username, String password, UserStatus status, String email, RoleType roleType, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new UserDto(userId, loginId, username, password, status, email, roleType, createdAt, updatedAt);
+    public static UserDto of(Long userId, String loginId, String username, String password, UserStatus status, String email, UserRoleEnum userRoleEnum, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new UserDto(userId, loginId, username, password, status, email, userRoleEnum, createdAt, updatedAt);
     }
 
     // security에서 사용할 팩토리 메서드
@@ -45,7 +43,7 @@ public record UserDto(
     }
 
     // Principal에서 사용할 factory method of 선언
-    public static UserDto of(Long userId, String loginId, String username, String password, String email, RoleType roleType) {
+    public static UserDto of(Long userId, String loginId, String username, String password, String email, UserRoleEnum userRoleEnum) {
         return new UserDto(
                 userId,
                 loginId,
@@ -53,7 +51,7 @@ public record UserDto(
                 password,
                 null,
                 email,
-                roleType,
+                userRoleEnum,
                 null,
                 null
         );
@@ -75,7 +73,7 @@ public record UserDto(
                 entity.getPassword(),
                 entity.getUserStatus(),
                 entity.getEmail(),
-                entity.getRoleType(),
+                entity.getRole(),
 //                userDetails,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()

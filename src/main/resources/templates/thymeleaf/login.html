@@ -1,102 +1,72 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html lang="ko">
 <head>
-    <title>Login</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .login-form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-        .login-form input, .login-form button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .login-form button {
-            background-color: #007BFF;
-            color: #fff;
-            cursor: pointer;
-        }
-        .login-form button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 </head>
 <body>
-<div class="login-form">
-    <div>
-        <label>Username: </label>
-        <input type="text" id="username"/>
-    </div>
-    <div>
-        <label>Password: </label>
-        <input type="password" id="password"/>
-    </div>
-    <div>
-        <button id="login">Login</button>
-    </div>
+<div>
+    <div>로그인</div>
+    <form method="POST" action="/api/login" onsubmit="return loginValidation()">
+        <div>아이디</div>
+        <input type="text" id="memberName" name="memberName" placeholder="아이디">
+
+        <button type="button" onclick="location.href='/signup'">회원가입</button>
+
+        <div>비밀번호</div>
+        <input type="password" id="password" name="password">
+
+        <input type="submit" name="submit" value="로그인">
+    </form>
 </div>
-
-<script>
-    $(document).ready(function() {
-        // 로그인 버튼 클릭 이벤트
-        $('#login').click(function() {
-            let username = $('#username').val();
-            let password = $('#password').val();
-
-            // 로그인 요청 처리
-            $.ajax({
-                url: '/user/login',
-                type: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    loginId: username,
-                    password: password
-                }),
-                success: function(data, textStatus, jqXHR) {
-                    // Store the JWT token only when login is successful
-                    let jwt = jqXHR.getResponseHeader('AUTHORIZATION').split(' ')[1];
-                    localStorage.setItem('jwt', jwt);
-                    console.log("data", data);
-
-                    // Redirect to the specified URL
-                    window.location.href = data.redirectUrl;
-
-                    // After login, send a request with the JWT token
-                    $.ajax({
-                        url: '/api/user/profile',
-                        type: 'GET',
-                        headers: {
-                            'AUTHORIZATION': 'Bearer ' + localStorage.getItem('jwt')
-                        },
-                        success: function(response) {
-                            // Handle success
-                            console.log(response);
-                        },
-                        error: function(error) {
-                            // Handle error
-                            console.log(error);
-                        }
-                    });
-                },
-                error: function(err) {
-                    console.log(err);
-                }
-            });
-        });
-    });
-</script>
 </body>
 </html>
+
+
+
+<script>
+    function loginValidation() {
+        /*비정상적 접근 거부*/
+
+        let memberName = document.getElementById("memberName").value;
+        let password = document.getElementById("password").value;
+
+        //공백만 입력된 경우
+        var blank_pattern = /^\s+|\s+$/g;
+        if(
+            memberName.replace(blank_pattern, '' ) == "" ||
+            password.replace(blank_pattern, '' ) == ""
+        ){
+            alert('공백만 입력되었습니다.');
+            return false; /*폼 전송하지 않음*/
+        }
+
+        //문자열에 공백이 있는 경우
+        var blank_pattern = /[\s]/g;
+        if(
+            blank_pattern.test(memberName) == true ||
+            blank_pattern.test(password) == true
+        ){
+            alert('공백이 입력되었습니다.');
+            return false;
+        }
+
+        //특수문자가 있는 경우
+        var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+        if(special_pattern.test(memberName) == true){
+            alert('특수문자가 입력되었습니다.');
+            return false;
+        }
+
+        //공백 혹은 특수문자가 있는 경우
+        if(memberName.search(/\W|\s/g) > -1){
+            alert( '특수문자 또는 공백이 입력되었습니다.');
+            return false;
+        }
+
+        return true;/*폼 전송*/
+    }
+
+</script>
