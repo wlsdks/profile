@@ -2,14 +2,10 @@ package com.jinan.profile.config;
 
 <<<<<<< HEAD
 import com.jinan.profile.config.security.jwt.JwtAuthFilter;
-import com.jinan.profile.config.security.jwt.JwtUtil;
-import com.jinan.profile.domain.user.constant.UserRoleEnum;
-import lombok.RequiredArgsConstructor;
 =======
 import com.jinan.profile.config.security.filter.CustomAuthenticationFilter;
 import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
 import com.jinan.profile.config.security.handler.CustomAuthFailureHandler;
-import com.jinan.profile.config.security.handler.CustomAuthSuccessHandler;
 import com.jinan.profile.config.security.handler.CustomAuthenticationProvider;
 import com.jinan.profile.service.security.CustomUserDetailsService;
 >>>>>>> main
@@ -17,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 =======
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
