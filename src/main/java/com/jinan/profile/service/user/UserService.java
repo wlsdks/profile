@@ -1,6 +1,5 @@
 package com.jinan.profile.service.user;
 
-import com.jinan.profile.config.security.jwt.JwtUtil;
 import com.jinan.profile.controller.user.request.LoginRequestDto;
 import com.jinan.profile.controller.user.request.SignUpRequestDto;
 import com.jinan.profile.domain.user.User;

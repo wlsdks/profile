@@ -1,7 +1,6 @@
 package com.jinan.profile.config;
 
 <<<<<<< HEAD
-import com.jinan.profile.config.security.jwt.JwtAuthFilter;
 =======
 import com.jinan.profile.config.security.filter.CustomAuthenticationFilter;
 import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
