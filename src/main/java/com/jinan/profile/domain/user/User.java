@@ -1,11 +1,14 @@
 package com.jinan.profile.domain.user;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.user.constant.UserRoleEnum;
-import com.jinan.profile.domain.user.constant.UserStatus;
+import com.jinan.profile.domain.board.*;
+import com.jinan.profile.domain.file.File;
+import com.jinan.profile.domain.type.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ToString(callSuper = true)
@@ -34,7 +37,7 @@ public class User extends AuditingFields {
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserRoleEnum role;  // 계정 타입
+    private RoleType roleType;  // 계정 타입
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -87,17 +90,17 @@ public class User extends AuditingFields {
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     @Builder
-    private User(String loginId, String password, String username, String email, UserRoleEnum role, UserStatus userStatus) {
+    private User(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
         this.loginId = loginId;
         this.password = password;
         this.username = username;
         this.email = email;
-        this.role = role;
+        this.roleType = roleType;
         this.userStatus = userStatus;
     }
     // factory 메소드 of() 생성
-    public static User of(String loginId, String password, String username, String email, UserRoleEnum userRoleEnum, UserStatus userStatus) {
-        return new User(loginId, password, username, email, userRoleEnum, userStatus);
+    public static User of(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+        return new User(loginId, password, username, email, roleType, userStatus);
     }
 
     /**
