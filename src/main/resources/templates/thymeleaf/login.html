@@ -1,10 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .login-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .login-form input, .login-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .login-form button {
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
+<div class="login-form">
+    <div>
+        <label>loginId: </label>
+        <input type="text" id="loginId"/>
+    </div>
+    <div>
+        <label>Password: </label>
+        <input type="password" id="password"/>
+    </div>
+    <div>
+        <button id="login">Login</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#login').click(function() {
+            let loginId = $('#loginId').val();
+            let password = $('#password').val();
+
+            $.ajax({
+                url: '/user/login',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    loginId: loginId,
+                    password: password
+                }),
+                success: function(data, textStatus, jqXHR) {
+                    window.location.href = "/main/rootPage";
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

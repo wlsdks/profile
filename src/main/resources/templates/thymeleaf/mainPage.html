@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Hello WebSocket</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
 </head>
 <body>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">웹소켓 연결상태:</label>
+                    <button id="connect" class="btn btn-default" type="submit">연결성공</button>
+                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">연결해제
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="message">메시지:</label>
+                    <input type="text" id="message" class="form-control" placeholder="Your message here...">
+                </div>
+                <button id="send" class="btn btn-default" type="submit">전송</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>메시지</th>
+                </tr>
+                </thead>
+                <tbody id="greetings">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form id="create-room-form" class="form-inline">
+                <div class="form-group">
+                    <label for="room-name">방 이름:</label>
+                    <input type="text" id="room-name" class="form-control" placeholder="Enter room name">
+                </div>
+                <button type="submit" class="btn btn-default">방 생성</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h2>방 목록</h2>
+            <ul id="room-list"></ul>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/chat.js"></script>
 
 </body>
-</html>
