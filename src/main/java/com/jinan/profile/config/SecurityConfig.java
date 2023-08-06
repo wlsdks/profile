@@ -5,6 +5,7 @@ import com.jinan.profile.config.security.filter.JwtAuthorizationFilter;
 import com.jinan.profile.config.security.handler.CustomAuthFailureHandler;
 import com.jinan.profile.config.security.handler.CustomAuthSuccessHandler;
 import com.jinan.profile.config.security.handler.CustomAuthenticationProvider;
+import com.jinan.profile.service.security.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +23,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Supplier;
 
@@ -68,18 +74,41 @@ public class SecurityConfig {
         log.debug("[+] WebSecurityConfig Start !!! ");
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/main").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/resources/**").permitAll()
+                        .requestMatchers("/main/rootPage").permitAll()
+                        .anyRequest().authenticated()
                 )
                 // 1. 먼저, JwtAuthorizationFilter가 실행되어 요청 헤더에서 JWT 토큰을 추출하고 이 토큰을 검증한다.
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/main/rootPage"))
+                        .permitAll()
+                )
+
+//                .formLogin(AbstractHttpConfigurer::disable)
                 // 2. CustomAuthenticationFilter가 실행되어 사용자 이름과 비밀번호를 사용하여 인증을 수행한다. 이 필터는 주로 로그인 요청을 처리하는 데 사용된다.
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Content-Type", "Authorization", "X-XSRF-token"));
+        configuration.setAllowCredentials(false);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
     /**
      * 1. 커스텀을 수행한 '인증' 필터로 접근 URL, 데이터 전달방식(form) 등 인증 과정 및 인증 후 처리에 대한 설정을 구성하는 메서드다.
@@ -94,7 +123,8 @@ public class SecurityConfig {
             CustomAuthFailureHandler customAuthFailureHandler
     ) {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
-        customAuthenticationFilter.setFilterProcessesUrl("/user/login");     // 접근 URL
+        // "/user/login" 엔드포인트로 들어오는 요청을 CustomAuthenticationFilter에서 처리하도록 지정한다.
+        customAuthenticationFilter.setFilterProcessesUrl("/user/login");
         customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthSuccessHandler);    // '인증' 성공 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.setAuthenticationFailureHandler(customAuthFailureHandler);    // '인증' 실패 시 해당 핸들러로 처리를 전가한다.
         customAuthenticationFilter.afterPropertiesSet();
@@ -128,28 +158,28 @@ public class SecurityConfig {
      * 4. Spring Security 기반의 사용자의 정보가 맞을 경우 수행이 되며 결과값을 리턴해주는 Handler
      * customLoginSuccessHandler: 이 메서드는 인증 성공 핸들러를 생성한다. 인증 성공 핸들러는 인증 성공시 수행할 작업을 정의한다.
      */
-//    @Bean
-//    public CustomAuthSuccessHandler customLoginSuccessHandler() {
-//        return new CustomAuthSuccessHandler();
-//    }
+    @Bean
+    public CustomAuthSuccessHandler customLoginSuccessHandler() {
+        return new CustomAuthSuccessHandler();
+    }
 
     /**
      * 5. Spring Security 기반의 사용자의 정보가 맞지 않을 경우 수행이 되며 결과값을 리턴해주는 Handler
      * customLoginFailureHandler: 이 메서드는 인증 실패 핸들러를 생성한다. 인증 실패 핸들러는 인증 실패시 수행할 작업을 정의한다.
      */
-//    @Bean
-//    public CustomAuthFailureHandler customLoginFailureHandler() {
-//        return new CustomAuthFailureHandler();
-//    }
+    @Bean
+    public CustomAuthFailureHandler customLoginFailureHandler() {
+        return new CustomAuthFailureHandler();
+    }
 
     /**
      * "JWT 토큰을 통하여서 사용자를 인증한다." -> 이 메서드는 JWT 인증 필터를 생성한다.
      * JWT 인증 필터는 요청 헤더의 JWT 토큰을 검증하고, 토큰이 유효하면 토큰에서 사용자의 정보와 권한을 추출하여 SecurityContext에 저장한다.
      */
-//    @Bean
-//    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-//        return new JwtAuthorizationFilter();
-//    }
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter(CustomUserDetailsService userDetailsService) {
+        return new JwtAuthorizationFilter(userDetailsService);
+    }
 
     /**
      * isAdmin 메소드는 Supplier<Authentication>와 RequestAuthorizationContext를 인자로 받아서 "ADMIN" 역할을 가진 사용자인지 확인한다.

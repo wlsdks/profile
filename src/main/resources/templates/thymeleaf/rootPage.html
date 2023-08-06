@@ -2,8 +2,8 @@
 <html>
 <head>
     <title>Main Page</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/js/jwtRequest.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
     <style>
         body {
             display: flex;
@@ -33,11 +33,18 @@
 <script>
     $(document).ready(function() {
         $('#logout').click(function() {
-            // Remove the JWT token
-            localStorage.removeItem('jwt');
-
-            // Redirect to the login page
-            window.location.href = '/login';
+            // 로그아웃 요청을 서버에 전송
+            $.ajax({
+                url: '/user/logout',
+                type: 'GET',
+                success: function() {
+                    // 로그인 페이지로 리다이렉트
+                    window.location.href = '/login';
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
         });
     });
 </script>

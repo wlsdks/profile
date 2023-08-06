@@ -4,7 +4,9 @@ import com.jinan.profile.dto.user.UserDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
@@ -16,12 +18,13 @@ import java.util.Map;
  * JWT 관련 토큰 Util
  */
 @Slf4j
+@Component
 public class TokenUtils {
 
-    //    @Value(value = "${custom.jwt-secret-key}")
-//    private static final String jwtSecretKey = "exampleSecretKey";
-    // 상수
+
     private static final String jwtSecretKey = "thisIsASecretKeyUsedForJwtTokenGenerationAndItIsLongEnoughToMeetTheRequirementOf256Bits";
+    // jwtSecretKey를 바이트 배열로 변환하고, 이를 사용하여 HMAC-SHA256 알고리즘에 사용할 키를 생성한다.
+    private static final Key key = Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     private static final String JWT_TYPE = "JWT";
     private static final String ALGORITHM = "HS256";
     private static final String LOGIN_ID = "loginId";
@@ -32,17 +35,18 @@ public class TokenUtils {
      * 사용자 pk를 기준으로 JWT 토큰을 발급하여 반환해 준다.
      */
     public static String generateJwtToken(UserDto userDto) {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Generate a key
 
         JwtBuilder builder = Jwts.builder()
                 .setHeader(createHeader())                                  // Header 구성
                 .setClaims(createClaims(userDto))                           // Payload - Claims구성
-                .setSubject(String.valueOf(userDto.loginId()))               // Payload - Subjects구성
-                .signWith(key, SignatureAlgorithm.HS256)                    // Signature 구성
+                .setSubject(String.valueOf(userDto.loginId()))              // Payload - Subjects구성
+                .setIssuer("profile")                                       // Issuer 구성
+                .signWith(key, SignatureAlgorithm.HS256)                    // Signature 구성 : 이 키를 사용하여 JWT 토큰에 서명을 추가한다. 이 서명은 토큰의 무결성을 보장하는 데 사용된다.
                 .setExpiration(createExpiredDate());                        // Expired Date 구성
 
         return builder.compact();
     }
+
     /**
      * 토큰을 기반으로 사용자의 정보를 반환해주는 메서드
      */
@@ -121,7 +125,7 @@ public class TokenUtils {
      * @return Claims : Claims
      */
     private static Claims getClaimsFormToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecretKey.getBytes()))
+        return Jwts.parserBuilder().setSigningKey(key)
                 .build().parseClaimsJws(token).getBody();
     }
 

@@ -6,6 +6,7 @@ import com.jinan.profile.config.security.jwt.TokenUtils;
 import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.dto.security.SecurityUserDetailsDto;
 import com.jinan.profile.dto.user.UserDto;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Configuration
 public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     /**
@@ -52,7 +53,7 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
         JSONObject jsonObject;
 
         // 3-1. 사용자의 상태가 '휴먼 상태' 인 경우에 응답값으로 전달할 데이터
-        if (userDto.status().equals("D")) {
+        if (Objects.equals(userDto.status(), "D")) {
             responseMap.put("userInfo", userDtoObject);
             responseMap.put("resultCode", 9001);
             responseMap.put("token", null);
@@ -67,11 +68,17 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
             responseMap.put("failMessage", null);
             jsonObject = new JSONObject(responseMap);
 
-            //TODO: 추후 JWT 발급에 사용
+            // JWT 토큰 생성
             String token = TokenUtils.generateJwtToken(userDto);
             jsonObject.put("token", token);
-            response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
+
+            // 쿠키에 JWT 토큰 저장
+            Cookie jwtCookie = new Cookie("jwt", token);
+            jwtCookie.setHttpOnly(true); // JavaScript에서 쿠키에 접근할 수 없도록 설정
+            jwtCookie.setPath("/"); // 모든 경로에서 쿠키에 접근 가능하도록 설정
+            response.addCookie(jwtCookie); // 응답에 쿠키 추가
         }
+
 
         // 4. 구성한 응답값을 전달한다.
         response.setCharacterEncoding("UTF-8");

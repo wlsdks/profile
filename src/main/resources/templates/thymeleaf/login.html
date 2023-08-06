@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
     <style>
         body {
             display: flex;
@@ -37,8 +38,8 @@
 <body>
 <div class="login-form">
     <div>
-        <label>Username: </label>
-        <input type="text" id="username"/>
+        <label>loginId: </label>
+        <input type="text" id="loginId"/>
     </div>
     <div>
         <label>Password: </label>
@@ -51,45 +52,20 @@
 
 <script>
     $(document).ready(function() {
-        // 로그인 버튼 클릭 이벤트
         $('#login').click(function() {
-            let username = $('#username').val();
+            let loginId = $('#loginId').val();
             let password = $('#password').val();
 
-            // 로그인 요청 처리
             $.ajax({
                 url: '/user/login',
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    loginId: username,
+                    loginId: loginId,
                     password: password
                 }),
                 success: function(data, textStatus, jqXHR) {
-                    // Store the JWT token only when login is successful
-                    let jwt = jqXHR.getResponseHeader('AUTHORIZATION').split(' ')[1];
-                    localStorage.setItem('jwt', jwt);
-                    console.log("data", data);
-
-                    // Redirect to the specified URL
-                    window.location.href = data.redirectUrl;
-
-                    // After login, send a request with the JWT token
-                    $.ajax({
-                        url: '/api/user/profile',
-                        type: 'GET',
-                        headers: {
-                            'AUTHORIZATION': 'Bearer ' + localStorage.getItem('jwt')
-                        },
-                        success: function(response) {
-                            // Handle success
-                            console.log(response);
-                        },
-                        error: function(error) {
-                            // Handle error
-                            console.log(error);
-                        }
-                    });
+                    window.location.href = "/main/rootPage";
                 },
                 error: function(err) {
                     console.log(err);
@@ -98,5 +74,6 @@
         });
     });
 </script>
+
 </body>
 </html>

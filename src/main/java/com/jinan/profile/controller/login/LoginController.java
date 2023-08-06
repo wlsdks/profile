@@ -1,6 +1,5 @@
 package com.jinan.profile.controller.login;
 
-import com.jinan.profile.config.security.jwt.TokenUtils;
 import com.jinan.profile.dto.codes.SuccessCode;
 import com.jinan.profile.dto.response.ApiResponse;
 import com.jinan.profile.dto.user.UserDto;
@@ -16,23 +15,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class LoginController {
-
-    private final UserService userService;
-    private final AuthenticationManager authenticationManager;
 
 
     /**
@@ -43,40 +37,27 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * [Action] 로그인 프로세스를 동작시킨다.
+     */
     @PostMapping("/user/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto, HttpServletResponse response) {
-
-        // Authenticate user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDto.loginId(),
-                        userDto.password()
-                )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Create response
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("redirectUrl", "/main/rootPage");
-
-        // Return the response
-        return ResponseEntity.ok(responseMap);
+    public ResponseEntity<?> authenticateUser() {
+        return ResponseEntity.ok().build();
     }
-
 
     /**
-     * [API] 사용자 리스트 조회
+     * [Action] 로그아웃 프로세스를 동작시킨다.
      */
-    @PostMapping("/user")
-    public ResponseEntity<ApiResponse<Object>> selectCodeList(@RequestBody UserDto userDto) {
-        List<UserDto> selectUserList = userService.selectUserList(userDto);
-        ApiResponse<Object> ar = ApiResponse.builder()
-                .result(selectUserList)
-                .resultCode(SuccessCode.SELECT.getStatus())
-                .resultMessage(SuccessCode.SELECT.getMessage())
-                .build();
-        return new ResponseEntity<>(ar, HttpStatus.OK);
+    @GetMapping("/user/logout")
+    public String logout(HttpServletResponse response) {
+        // JWT 토큰을 저장하는 쿠키의 값을 삭제
+        Cookie jwtCookie = new Cookie("jwt", null);
+        jwtCookie.setMaxAge(0);  // 쿠키의 유효기간을 0으로 설정하여 즉시 삭제
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+
+        return "redirect:/login";  // 로그인 페이지로 리다이렉트
     }
+
 
 }

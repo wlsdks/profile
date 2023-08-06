@@ -70,7 +70,7 @@ public class ChatApiController {
     @GetMapping("/current-user")
     public UserDto currentUser(Authentication authentication) {
         String username = authentication.getName();
-        return userService.findByUsername(username);
+        return userService.findByLoginId(username);
     }
 
 }

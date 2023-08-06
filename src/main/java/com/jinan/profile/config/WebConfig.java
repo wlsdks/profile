@@ -1,6 +1,5 @@
 package com.jinan.profile.config;
 
-import com.jinan.profile.config.security.filter.HeaderFilter;
 import com.jinan.profile.config.security.interceptor.JwtTokenInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -22,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtTokenInterceptor())
                 .addPathPatterns("/**") // 모든 URL에 대해 JWT 토큰 검사를 적용합니다.
-                .excludePathPatterns("/user/login", "/login"); // 로그인 페이지는 JWT 토큰 검사에서 제외합니다.
+                .excludePathPatterns("/user/login", "/login", "/main/rootPage"); // 로그인 페이지는 JWT 토큰 검사에서 제외합니다.
     }
 
 
@@ -56,27 +55,27 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
     }
+//
+//    /**
+//     * HeaderFilter를 등록하는 빈을 생성한다.
+//     * FilterRegistrationBean을 사용하면 필터의 순서를 지정하고, 어떤 URL 패턴에 적용할지를 설정할 수 있다.
+//     * 여기서는 모든 요청("/*")에 대해 HeaderFilter를 적용하도록 설정하고 있다.
+//     */
+//    @Bean
+//    public FilterRegistrationBean<HeaderFilter> getFilterRegistrationBean() {
+//        FilterRegistrationBean<HeaderFilter> registrationBean = new FilterRegistrationBean<>(createHeaderFilter());
+//        registrationBean.setOrder(Integer.MIN_VALUE);
+//        registrationBean.addUrlPatterns("/*");
+//        return registrationBean;
+//    }
 
-    /**
-     * HeaderFilter를 등록하는 빈을 생성한다.
-     * FilterRegistrationBean을 사용하면 필터의 순서를 지정하고, 어떤 URL 패턴에 적용할지를 설정할 수 있다.
-     * 여기서는 모든 요청("/*")에 대해 HeaderFilter를 적용하도록 설정하고 있다.
-     */
-    @Bean
-    public FilterRegistrationBean<HeaderFilter> getFilterRegistrationBean() {
-        FilterRegistrationBean<HeaderFilter> registrationBean = new FilterRegistrationBean<>(createHeaderFilter());
-        registrationBean.setOrder(Integer.MIN_VALUE);
-        registrationBean.addUrlPatterns("/*");
-        return registrationBean;
-    }
-
-    /**
-     * HeaderFilter의 인스턴스를 생성하는 빈을 정의한다.
-     */
-    @Bean
-    public HeaderFilter createHeaderFilter() {
-        return new HeaderFilter();
-    }
+//    /**
+//     * HeaderFilter의 인스턴스를 생성하는 빈을 정의한다.
+//     */
+//    @Bean
+//    public HeaderFilter createHeaderFilter() {
+//        return new HeaderFilter();
+//    }
 
     /**
      * JwtTokenInterceptor의 인스턴스를 생성하는 빈을 정의한다.

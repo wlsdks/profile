@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class MainController {
 
-    @GetMapping("rootPage")
+    @GetMapping("/rootPage")
     public String rootPage() {
 
         return "rootPage";

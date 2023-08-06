@@ -27,19 +27,25 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             @NonNull Object handler
     ) {
 
-        String header = request.getHeader("AUTHORIZATION");
-        log.debug("AUTHORIZATION Header: " + header);
-
-        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
-            log.debug("if request options method is options, return true");
-
+        // favicon.ico 요청에 대한 JWT 토큰 검증을 건너뛰기
+        if (request.getRequestURI().equals("/favicon.ico")) {
             return true;
         }
 
-        if (header != null) {
+        String token = null;
 
-            String token = TokenUtils.getTokenFromHeader(header);
+        // 쿠키에서 JWT 토큰 가져오기
+        jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (jakarta.servlet.http.Cookie cookie : cookies) {
+                if (cookie.getName().equals("jwt")) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
+        if (token != null) {
             if (TokenUtils.isValidToken(token)) {
                 String userId = TokenUtils.getUserIdFromToken(token);
                 if (userId == null) {
@@ -54,5 +60,6 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
             throw new ProfileApplicationException(ErrorCode.AUTH_TOKEN_IS_NULL);
         }
     }
+
 
 }
