@@ -72,15 +72,6 @@ public class TokenUtils {
     }
 
     /**
-     * Header 내에 토큰을 추출한다.
-     * @param header 헤더
-     * @return String
-     */
-    public static String getTokenFromHeader(String header) {
-        return header.split(" ")[1];
-    }
-
-    /**
      * 토큰의 만료기간을 지정하는 함수
      * @return Date
      */
