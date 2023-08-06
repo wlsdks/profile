@@ -24,8 +24,7 @@ import java.util.HashMap;
 public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
 
     /**
-     * 이 메서드는 HTTP 요청, HTTP 응답, 그리고 인증 예외를 인자로 받는다.
-     * 인증 예외의 타입에 따라 실패 메시지를 설정하고, 이를 JSON 형태로 클라이언트에 응답한다.
+     * 이 메서드는 HTTP 요청, HTTP 응답, 그리고 인증 예외를 인자로 받는다. 인증 예외의 타입에 따라 실패 메시지를 설정하고, 이를 JSON 형태로 클라이언트에 응답한다.
      */
     @Override
     public void onAuthenticationFailure(

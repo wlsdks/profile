@@ -39,8 +39,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         log.debug("2.CustomAuthenticationProvider");
 
         /**
-         * UsernamePasswordAuthenticationToken은 Spring Security에서 제공하는 Authentication 구현체 중 하나로,
-         * 사용자 이름과 비밀번호를 기반으로 인증을 처리하는데 사용된다.
+         * UsernamePasswordAuthenticationToken은 Spring Security에서 제공하는 Authentication 구현체 중 하나로, 사용자 이름과 비밀번호를 기반으로 인증을 처리하는데 사용된다.
          * 이 클래스의 인스턴스는 사용자가 로그인 폼에서 제출한 사용자 이름과 비밀번호를 담고 있다.
          */
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
@@ -57,10 +56,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException(securityUserDetailsDto.getUsername() + "Invalid password");
         }
 
-        /**
-         * 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 새로운 UsernamePasswordAuthenticationToken을 반환한다.
-         * authorities가 안담겨져있음
-         */
+        // 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 새로운 UsernamePasswordAuthenticationToken을 반환한다.
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(securityUserDetailsDto, userPassword, securityUserDetailsDto.getAuthorities());
         return authToken;
     }
