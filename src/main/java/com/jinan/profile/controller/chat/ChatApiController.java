@@ -3,7 +3,7 @@ package com.jinan.profile.controller.chat;
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.dto.message.ChatRequest;
 import com.jinan.profile.dto.user.UserDto;
-import com.jinan.profile.service.user.UserService;
+import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.chat.ChatRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

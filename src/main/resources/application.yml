@@ -12,19 +12,6 @@ spring:
     password: ${LOCAL_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  thymeleaf:
-    prefix: classpath:templates/thymeleaf/
-    check-template-location: true
-    suffix: .html
-    mode: HTML
-    cache: false
-
-  error:
-    include-exception: true
-    include-stacktrace: never # 오류 응답에 stacktrace 내용을 포함할 지 여부
-    path: '/error' # 오류 응답을 처리할 Handler의 경로
-    whitelabel.enabled: true # 서버 오류 발생시 브라우저에 보여줄 기본 페이지 생성 여부
-
   jpa:
     defer-datasource-initialization: true
     hibernate.ddl-auto: none
@@ -38,25 +25,12 @@ spring:
 
   sql.init.mode: always
 
-<<<<<<< HEAD
-#  thymeleaf:
-#    prefix: classpath:templates/thymeleaf/
-#    check-template-location: true
-#    suffix: .html
-#    mode: HTML
-#    cache: false # default true, 개발 시에는 false로 두는 것이 좋음
-
-jwt:
-  secret:
-    key: qwrmlasfmlqw2491u4291urjeiqowfjkwklfnlksdnfi13fnou3nounf13
-=======
   thymeleaf:
     prefix: classpath:templates/thymeleaf/
     check-template-location: true
     suffix: .html
     mode: HTML
     cache: true # default true, 개발 시에는 false로 두는 것이 좋음
->>>>>>> main
 
 ---
 
