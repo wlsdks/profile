@@ -1,8 +1,8 @@
 package com.jinan.profile.config;
 
-import com.jinan.profile.domain.user.constant.UserRoleEnum;
+import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.dto.user.UserDto;
-import com.jinan.profile.service.user.UserService;
+import com.jinan.profile.service.UserService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.event.annotation.BeforeTestMethod;
@@ -21,11 +21,11 @@ public class TestSecurityConfig {
     @MockBean
     private UserService userService;
 
-//    @BeforeTestMethod
-//    public void securitySetup() {
-//        given(userService.searchUser(anyString()))
-//                .willReturn(Optional.of(createUsersDto()));
-//    }
+    @BeforeTestMethod
+    public void securitySetup() {
+        given(userService.findByLoginId(anyString()))
+                .willReturn(createUsersDto());
+    }
 
     // 테스트용 UsersDto를 만들어 준다.
     private UserDto createUsersDto() {
@@ -35,7 +35,7 @@ public class TestSecurityConfig {
                 "wlsdks123",
                 "{noop}pw",
                 "wlsdks123@naver.com",
-                UserRoleEnum.ADMIN
+                RoleType.ADMIN
         );
     }
 }

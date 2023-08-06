@@ -1,12 +1,10 @@
 package com.jinan.profile.dto.user;
 
-import com.jinan.profile.domain.type.RoleType;
+import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.User;
-import com.jinan.profile.domain.user.UserStatus;
+import com.jinan.profile.domain.user.constant.UserStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * DTO for {@link User}

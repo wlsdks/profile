@@ -27,33 +27,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    /**
-     * repository에서 가져오는 entity정보는 service 외부로는 나가지 않도록 dto를 사용한다.(격리를 시킨다.)
-     * 이 메소드에서 마지막에 orElse 예외처리를 해주지 않은것은 이 service 레이어에서 에러처리를 전담하지않기 위함이다.(상위로 전파)
-     */
-    public Optional<UserDto> searchUser(String username) {
-        return userRepository.findByLoginId(username)
-                .map(UserDto::fromEntity);
-    }
-
-
     public UserDto findByLoginId(String username) {
         return userRepository.findByLoginId(username)
                 .map(UserDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
-
-    /**
-     * 모든 유저를 조회한다.
-     */
-    public List<UserDto> selectUserList(UserDto userDto) {
-        return userRepository.findAll()
-                .stream()
-                .map(UserDto::fromEntity)
-                .collect(Collectors.toList()
-                );
-    }
-
 
     /**
      * User 클래스가 username 속성만 가지고 있다고 가정하고 작성한 것이다. 실제 User 클래스에 어떤 속성들이 있는지에 따라 이 코드를 적절히 수정해야 한다.

@@ -1,4 +1,4 @@
-package com.jinan.profile.domain.user;
+package com.jinan.profile.domain.user.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

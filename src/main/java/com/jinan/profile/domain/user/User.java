@@ -1,14 +1,11 @@
 package com.jinan.profile.domain.user;
 
 import com.jinan.profile.domain.AuditingFields;
-import com.jinan.profile.domain.board.*;
-import com.jinan.profile.domain.file.File;
-import com.jinan.profile.domain.type.RoleType;
+import com.jinan.profile.domain.user.constant.RoleType;
+import com.jinan.profile.domain.user.constant.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @ToString(callSuper = true)
