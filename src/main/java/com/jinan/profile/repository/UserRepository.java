@@ -14,5 +14,9 @@ public interface UserRepository extends
         , UserRepositoryCustom
 {
     Optional<User> findByUsername(String username);
+<<<<<<< HEAD
     Optional<User> findByLoginId(String loginId);
+=======
+    Optional<User> findByLoginId(String username);
+>>>>>>> main
 }
