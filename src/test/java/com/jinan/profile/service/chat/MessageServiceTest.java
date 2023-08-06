@@ -3,9 +3,9 @@ package com.jinan.profile.service.chat;
 import com.jinan.profile.config.TestSecurityConfig;
 import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.domain.chat.ChatRoom;
-import com.jinan.profile.domain.type.RoleType;
+import com.jinan.profile.domain.user.constant.UserRoleEnum;
 import com.jinan.profile.domain.user.User;
-import com.jinan.profile.domain.user.UserStatus;
+import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.message.ChatRoomDto;
 import com.jinan.profile.dto.message.MessageDto;
 import com.jinan.profile.dto.user.UserDto;
@@ -48,7 +48,7 @@ class MessageServiceTest {
     @Test
     void saveMessage() {
         //given
-        User testUser = User.of("wlsdks12", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", RoleType.ADMIN, UserStatus.D);
+        User testUser = User.of("wlsdks12", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", UserRoleEnum.ADMIN, UserStatus.D);
 
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
 
@@ -69,7 +69,7 @@ class MessageServiceTest {
     @Test
     void saveMessageException() {
         //given
-        User testUser = User.of("jinan", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", RoleType.ADMIN, UserStatus.D);
+        User testUser = User.of("jinan", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", UserRoleEnum.ADMIN, UserStatus.D);
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
 
         when(chatRoomRepository.findById(anyLong())).thenReturn(Optional.of(testChatRoom));
@@ -85,7 +85,7 @@ class MessageServiceTest {
     @Test
     void test() {
         //given
-        User testUser = User.of("jinan", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", RoleType.ADMIN, UserStatus.D);
+        User testUser = User.of("jinan", "wlsdks12", "wlsdks12", "wlsdks12@naver.com", UserRoleEnum.ADMIN, UserStatus.D);
 
         ChatRoom testChatRoom = ChatRoom.of("jinanChatRoom");
         ChatMap testChatMap = ChatMap.of(testUser, testChatRoom);

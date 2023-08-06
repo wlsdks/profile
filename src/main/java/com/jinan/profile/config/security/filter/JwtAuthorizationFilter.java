@@ -1,7 +1,6 @@
 package com.jinan.profile.config.security.filter;
 
 import com.jinan.profile.config.security.jwt.TokenUtils;
-import com.jinan.profile.dto.codes.AuthConstants;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -28,8 +26,6 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.jinan.profile.domain.user.QUserDetails.userDetails;
 
 /**
  * 지정한 URL별 JWT의 유효성 검증을 수행하며 직접적인 사용자 인증을 확인합니다.
