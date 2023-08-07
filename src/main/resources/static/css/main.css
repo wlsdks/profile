@@ -1,4 +1,5 @@
 body {
+    position: relative;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -113,29 +114,37 @@ button:hover {
     color: #f7f7f7;
 }
 
-.ad-banner {
-    position: fixed;
-    background-size: cover;
-    border-radius: 10px;
-    overflow: hidden;
-    right: 10px;
+/* 슬라이더 */
+.ad-slider {
+    position: absolute;
+    top: 50%; /* 중앙 정렬을 위해 50%로 설정 */
+    right: 20px;
     width: 150px;
     height: 300px;
+    transform: translateY(-50%); /* 중앙 정렬을 위한 위치 조정 */
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    flex-direction: column; /* 슬라이드들을 세로 방향으로 배치 */
+    transition: all 0.5s;
+}
+
+.slide {
+    height: 100%;
     background-color: #f1c40f;
     color: white;
     text-align: center;
     padding: 20px;
-    z-index: 1000; /* 높은 값으로 설정 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.5s;
 }
 
 /* 첫 번째 광고 배너 위치 조정 */
 #ad-banner1 {
-    top: calc(50% - 320px); /* 중앙에서 320px 위쪽에 배치 */
-}
-
-/* 두 번째 광고 배너 위치 조정 */
-#ad-banner2 {
-    top: calc(50% + 30px); /* 중앙에서 20px 아래쪽에 배치 */
+    margin-bottom: 10px; /* 광고 배너들 사이의 간격 설정 */
 }
 
 .ad-banner::before {
@@ -149,18 +158,16 @@ button:hover {
 }
 
 .ad-button {
-    position: relative;
-    z-index: 1000; /* 높은 값 */
-    display: inline-block; /* 혹시 몰라 display 속성도 추가 */
-    padding: 10px 15px;
-    background-color: #f39c12;
-    color: white;
-    text-align: center;
-    margin-top: 20px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
     border-radius: 5px;
+    color: white;
+    text-decoration: none;
     transition: background-color 0.3s;
 }
 
 .ad-button:hover {
-    background-color: #e67e22;
+    background-color: rgba(0, 0, 0, 0.8);
 }
