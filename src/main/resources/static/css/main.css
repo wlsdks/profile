@@ -6,6 +6,7 @@ body {
 }
 
 .header {
+    background-image: linear-gradient(to right, #ff7f7f, #ffa07a);
     background-color: #333;
     color: white;
     padding: 10px 0;
@@ -18,7 +19,7 @@ body {
     padding: 20px;
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 button {
@@ -60,7 +61,8 @@ button:hover {
 }
 
 /* 반응형 디자인 */
-@media (max-width: 768px) { /* 화면 너비가 768px 이하일 경우 */
+@media (max-width: 768px) {
+    /* 화면 너비가 768px 이하일 경우 */
     .main-content {
         padding: 10px;
     }
@@ -89,10 +91,15 @@ button:hover {
 }
 
 .sidebar li {
+    transition: background-color 0.3s, transform 0.3s;
     position: relative;
     padding-left: 40px;
-    padding: 10px 20px;
     cursor: pointer;
+}
+
+.sidebar li:hover {
+    background-color: #34495e;
+    transform: scale(1.05); /* 호버 시 약간 확대 */
 }
 
 .sidebar li::before {
@@ -102,22 +109,15 @@ button:hover {
     color: #ecf0f1;
 }
 
-.sidebar li:hover {
-    background-color: #34495e;
-}
-
 .sidebar li:hover::before {
     color: #f7f7f7;
 }
 
-
 .ad-banner {
-    background-image: url('path_to_your_ad_image.jpg'); /* 광고 이미지 */
+    position: fixed;
     background-size: cover;
     border-radius: 10px;
-    overflow: hidden; /* 버튼 스타일 때문에 추가 */
-    position: fixed;
-    top: 50%;
+    overflow: hidden;
     right: 10px;
     width: 150px;
     height: 300px;
@@ -125,11 +125,33 @@ button:hover {
     color: white;
     text-align: center;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000; /* 높은 값으로 설정 */
+}
+
+/* 첫 번째 광고 배너 위치 조정 */
+#ad-banner1 {
+    top: calc(50% - 320px); /* 중앙에서 320px 위쪽에 배치 */
+}
+
+/* 두 번째 광고 배너 위치 조정 */
+#ad-banner2 {
+    top: calc(50% + 30px); /* 중앙에서 20px 아래쪽에 배치 */
+}
+
+.ad-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3); /* 검은색 오버레이 */
 }
 
 .ad-button {
-    display: block;
+    position: relative;
+    z-index: 1000; /* 높은 값 */
+    display: inline-block; /* 혹시 몰라 display 속성도 추가 */
     padding: 10px 15px;
     background-color: #f39c12;
     color: white;
