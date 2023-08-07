@@ -38,7 +38,7 @@ class BoardServiceTest {
         Board board = createBoard(user);
 
         //when
-        BoardDto boardDto = boardService.saveBoard();
+        BoardDto boardDto = boardService.saveBoard(board);
 
         //then
         assertThat(boardDto).isNotNull();

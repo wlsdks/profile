@@ -1,13 +1,15 @@
 package com.jinan.profile.service.board;
 
+import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.board.BoardDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -16,17 +18,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardDto saveBoard() {
-
-        return BoardDto.of(
-                1L,
-                "테스트 게시글",
-                "내용이다.",
-                20,
-                20,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
+    /**
+     * 게시글을 저장한다.
+     */
+    public BoardDto saveBoard(Board board) {
+        return Optional.of(boardRepository.save(board))
+                .map(BoardDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.INSERT_ERROR));
     }
 
 }
