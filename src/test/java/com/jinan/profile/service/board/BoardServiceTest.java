@@ -1,5 +1,6 @@
 package com.jinan.profile.service.board;
 
+import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
@@ -19,9 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("[Board] - 서비스 레이어 테스트")
-@Transactional
-@SpringBootTest
-class BoardServiceTest {
+class BoardServiceTest extends TotalTestSupport {
 
     @Autowired private BoardService boardService;
     @Autowired private BoardRepository boardRepository;

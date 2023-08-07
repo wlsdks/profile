@@ -1,5 +1,6 @@
 package com.jinan.profile.controller;
 
+import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.controller.chat.ChatMainController;
 import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -13,16 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @DisplayName("[컨트롤러] - 메인화면")
-@Profile("test")
-@AutoConfigureMockMvc // 이걸 달아줘야 MockMvc에 주입이 된다.
-//@Import(TestSecurityConfig.class)
-@WebMvcTest(ChatMainController.class)
-class ChatMainControllerTest {
+class ChatMainControllerTest extends ControllerTestSupport {
 
     private MockMvc mockMvc;
-
-    @MockBean
-    private UserRepository userRepository;
+    @MockBean private UserRepository userRepository;
 
 
     public ChatMainControllerTest(@Autowired MockMvc mockMvc) {

@@ -1,5 +1,6 @@
 package com.jinan.profile.repository.querydsl.board;
 
+import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
@@ -11,18 +12,15 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Transactional
-@SpringBootTest
-class BoardRepositoryTest {
+
+@DisplayName("[Board] - querydsl 리포지토리 테스트")
+class BoardRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardRepository boardRepository;
     @Autowired private UserRepository userRepository;
