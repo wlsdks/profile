@@ -1,35 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>Main Page</title>
-    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .logout-button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #007BFF;
-            color: #fff;
-            cursor: pointer;
-        }
-        .logout-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 메인페이지</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f7f7;
+    }
+
+    .header {
+        background-color: #333;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .main-content {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    button {
+        padding: 10px 15px;
+        background-color: #ff4500;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #ff6347;
+    }
+</style>
+
 <body>
-<div>
-    <button id="logout" class="logout-button">Logout</button>
+<div class="header">
+    <h1>내 웹사이트</h1>
+</div>
+<div class="main-content">
+    <p>환영합니다! 웹사이트에 방문해 주셔서 감사합니다.</p>
+    <button id="logout">로그아웃</button>
 </div>
 
+<!-- jQuery를 CDN에서 가져오기 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#logout').click(function() {
@@ -48,6 +76,5 @@
         });
     });
 </script>
-
 </body>
 </html>

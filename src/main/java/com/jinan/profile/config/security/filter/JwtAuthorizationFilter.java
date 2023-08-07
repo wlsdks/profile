@@ -107,12 +107,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 throw new ProfileApplicationException(ErrorCode.TOKEN_NOT_FOUND);
             }
         } catch (Exception e) {
-            // Token 내에 Exception이 발생 하였을 경우 => 클라이언트에 응답값을 반환하고 종료합니다.
+            // 로그 메시지 생성
+            String logMessage = jsonResponseWrapper(e).getString("message");
+            log.error(logMessage, e);  // 로그에만 해당 메시지를 출력합니다.
+
+            // 클라이언트에게 전송할 고정된 메시지
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter printWriter = response.getWriter();
-            JSONObject jsonObject = jsonResponseWrapper(e);
-            e.printStackTrace();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("error", true);
+            jsonObject.put("message", "로그인 에러");
             printWriter.print(jsonObject);
             printWriter.flush();
             printWriter.close();

@@ -62,22 +62,25 @@ public class SecurityConfig {
         return source;
     }
 
+
     /**
-     * Spring security6부터는 @Bean으로 filterChain을 등록하는 방식이 권장된다.
-     * 그리고 기존에 사용하던 문법인 anyMatchers, MvcRequestMatchers는 requestMatchers로 통일되었다.
-     * 1.csrf(disable): csrf비활성화 -> 2.authorizeHttpRequests: 특정경로 요청제어
-     * 3.sessionManagement(): SessionCreationPolicy.STATELESS로 설정하면 Spring Security는 세션을 생성하지 않고, 인증을 위해 세션을 사용하지 않는다. 이는 주로 토큰 기반의 인증 방식에서 사용된다.
-     * 4.httpBasic(): HTTP Basic 인증을 활성화한다. HTTP Basic 인증은 클라이언트가 요청 헤더의 Authorization 필드에 사용자 이름과 비밀번호를 Base64 인코딩된 형태로 전송하는 인증 방식이다.
-     * 5 addFilterBefore(): 이 설정은 특정 필터를 다른 필터 앞에 추가한다. 여기서는 JwtAuthorizationFilter를 BasicAuthenticationFilter 앞에, CustomAuthenticationFilter를 UsernamePasswordAuthenticationFilter 앞에 추가했다.
-     * 이 필터들은 HTTP 요청이 들어올 때 실행되며, 요청을 처리하거나 다음 필터로 전달하거나, 요청을 거부할 수 있다.
-     * 6. formLogin(AbstractHttpConfigurer::disable): 이 설정은 폼 기반 로그인을 비활성화한다. 폼 기반 로그인은 사용자가 로그인 폼을 통해 사용자 이름과 비밀번호를 전송하는 인증 방식이다.
-     * 7. logout: 이 설정은 로그아웃 기능을 설정한다. 로그아웃 성공 시 "/"로 리다이렉트하도록 설정하였다.
+     * Spring Security 설정을 정의하는 메서드.
+     * <ul>
+     *     <li>CSRF 방지 기능 비활성화</li>
+     *     <li>CORS 설정 적용</li>
+     *     <li>`/resources/**`, `/main/rootPage` 경로 접근 허용</li>
+     *     <li>나머지 요청은 인증된 사용자만 접근 허용</li>
+     *     <li>헤더의 JWT 토큰을 추출하고 검증하는 `JwtAuthorizationFilter` 적용</li>
+     *     <li>세션을 상태 없이 관리</li>
+     *     <li>로그인 페이지 설정 및 로그인 성공 시 리다이렉트 경로 설정</li>
+     *     <li>사용자 이름과 비밀번호 인증을 위한 `CustomAuthenticationFilter` 적용</li>
+     * </ul>
      *
-     * <p>기능 요약</p>
-     * 사용자가 로그인을 시도하면 CustomAuthenticationFilter가 이를 처리한다.
-     * 이 필터는 사용자가 제출한 사용자 이름과 비밀번호를 가지고 인증을 시도하고, 인증이 성공하면 인증된 사용자의 정보와 권한을 담은 Authentication 객체를 생성하여 SecurityContext에 저장한다.
-     * 이후 HTTP 요청이 들어오면 JwtAuthorizationFilter가 이를 처리하며, 이 필터는 요청 헤더의 JWT 토큰을 검증하고, 토큰이 유효하면 토큰에서 사용자의 정보와 권한을 추출하여 SecurityContext에 저장한다.
-     * 이렇게 SecurityContext에 저장된 사용자의 정보와 권한은 애플리케이션의 다른 부분에서 사용될 수 있다.
+     * @param http Spring Security의 HttpSecurity 객체
+     * @param customAuthenticationFilter 사용자 정의 인증 필터
+     * @param jwtAuthorizationFilter JWT 인증 필터
+     * @return 구성된 SecurityFilterChain 객체
+     * @throws Exception 설정 중 발생할 수 있는 예외
      */
     @Bean
     public SecurityFilterChain filterChain(
@@ -92,9 +95,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/resources/**").permitAll()
                         .requestMatchers("/main/rootPage").permitAll()
+                        .requestMatchers("/error.html").permitAll()
                         .anyRequest().authenticated()
                 )
-                // 1. 먼저, JwtAuthorizationFilter가 실행되어 요청 헤더에서 JWT 토큰을 추출하고 이 토큰을 검증한다.
                 .addFilterBefore(jwtAuthorizationFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(login -> login
@@ -102,7 +105,6 @@ public class SecurityConfig {
                         .successHandler(new SimpleUrlAuthenticationSuccessHandler("/main/rootPage"))
                         .permitAll()
                 )
-                // 2. CustomAuthenticationFilter가 실행되어 사용자 이름과 비밀번호를 사용하여 인증을 수행한다. 이 필터는 주로 로그인 요청을 처리하는 데 사용된다.
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
