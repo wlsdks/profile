@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface BoardRepositoryCustom {
 
-    Optional<List<Board>> findByUserId(String loginId);
+    Optional<List<Board>> findByLoginId(String loginId);
 }

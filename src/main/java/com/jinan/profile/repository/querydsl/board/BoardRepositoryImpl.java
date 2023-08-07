@@ -21,7 +21,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<Board>> findByUserId(String loginId) {
+    public Optional<List<Board>> findByLoginId(String loginId) {
         List<Board> result = queryFactory
                 .select(board)
                 .from(board)
