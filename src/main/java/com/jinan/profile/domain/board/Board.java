@@ -61,7 +61,7 @@ public class Board extends AuditingFields {
     }
 
     // 생성자 factory 메소드
-    public Board of(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
+    public static Board of(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
         return new Board(title, content, views, likes, user, boardComments);
     }
 
