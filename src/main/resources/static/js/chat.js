@@ -124,7 +124,7 @@ $.get("/current-user", function (data) {
             </div>
         </body>
         </html>
-    `);
+        `);
 
         // 'send-button' 요소를 클릭하면 실행할 함수를 설정합니다.
         chatWindow.document.getElementById('send-button').addEventListener('click', function() {
@@ -132,6 +132,21 @@ $.get("/current-user", function (data) {
             let message = chatWindow.document.getElementById('message-input').value;
             // 메시지를 전송합니다.
             sendMessage(room, message, chatWindow);
+            // 입력 필드를 비웁니다.
+            chatWindow.document.getElementById('message-input').value = '';
+        });
+
+        // 'message-input' 요소에서 엔터 키를 누르면 'send-button' 요소의 클릭 이벤트를 실행합니다.
+        chatWindow.document.getElementById('message-input').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                // 'message-input' 요소의 값을 가져옵니다.
+                let message = chatWindow.document.getElementById('message-input').value;
+                // 입력 필드가 비어 있지 않은 경우에만 메시지를 전송합니다.
+                if (message.trim() !== '') {
+                    chatWindow.document.getElementById('send-button').click();
+                }
+            }
         });
 
         stompClient.subscribe('/subscribe/' + currentRoomId, function (greeting) {
@@ -146,6 +161,7 @@ $.get("/current-user", function (data) {
                 showGreeting(chatWindow, data);
             });
         });
+
     }
 
     // 메시지를 전송하는 함수입니다.
@@ -172,6 +188,8 @@ $.get("/current-user", function (data) {
             user: currentUser,
             text: message
         };
+
+        // 메시지를 화면에 표시합니다.
         showGreeting(chatWindow, displayChatRequest);
 
         // 메시지를 서버에 저장합니다.
@@ -189,7 +207,6 @@ $.get("/current-user", function (data) {
         // 메시지를 보낸 후에는 입력 필드를 비웁니다.
         chatWindow.document.getElementById('message-input').value = '';
     }
-
 
     /**
      * 메시지를 화면에 표시하는 함수입니다.
