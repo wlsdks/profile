@@ -37,13 +37,74 @@ $.get("/current-user", function (data) {
 
     // 채팅방 창을 열고 메시지를 보낼 수 있게 설정하는 함수입니다.
     function openChatWindow(room) {
+        // 팝업창의 크기를 설정합니다.
+        const width = 500;
+        const height = 500;
+
+        // 화면의 정중앙에 팝업창이 위치하도록 좌표를 계산합니다.
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+
         // 새 창을 엽니다.
-        let chatWindow = window.open('', '', 'width=500,height=500');
-        // 채팅방 창에 HTML을 작성합니다.
-        chatWindow.document.write('<h1>' + room.chatRoomName + '</h1>');
-        chatWindow.document.write('<input id="message-input" type="text">');
-        chatWindow.document.write('<button id="send-button">Send</button>');
-        chatWindow.document.write('<div id="messages"></div>');
+        let chatWindow = window.open('', '', `width=${width},height=${height},left=${left},top=${top}`);
+
+        // 채팅방 창에 HTML과 CSS를 작성합니다.
+        chatWindow.document.write(`
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                }
+                h1 {
+                    background-color: #333;
+                    color: #fff;
+                    margin: 0;
+                    padding: 10px;
+                    text-align: center;
+                }
+                #messages {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 10px;
+                    border-bottom: 1px solid #ddd;
+                }
+                #message-input {
+                    width: 80%;
+                    padding: 10px;
+                    border: none;
+                    border-radius: 4px;
+                }
+                #send-button {
+                    width: 18%;
+                    margin-left: 2%;
+                    padding: 10px;
+                    border: none;
+                    background-color: #007BFF;
+                    color: #fff;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+                #send-button:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>${room.chatRoomName}</h1>
+            <div id="messages"></div>
+            <div style="display: flex; padding: 10px;">
+                <input id="message-input" type="text">
+                <button id="send-button">Send</button>
+            </div>
+        </body>
+        </html>
+    `);
 
         // 'send-button' 요소를 클릭하면 실행할 함수를 설정합니다.
         chatWindow.document.getElementById('send-button').addEventListener('click', function() {
@@ -58,11 +119,10 @@ $.get("/current-user", function (data) {
             showGreeting(chatWindow, JSON.parse(greeting.body));
         });
 
-        //지 이전 메시지를 불러옵니다.
+        // 이전 메시지를 불러옵니다.
         $.get("/messages/" + currentRoomId, function (data) {
             // 받아온 각 메시지를 화면에 표시합니다.
             data.forEach(function (data) {
-                // console.log("requestDto: ", data);  // 메시지의 내용을 콘솔에 출력합니다.
                 showGreeting(chatWindow, data);
             });
         });

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello WebSocket</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .websocket-status {
+            margin-top: 2rem;
+        }
+
+        #create-room-form {
+            margin-top: 2rem;
+        }
+
+        h2 {
+            margin-top: 2rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        #room-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #room-list li {
+            padding: 1rem;
+            background-color: #fff;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 팝업창 스타일 */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            width: 80%;
+            max-width: 500px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .popup-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .popup-input {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-input input {
+            width: 80%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+</head>
+
+<body>
+<header>
+    <h1>실시간 웹소켓 채팅</h1>
+</header>
+<div id="main-content" class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="websocket-status">
+                <span class="status-label">웹소켓 연결상태:</span>
+                <button id="connect" class="btn btn-success" type="submit">연결성공</button>
+                <button id="disconnect" class="btn btn-danger" type="submit" disabled="disabled">연결해제</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form id="create-room-form" class="form-inline">
+                <div class="form-group">
+                    <label for="room-name">방 이름:</label>
+                    <input type="text" id="room-name" class="form-control" placeholder="Enter room name">
+                </div>
+                <button type="submit" class="btn btn-primary">방 생성</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h2>방 목록</h2>
+            <ul id="room-list"></ul>
+        </div>
+    </div>
+</div>
+
+<script src="/js/chat.js"></script>
+</body>
+
+</html>
