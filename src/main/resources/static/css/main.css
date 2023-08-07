@@ -1,5 +1,4 @@
 body {
-    position: relative;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -54,7 +53,7 @@ button:hover {
     transition: background-color 0.3s;
     text-decoration: none;
     color: black;
-    min-width: 150px; /* 카드의 최소 너비 설정 */
+    min-width: 150px;
 }
 
 .service-card:hover {
@@ -70,7 +69,7 @@ button:hover {
 
     .service-card {
         margin: 5px 0;
-        flex-basis: 100%; /* 모바일 환경에서 100% 너비로 표시 */
+        flex-basis: 100%;
     }
 }
 
@@ -100,11 +99,11 @@ button:hover {
 
 .sidebar li:hover {
     background-color: #34495e;
-    transform: scale(1.05); /* 호버 시 약간 확대 */
+    transform: scale(1.05);
 }
 
 .sidebar li::before {
-    content: '\2022'; /* 원 모양의 bulletpoint */
+    content: '\2022';
     position: absolute;
     left: 15px;
     color: #ecf0f1;
@@ -112,62 +111,4 @@ button:hover {
 
 .sidebar li:hover::before {
     color: #f7f7f7;
-}
-
-/* 슬라이더 */
-.ad-slider {
-    position: absolute;
-    top: 50%; /* 중앙 정렬을 위해 50%로 설정 */
-    right: 20px;
-    width: 150px;
-    height: 300px;
-    transform: translateY(-50%); /* 중앙 정렬을 위한 위치 조정 */
-    overflow: hidden;
-}
-
-.slides {
-    display: flex;
-    flex-direction: column; /* 슬라이드들을 세로 방향으로 배치 */
-    transition: all 0.5s;
-}
-
-.slide {
-    height: 100%;
-    background-color: #f1c40f;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transition: transform 0.5s;
-}
-
-/* 첫 번째 광고 배너 위치 조정 */
-#ad-banner1 {
-    margin-bottom: 10px; /* 광고 배너들 사이의 간격 설정 */
-}
-
-.ad-banner::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3); /* 검은색 오버레이 */
-}
-
-.ad-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border: none;
-    border-radius: 5px;
-    color: white;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-.ad-button:hover {
-    background-color: rgba(0, 0, 0, 0.8);
 }

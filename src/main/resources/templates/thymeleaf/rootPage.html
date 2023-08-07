@@ -40,24 +40,6 @@
         </a>
     </div>
 
-    <!-- 광고 슬라이더 -->
-    <div class="ad-slider">
-        <div class="slides">
-            <!-- 첫 번째 광고 배너 -->
-            <div class="slide" id="ad-banner1">
-                <p>광고 내용 1</p>
-                <a href="#" class="ad-button">자세히 알아보기</a>
-            </div>
-
-            <!-- 두 번째 광고 배너 -->
-            <div class="slide" id="ad-banner2">
-                <p>광고 내용 2</p>
-                <a href="#" class="ad-button">자세히 알아보기</a>
-            </div>
-        </div>
-    </div>
-
-
 </div>
 
 <!-- jQuery를 CDN에서 가져오기 -->
@@ -80,43 +62,6 @@
             });
         });
     });
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const sidebarItems = document.querySelectorAll(".sidebar li");
-        sidebarItems.forEach(item => {
-            item.addEventListener("click", function() {
-                alert("이 메뉴를 선택했습니다!");
-            });
-        });
-
-        let slideIndex = 0;
-
-        function showSlide(index) {
-            const slides = document.querySelectorAll('.slide');
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.transform = `translateX(-${150 * index}px)`;
-            }
-        }
-
-        document.querySelector('.ad-slider').addEventListener('click', function(e) {
-            if (e.target.classList.contains('ad-button')) {
-                alert('광고 버튼 클릭됨!');
-                return;
-            }
-            slideIndex = (slideIndex + 1) % 3;
-            showSlide(slideIndex);
-        });
-
-        // 3초마다 슬라이드 변경
-        setInterval(() => {
-            slideIndex = (slideIndex + 1) % 3;
-            showSlide(slideIndex);
-        }, 3000);
-
-        // 초기 슬라이드 표시
-        showSlide(slideIndex);
-    });
-
 </script>
 </body>
 </html>
