@@ -1,6 +1,5 @@
-package com.jinan.profile.repository.querydsl;
+package com.jinan.profile.repository.querydsl.user;
 
-import com.jinan.profile.domain.user.QUser;
 import com.jinan.profile.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
