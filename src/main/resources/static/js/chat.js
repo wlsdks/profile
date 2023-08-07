@@ -93,6 +93,26 @@ $.get("/current-user", function (data) {
                 #send-button:hover {
                     background-color: #0056b3;
                 }
+                .message {
+                    padding: 10px;
+                    margin: 5px;
+                    border-radius: 10px;
+                    max-width: 70%;
+                    clear: both;
+                    display: block;
+                }
+                
+                .my-message {
+                    background-color: #DCF8C6;
+                    margin-right: 30%; /* 왼쪽 정렬을 위한 마진 */
+                    text-align: left;
+                }
+                
+                .other-message {
+                    background-color: #ECECEC;
+                    margin-left: 30%; /* 오른쪽 정렬을 위한 마진 */
+                    text-align: right;
+                }
             </style>
         </head>
         <body>
@@ -148,7 +168,11 @@ $.get("/current-user", function (data) {
         stompClient.send("/publish", {}, JSON.stringify(chatRequest));
 
         // 메시지를 화면에 표시합니다.
-        chatWindow.document.getElementById('messages').innerHTML += '<p>' + currentUser.username + ': ' + message + '</p>';
+        let displayChatRequest = {
+            user: currentUser,
+            text: message
+        };
+        showGreeting(chatWindow, displayChatRequest);
 
         // 메시지를 서버에 저장합니다.
         $.ajax({
@@ -161,12 +185,29 @@ $.get("/current-user", function (data) {
                 // console.log("Message saved: ", data);
             }
         });
+
+        // 메시지를 보낸 후에는 입력 필드를 비웁니다.
+        chatWindow.document.getElementById('message-input').value = '';
     }
 
-    // 메시지를 화면에 표시하는 함수입니다.
+
+    /**
+     * 메시지를 화면에 표시하는 함수입니다.
+     * innerHTML를 사용하여 요소의 내용을 업데이트하면 해당 요소의 기존 내용이 모두 삭제되고 새로운 내용으로 대체된다.
+     * 따라서 새로운 메시지를 추가할 때 기존 메시지를 유지하려면 innerHTML 대신 insertAdjacentHTML 메서드를 사용해야 한다.
+     */
     function showGreeting(chatWindow, chatRequest) {
-        chatWindow.document.getElementById('messages').innerHTML += '<p>' + chatRequest.user.username + ': ' + chatRequest.text + '</p>';
+        let messageClass = chatRequest.user.userId === currentUser.userId ? 'my-message' : 'other-message';
+        let messageElement = `<div class="message ${messageClass}">${chatRequest.user.username}: ${chatRequest.text}</div>`;
+        let messagesDiv = chatWindow.document.getElementById('messages');
+
+        // 메시지를 추가합니다.
+        messagesDiv.insertAdjacentHTML('beforeend', messageElement);
+
+        // 스크롤을 최하단으로 이동시킵니다.
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
+
 
     // 페이지 로드 완료 시 실행할 함수입니다.
     $(function () {
