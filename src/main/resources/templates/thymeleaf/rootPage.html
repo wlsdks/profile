@@ -5,59 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹 메인페이지</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f7f7f7;
-    }
-
-    .header {
-        background-color: #333;
-        color: white;
-        padding: 10px 0;
-        text-align: center;
-    }
-
-    .main-content {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    button {
-        padding: 10px 15px;
-        background-color: #ff4500;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: #ff6347;
-    }
-</style>
-
 <body>
+<div class="sidebar">
+    <ul>
+        <li>메뉴 1</li>
+        <li>메뉴 2</li>
+        <li>메뉴 3</li>
+    </ul>
+</div>
+
 <div class="header">
     <h1>내 웹사이트</h1>
 </div>
+
 <div class="main-content">
     <p>환영합니다! 웹사이트에 방문해 주셔서 감사합니다.</p>
     <button id="logout">로그아웃</button>
+
+    <div class="services">
+        <a href="/main/page" class="service-card">
+            <h2>실시간 채팅방</h2>
+        </a>
+        <a href="/board" class="service-card">
+            <h2>게시판 페이지</h2>
+        </a>
+        <a href="/portfolio" class="service-card">
+            <h2>포트폴리오 페이지</h2>
+        </a>
+        <a href="/contact" class="service-card">
+            <h2>연락처 페이지</h2>
+        </a>
+    </div>
+
 </div>
 
 <!-- jQuery를 CDN에서 가져오기 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#logout').click(function() {

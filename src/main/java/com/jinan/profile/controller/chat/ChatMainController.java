@@ -13,7 +13,7 @@ public class ChatMainController {
 
     @GetMapping("/page")
     public String rootPage() {
-        return "mainPage";
+        return "chatPage";
     }
 
 }
