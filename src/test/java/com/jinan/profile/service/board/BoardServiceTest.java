@@ -72,7 +72,7 @@ class BoardServiceTest {
 
     @DisplayName("유저의 로그인id를 통해 유저가 작성한 게시글을 조회한다.")
     @Test
-    void test() {
+    void findByUserId() {
         //given
         User user = createUser();
         Board board1 = createBoard(user, "테스트1");
@@ -89,6 +89,17 @@ class BoardServiceTest {
         assertThat(boards).isEqualTo(boardList);
         assertThat(boardList).hasSize(3);
 
+    }
+
+    @DisplayName("존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
+    @Test
+    void test() {
+        //given
+        String loginId = "anonymous";
+
+        //when & then
+        assertThatThrownBy(() -> boardService.findByUserId(loginId))
+                .isInstanceOf(ProfileApplicationException.class);
     }
 
 

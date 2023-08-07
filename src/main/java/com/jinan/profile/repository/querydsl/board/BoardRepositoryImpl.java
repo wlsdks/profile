@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.jinan.profile.domain.board.QBoard.board;
 import static com.jinan.profile.domain.user.QUser.user;
@@ -20,11 +21,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Board> findByUserId(String loginId) {
-        return queryFactory
+    public Optional<List<Board>> findByUserId(String loginId) {
+        List<Board> result = queryFactory
                 .select(board)
                 .from(board)
                 .where(user.loginId.eq(loginId))
                 .fetch();
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 }

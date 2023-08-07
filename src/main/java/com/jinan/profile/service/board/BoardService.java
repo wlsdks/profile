@@ -38,7 +38,8 @@ public class BoardService {
      * 유저의 로그인id로 유저가 작성한 모든 게시글 리스트를 가져온다.
      */
     public List<Board> findByUserId(String loginId) {
-        return boardRepository.findByUserId(loginId);
+        return boardRepository.findByUserId(loginId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
 
 }
