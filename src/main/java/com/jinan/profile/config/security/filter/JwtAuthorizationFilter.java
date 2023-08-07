@@ -46,7 +46,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 1. 토큰이 필요하지 않은 API URL에 대해서 배열로 구성한다.
         List<String> list = Arrays.asList(
                 "/user/login",  // 로그인 페이지의 URL을 추가합니다.
-                "/login"  // 로그인 페이지의 URL을 추가합니다.
+                "/login",  // 로그인 페이지의 URL을 추가합니다.
+                "/css/**",
+                "/js/**",
+                "/images/**"
         );
 
         // 2. 토큰이 필요하지 않은 API URL의 경우 -> 로직 처리없이 다음 필터로 이동한다.

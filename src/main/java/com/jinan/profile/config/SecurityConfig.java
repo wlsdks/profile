@@ -93,7 +93,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/resources/**").permitAll()
+                        .requestMatchers("/resources/**", "/static/**").permitAll()
                         .requestMatchers("/main/rootPage").permitAll()
                         .requestMatchers("/error.html").permitAll()
                         .anyRequest().authenticated()
