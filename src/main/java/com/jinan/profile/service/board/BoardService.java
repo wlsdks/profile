@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,6 +31,14 @@ public class BoardService {
         return Optional.of(boardRepository.save(board))
                 .map(BoardDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.INSERT_ERROR));
+    }
+
+
+    /**
+     * 유저의 로그인id로 유저가 작성한 모든 게시글 리스트를 가져온다.
+     */
+    public List<Board> findByUserId(String loginId) {
+        return boardRepository.findByUserId(loginId);
     }
 
 }

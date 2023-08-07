@@ -5,13 +5,11 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardDto;
-import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
-import org.assertj.core.api.Assertions;
+import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 @DisplayName("[Board] - 서비스 레이어 테스트")
 @Transactional
@@ -32,6 +28,8 @@ class BoardServiceTest {
 
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @DisplayName("유저가 작성한 게시글을 저장한다.")
@@ -61,7 +59,7 @@ class BoardServiceTest {
 
     @DisplayName("유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
     @Test
-    void test() {
+    void saveBoardUserNotFoundException() {
         //given
         User user = createUser();
         Board board = createBoard(null);
@@ -72,8 +70,40 @@ class BoardServiceTest {
 
     }
 
+    @DisplayName("유저의 로그인id를 통해 유저가 작성한 게시글을 조회한다.")
+    @Test
+    void test() {
+        //given
+        User user = createUser();
+        Board board1 = createBoard(user, "테스트1");
+        Board board2 = createBoard(user, "테스트2");
+        Board board3 = createBoard(user, "테스트3");
+
+        userRepository.save(user);
+        List<Board> boards = boardRepository.saveAll(List.of(board1, board2, board3));
+
+        //when
+        List<Board> boardList = boardService.findByUserId(user.getLoginId());
+
+        //then
+        assertThat(boards).isEqualTo(boardList);
+        assertThat(boardList).hasSize(3);
+
+    }
+
+
     private Board createBoard(User user) {
         return Board.of("테스트 게시글",
+                "테스트",
+                10,
+                20,
+                user,
+                List.of()
+        );
+    }
+
+    private Board createBoard(User user, String title) {
+        return Board.of(title,
                 "테스트",
                 10,
                 20,
