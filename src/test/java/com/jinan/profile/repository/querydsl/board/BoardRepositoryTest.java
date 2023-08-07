@@ -8,7 +8,6 @@ import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -28,7 +27,7 @@ class BoardRepositoryTest {
     @Autowired private BoardRepository boardRepository;
     @Autowired private UserRepository userRepository;
 
-    @DisplayName("유저의 로그인id로 모든 게시글을 리스트형태로 조회한다.")
+    @DisplayName("유저의 로그인id로 모든 게시글을 리스트로 조회한다.")
     @Test
     void findByLoginId() {
         //given
@@ -46,6 +45,20 @@ class BoardRepositoryTest {
         assertThat(boardList).hasSize(1);
         assertThat(boardList.get(0)).isInstanceOf(Board.class);
     }
+
+    @DisplayName("존재하지 않는 로그인id로 모든 게시글을 조회하면 빈 Optional<List<>> 객체를 반환한다.")
+    @Test
+    void findByLoginIdException() {
+        //given
+        String loginId = "anonymousId";
+
+        //when
+        Optional<List<Board>> boardList = boardRepository.findByLoginId(loginId);
+
+        //then
+        assertThat(boardList).isInstanceOf(Optional.class);
+    }
+
 
     private Board createBoard(User user, String title) {
         return Board.of(title,
