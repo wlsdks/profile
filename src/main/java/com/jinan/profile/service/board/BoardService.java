@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,12 +34,24 @@ public class BoardService {
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.INSERT_ERROR));
     }
 
+    /**
+     * 유저의 로그인id로 유저가 작성한 모든 게시글 리스트를 조회한다.
+     */
+    public List<BoardDto> findByUserId(String loginId) {
+        return boardRepository.findByUserId(loginId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND))
+                .stream()
+                .map(BoardDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 
     /**
-     * 유저의 로그인id로 유저가 작성한 모든 게시글 리스트를 가져온다.
+     * 게시글 id를 통해 단건의 게시글 정보를 조회한다.
      */
-    public List<Board> findByUserId(String loginId) {
-        return boardRepository.findByUserId(loginId)
+    public BoardDto selectBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+                .map(BoardDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
 

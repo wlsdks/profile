@@ -23,14 +23,9 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class BoardServiceTest {
 
-    @Autowired
-    private BoardService boardService;
-
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private UserRepository userRepository;
-
+    @Autowired private BoardService boardService;
+    @Autowired private BoardRepository boardRepository;
+    @Autowired private UserRepository userRepository;
 
     @DisplayName("유저가 작성한 게시글을 저장한다.")
     @Test
@@ -83,23 +78,40 @@ class BoardServiceTest {
         List<Board> boards = boardRepository.saveAll(List.of(board1, board2, board3));
 
         //when
-        List<Board> boardList = boardService.findByUserId(user.getLoginId());
+        List<BoardDto> boardList = boardService.findByUserId(user.getLoginId());
 
         //then
-        assertThat(boards).isEqualTo(boardList);
+        assertThat(boardList.get(0)).isInstanceOf(BoardDto.class);
         assertThat(boardList).hasSize(3);
 
     }
 
     @DisplayName("존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
     @Test
-    void test() {
+    void findByUserIdExceptionCase() {
         //given
         String loginId = "anonymous";
 
         //when & then
         assertThatThrownBy(() -> boardService.findByUserId(loginId))
                 .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("조회하고싶은 게시글을 클릭하면 그 게시글의 id로 게시글 단건을 조회한다.")
+    @Test
+    void selectBoard() {
+        //given
+        User user = createUser();
+        Board board = createBoard(user);
+        BoardDto savedBoard = boardService.saveBoard(board);
+
+        //when
+        BoardDto actual = boardService.selectBoard(board.getId());
+
+        //then
+        assertThat(actual).isEqualTo(savedBoard);
+        assertThat(actual).isInstanceOf(BoardDto.class);
+
     }
 
 
