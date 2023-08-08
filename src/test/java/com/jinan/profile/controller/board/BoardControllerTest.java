@@ -71,13 +71,10 @@ class BoardControllerTest extends ControllerTestSupport {
         User user = createUser();
         Board board = createBoard(user, "테스트");
 
-        //when
+        //when & then
         mockMvc.perform(get("/board/getAllBoard", "wlsdks12"))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        //then
-
     }
 
     private Board createBoard(User user, String title) {

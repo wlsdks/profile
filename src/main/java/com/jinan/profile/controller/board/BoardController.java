@@ -34,6 +34,9 @@ public class BoardController {
         boardService.selectBoard(boardId);
     }
 
+    /**
+     * READ - 로그인id로 모든 게시글 조회
+     */
     @ResponseBody
     @GetMapping("/getAllBoard")
     public void selectAllBoardByLoginId(String loginId) {
