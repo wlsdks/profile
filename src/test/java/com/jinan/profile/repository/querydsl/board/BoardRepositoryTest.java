@@ -63,8 +63,7 @@ class BoardRepositoryTest extends TotalTestSupport {
                 "테스트",
                 10,
                 20,
-                user,
-                List.of()
+                user
         );
     }
 

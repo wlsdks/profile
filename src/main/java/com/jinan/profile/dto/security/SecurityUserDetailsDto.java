@@ -2,6 +2,7 @@ package com.jinan.profile.dto.security;
 
 import com.jinan.profile.dto.user.UserDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,10 @@ public class SecurityUserDetailsDto implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(userDto.roleType().toString()));
+    }
+
+    public static SecurityUserDetailsDto of(UserDto userDto, Collection<? extends GrantedAuthority> authorities) {
+        return new SecurityUserDetailsDto(userDto, authorities);
     }
 
     @Override

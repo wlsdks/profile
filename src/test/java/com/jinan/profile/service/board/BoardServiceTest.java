@@ -1,6 +1,7 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.config.TotalTestSupport;
+import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
@@ -32,9 +33,10 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser();
         Board board = createBoard(user);
+        BoardRequest request = BoardRequest.of(board);
 
         //when
-        BoardDto boardDto = boardService.saveBoard(board);
+        BoardDto boardDto = boardService.saveBoard(request);
 
         //then
         assertThat(boardDto).isNotNull();
@@ -57,9 +59,10 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser();
         Board board = createBoard(null);
+        BoardRequest request = BoardRequest.of(board);
 
         //when & then
-        assertThatThrownBy(() -> boardService.saveBoard(board))
+        assertThatThrownBy(() -> boardService.saveBoard(request))
                 .isInstanceOf(ProfileApplicationException.class);
 
     }
@@ -102,10 +105,11 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser();
         Board board = createBoard(user);
-        BoardDto savedBoard = boardService.saveBoard(board);
+        BoardRequest request = BoardRequest.of(board);
+        BoardDto savedBoard = boardService.saveBoard(request);
 
         //when
-        BoardDto actual = boardService.selectBoard(board.getId());
+        BoardDto actual = boardService.selectBoard(savedBoard.boardId());
 
         //then
         assertThat(actual).isEqualTo(savedBoard);
@@ -119,8 +123,7 @@ class BoardServiceTest extends TotalTestSupport {
                 "테스트",
                 10,
                 20,
-                user,
-                List.of()
+                user
         );
     }
 
@@ -129,8 +132,7 @@ class BoardServiceTest extends TotalTestSupport {
                 "테스트",
                 10,
                 20,
-                user,
-                List.of()
+                user
         );
     }
 
