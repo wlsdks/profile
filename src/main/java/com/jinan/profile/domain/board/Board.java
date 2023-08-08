@@ -1,5 +1,6 @@
 package com.jinan.profile.domain.board;
 
+import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.user.User;
@@ -51,18 +52,28 @@ public class Board extends AuditingFields {
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
 
-    private Board(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
+    private Board(String title, String content, int views, int likes, User user) {
         this.title = title;
         this.content = content;
         this.views = views;
         this.likes = likes;
         this.user = user;
-        this.boardComments = boardComments;
     }
 
     // 생성자 factory 메소드
-    public Board of(String title, String content, int views, int likes, User user, List<BoardComment> boardComments) {
-        return new Board(title, content, views, likes, user, boardComments);
+    public static Board of(String title, String content, int views, int likes, User user) {
+        return new Board(title, content, views, likes, user);
+    }
+
+    // request를 Board 엔티티로 변환시키는 메서드
+    public static Board toRequest(BoardRequest request) {
+        return of(
+                request.getTitle(),
+                request.getContent(),
+                request.getViews(),
+                request.getLikes(),
+                request.getUser()
+        );
     }
 
     // custom Equals & hashCode 선언

@@ -1,4 +1,4 @@
-package com.jinan.profile.repository.querydsl;
+package com.jinan.profile.repository.querydsl.user;
 
 import com.jinan.profile.domain.user.User;
 

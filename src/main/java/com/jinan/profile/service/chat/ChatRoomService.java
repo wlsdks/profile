@@ -1,7 +1,7 @@
 package com.jinan.profile.service.chat;
 
 import com.jinan.profile.domain.chat.ChatRoom;
-import com.jinan.profile.repository.ChatRoomRepository;
+import com.jinan.profile.repository.chat.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
