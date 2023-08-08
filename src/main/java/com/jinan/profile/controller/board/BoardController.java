@@ -34,4 +34,10 @@ public class BoardController {
         boardService.selectBoard(boardId);
     }
 
+    @ResponseBody
+    @GetMapping("/getAllBoard")
+    public void selectAllBoardByLoginId(String loginId) {
+        boardService.findByLoginId(loginId);
+    }
+
 }

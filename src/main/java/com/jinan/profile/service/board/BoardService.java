@@ -42,7 +42,7 @@ public class BoardService {
     /**
      * 유저의 로그인id로 유저가 작성한 모든 게시글 리스트를 조회한다.
      */
-    public List<BoardDto> findByUserId(String loginId) {
+    public List<BoardDto> findByLoginId(String loginId) {
         return boardRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND))
                 .stream()

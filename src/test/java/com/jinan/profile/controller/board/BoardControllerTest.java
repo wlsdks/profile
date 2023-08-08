@@ -62,6 +62,21 @@ class BoardControllerTest extends ControllerTestSupport {
         mockMvc.perform(get("/board/{boardId}", 1L))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("유저의 로그인id를 통해 그 유저의 모든 게시글을 조회한다.")
+    @Test
+    void loginIdAllBoardSelect() throws Exception {
+        //given
+        User user = createUser();
+        Board board = createBoard(user, "테스트");
+
+        //when
+        mockMvc.perform(get("/board/getAllBoard", "wlsdks12"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        //then
 
     }
 

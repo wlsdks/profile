@@ -80,7 +80,7 @@ class BoardServiceTest extends TotalTestSupport {
         List<Board> boards = boardRepository.saveAll(List.of(board1, board2, board3));
 
         //when
-        List<BoardDto> boardList = boardService.findByUserId(user.getLoginId());
+        List<BoardDto> boardList = boardService.findByLoginId(user.getLoginId());
 
         //then
         assertThat(boardList.get(0)).isInstanceOf(BoardDto.class);
@@ -95,7 +95,7 @@ class BoardServiceTest extends TotalTestSupport {
         String loginId = "anonymous";
 
         //when & then
-        assertThatThrownBy(() -> boardService.findByUserId(loginId))
+        assertThatThrownBy(() -> boardService.findByLoginId(loginId))
                 .isInstanceOf(ProfileApplicationException.class);
     }
 
