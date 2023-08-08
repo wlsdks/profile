@@ -16,10 +16,22 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping("/save")
+    /**
+     * CREATE - 게시글 저장
+     */
     @ResponseBody
-    public void getBoard(@RequestBody BoardRequest request) {
+    @PostMapping("/save")
+    public void saveBoard(@RequestBody BoardRequest request) {
         boardService.saveBoard(request);
+    }
+
+    /**
+     * READ - 게시글 단건을 조회
+     */
+    @ResponseBody
+    @GetMapping("/{boardId}")
+    public void selectBoard(@PathVariable Long boardId) {
+        boardService.selectBoard(boardId);
     }
 
 }

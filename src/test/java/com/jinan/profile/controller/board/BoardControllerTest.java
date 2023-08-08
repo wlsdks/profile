@@ -36,9 +36,9 @@ class BoardControllerTest extends ControllerTestSupport {
     @MockBean private BoardRepository boardRepository;
     @MockBean private BoardService boardService;
 
-    @DisplayName("실제 사용자가 게시글을 작성하고 저장하면 게시글이 저장된다.")
+    @DisplayName("사용자가 게시글을 작성하고 저장하면 게시글이 저장된다.")
     @Test
-    void test1() throws Exception {
+    void boardCreate() throws Exception {
         //given
         User user = createUser();
         Board board = createBoard(user, "테스트 데이터");
@@ -51,6 +51,18 @@ class BoardControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("사용자가 게시글을 조회한다.")
+    @Test
+    void boardSelect() throws Exception {
+        //given
+
+        //when & then
+        mockMvc.perform(get("/board/{boardId}", 1L))
+                .andDo(print())
+                .andExpect(status().isOk());
+
     }
 
     private Board createBoard(User user, String title) {
