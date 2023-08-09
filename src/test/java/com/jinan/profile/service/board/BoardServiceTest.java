@@ -78,7 +78,7 @@ class BoardServiceTest extends TotalTestSupport {
         BoardRequest request = BoardRequest.of(board);
 
         //when
-        BoardDto boardDto = boardService.saveBoard(request);
+        BoardDto boardDto = boardService.createBoard(request);
 
         //then
         assertThat(boardDto).isNotNull();
@@ -97,14 +97,14 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
     @Test
-    void saveBoardUserNotFoundException() {
+    void createBoardUserNotFoundException() {
         //given
         User user = createUser();
         Board board = createBoard(null);
         BoardRequest request = BoardRequest.of(board);
 
         //when & then
-        assertThatThrownBy(() -> boardService.saveBoard(request))
+        assertThatThrownBy(() -> boardService.createBoard(request))
                 .isInstanceOf(ProfileApplicationException.class);
 
     }
@@ -148,7 +148,7 @@ class BoardServiceTest extends TotalTestSupport {
         User user = createUser();
         Board board = createBoard(user);
         BoardRequest request = BoardRequest.of(board);
-        BoardDto savedBoard = boardService.saveBoard(request);
+        BoardDto savedBoard = boardService.createBoard(request);
 
         //when
         BoardDto actual = boardService.selectBoard(savedBoard.boardId());

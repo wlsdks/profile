@@ -20,7 +20,8 @@ public class BoardController {
     private final BoardService boardService;
 
     /**
-     * READ - 게시글 리스트 이동
+     * READ - 게시글 리스트 뷰 이동
+     * 모든 게시글을 조회해서 리스트에 보여준다.
      */
     @GetMapping("/list")
     public String getList(Model model) {
@@ -31,22 +32,26 @@ public class BoardController {
         return "/board/list";
     }
 
+    /**
+     * CREATE - 게시글 작성 뷰 이동
+     */
     @GetMapping("/create")
     public String boardCreate(Model model) {
         return "/board/create";
     }
 
     /**
-     * CREATE - 게시글 저장
+     * Action - 게시글 저장기능
+     * request로 받아온 데이터를 db에 저장한다.
      */
     @ResponseBody
-    @PostMapping("/save")
-    public void saveBoard(@RequestBody BoardRequest request) {
-        boardService.saveBoard(request);
+    @PostMapping("/createBoard")
+    public void createBoard(@RequestBody BoardRequest request) {
+        boardService.createBoard(request);
     }
 
     /**
-     * READ - 게시글 단건을 조회
+     * READ - 게시글 단건 조회
      */
     @ResponseBody
     @GetMapping("/{boardId}")
@@ -55,7 +60,7 @@ public class BoardController {
     }
 
     /**
-     * READ - 로그인id로 모든 게시글 조회
+     * READ - 로그인 id로 모든 게시글 조회
      */
     @ResponseBody
     @GetMapping("/getAllBoard")

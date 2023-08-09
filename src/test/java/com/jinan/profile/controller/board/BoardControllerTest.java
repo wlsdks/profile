@@ -105,7 +105,7 @@ class BoardControllerTest extends ControllerTestSupport {
         BoardRequest request = BoardRequest.of(board);
 
         //when
-        mockMvc.perform(post("/board/save")
+        mockMvc.perform(post("/board/createBoard")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
