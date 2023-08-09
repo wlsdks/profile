@@ -3,32 +3,115 @@
 <head>
     <title>게시판 목록</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        th { background-color: #f2f2f2; }
-        a { text-decoration: none; color: #333; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 66.66%; /* 전체 화면의 5/3 */
+            margin: 40px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .main-button:hover {
+            background-color: #45a049;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .create-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .create-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-<h1>게시판 목록</h1>
-<table>
-    <thead>
-    <tr>
-        <th>제목</th>
-        <th>조회수</th>
-        <th>좋아요 수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="board : ${boards}">
-        <td><a th:href="@{/board/{id}(id=${board.id})}" th:text="${board.title}">제목</a></td>
-        <td th:text="${board.views}">0</td>
-        <td th:text="${board.likes}">0</td>
-    </tr>
-    </tbody>
-</table>
-<a href="/board/create">새 글 작성</a>
+<div class="container">
+    <div class="header">
+        <h1>게시판 목록</h1>
+        <a href="/main/rootPage" class="main-button">메인페이지</a> <!-- 메인페이지 버튼 추가 -->
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>제목</th>
+            <th>조회수</th>
+            <th>좋아요 수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boardList}">
+            <td><a th:href="@{/board/{id}(id=${board.boardId})}" th:text="${board.title}">제목</a></td>
+            <td th:text="${board.views}">0</td>
+            <td th:text="${board.likes}">0</td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/board/create" class="create-button">새 글 작성</a>
+</div>
 </body>
 </html>

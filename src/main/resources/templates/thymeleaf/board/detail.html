@@ -1,29 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="${board.title}">제목</title>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .content { border: 1px solid #ddd; padding: 15px; margin: 10px 0; }
-    a { text-decoration: none; color: #333; }
-    button { padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-  </style>
-  <script>
-    function likePost() {
-      alert('좋아요를 눌렀습니다!');
-      // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
-    }
-  </script>
+    <title th:text="${board.title}">제목</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .content {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #f2f2f2;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+    <script>
+        function likePost() {
+            alert('좋아요를 눌렀습니다!');
+            // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
+        }
+    </script>
 </head>
 <body>
 <h1 th:text="${board.title}">제목</h1>
-<p><strong>작성자:</strong> <span th:text="${board.user.username}">작성자</span></p>
-<p><strong>조회수:</strong> <span th:text="${board.views}">0</span></p>
-<p><strong>좋아요 수:</strong> <span th:text="${board.likes}">0</span> <button onclick="likePost()">좋아요</button></p>
+<p class="info"><strong>작성자:</strong> <span th:text="${board.user.username}">작성자</span></p>
+<p class="info"><strong>조회수:</strong> <span th:text="${board.views}">0</span></p>
+<p class="info"><strong>좋아요 수:</strong> <span th:text="${board.likes}">0</span>
+    <button onclick="likePost()">좋아요</button>
+</p>
 <div class="content">
-  <strong>내용:</strong>
-  <p th:text="${board.content}">내용</p>
+    <strong>내용:</strong>
+    <p th:text="${board.content}">내용</p>
 </div>
-<a href="/board">목록으로 돌아가기</a>
+<a href="/board" class="back-button">목록으로 돌아가기</a>
 </body>
 </html>
