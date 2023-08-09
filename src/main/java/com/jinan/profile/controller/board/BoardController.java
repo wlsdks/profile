@@ -6,7 +6,10 @@ import com.jinan.profile.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,6 +18,23 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
 
     private final BoardService boardService;
+
+    /**
+     * READ - 게시글 리스트 이동
+     */
+    @GetMapping("/list")
+    public String getList(Model model) {
+
+        List<BoardDto> boardDtoList = boardService.selectAllBoardList();
+
+        model.addAttribute("boardList", boardDtoList);
+        return "/board/list";
+    }
+
+    @GetMapping("/create")
+    public String boardCreate(Model model) {
+        return "/board/create";
+    }
 
     /**
      * CREATE - 게시글 저장
