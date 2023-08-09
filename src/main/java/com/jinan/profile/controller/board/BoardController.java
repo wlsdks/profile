@@ -31,6 +31,11 @@ public class BoardController {
         return "/board/list";
     }
 
+    @GetMapping("/create")
+    public String boardCreate(Model model) {
+        return "/board/create";
+    }
+
     /**
      * CREATE - 게시글 저장
      */
