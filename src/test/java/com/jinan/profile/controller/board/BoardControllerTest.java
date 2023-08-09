@@ -8,9 +8,12 @@ import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
+import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.service.board.BoardService;
 import org.assertj.core.api.Assertions;
+import org.hamcrest.FeatureMatcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +22,79 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Import(TestSecurityConfig.class)
 @DisplayName("[Board] - 컨트롤러 테스트")
 class BoardControllerTest extends ControllerTestSupport {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
+
     @MockBean private BoardRepository boardRepository;
     @MockBean private BoardService boardService;
+
+    @DisplayName("메인페이지에서는 누구나 모든 게시글을 볼 수 있다.")
+    @Test
+    void test() throws Exception {
+        //given
+        List<BoardDto> boardDtoList = Arrays.asList(
+                new BoardDto(1L, "Title 1", "Content 1", 100, 10, LocalDateTime.now(), LocalDateTime.now()),
+                new BoardDto(2L, "Title 2", "Content 2", 200, 20, LocalDateTime.now(), LocalDateTime.now())
+        );
+
+        when(boardService.selectAllBoardList()).thenReturn(boardDtoList);
+
+        //when & then
+        mockMvc.perform(get("/board/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/board/list")) // return하는 view 검증
+                .andExpect(model().attributeExists("boardList")) // "boardList" 속성이 존재하는지 검증
+                .andExpect(model().attribute("boardList", Matchers.hasSize(2))) //"boardList" 속성의 크기가 2인지 검증
+                .andExpect(model().attribute("boardList", Matchers.hasItem(
+                        Matchers.allOf(
+                                new FeatureMatcher<BoardDto, Long>(Matchers.is(1L), "boardId", "boardId") {
+                                    @Override
+                                    protected Long featureValueOf(BoardDto actual) {
+                                        return actual.boardId();
+                                    }
+                                },
+                                new FeatureMatcher<BoardDto, String>(Matchers.is("Title 1"), "title", "title") {
+                                    @Override
+                                    protected String featureValueOf(BoardDto actual) {
+                                        return actual.title();
+                                    }
+                                },
+                                new FeatureMatcher<BoardDto, String>(Matchers.is("Content 1"), "content", "content") {
+                                    @Override
+                                    protected String featureValueOf(BoardDto actual) {
+                                        return actual.content();
+                                    }
+                                },
+                                new FeatureMatcher<BoardDto, Integer>(Matchers.is(100), "views", "views") {
+                                    @Override
+                                    protected Integer featureValueOf(BoardDto actual) {
+                                        return actual.views();
+                                    }
+                                },
+                                new FeatureMatcher<BoardDto, Integer>(Matchers.is(10), "likes", "likes") {
+                                    @Override
+                                    protected Integer featureValueOf(BoardDto actual) {
+                                        return actual.likes();
+                                    }
+                                }
+                        )
+                ))); // "boardList" 속성에 특정 조건을 만족하는 항목이 포함되어 있는지 검증
+    }
+
 
     @DisplayName("사용자가 게시글을 작성하고 저장하면 게시글이 저장된다.")
     @Test
