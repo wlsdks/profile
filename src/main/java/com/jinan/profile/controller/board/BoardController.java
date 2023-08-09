@@ -1,15 +1,23 @@
 package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardDto;
+import com.jinan.profile.dto.user.UserDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
+import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +26,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final UserService userService;
 
     /**
      * READ - 게시글 리스트 뷰 이동
@@ -44,11 +53,23 @@ public class BoardController {
      * Action - 게시글 저장기능
      * request로 받아온 데이터를 db에 저장한다.
      */
-    @ResponseBody
     @PostMapping("/createBoard")
-    public void createBoard(@RequestBody BoardRequest request) {
+    public String createBoard(@RequestBody BoardRequest request, Principal principal) {
+        // 현재 인증된 사용자의 loginId 가져오기
+        String loginId = principal.getName();
+
+        // 사용자 로그인id를 사용하여 사용자의 전체 정보 가져오기 (예: 서비스 또는 리포지토리에서)
+        User user = Optional.ofNullable(userService.findByLoginId(loginId))
+                .map(User::of)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+        // 사용자 정보를 request에 추가
+        request.setUser(user);
+
         boardService.createBoard(request);
+        return "redirect:/board/list";
     }
+
 
     /**
      * READ - 게시글 단건 조회

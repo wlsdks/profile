@@ -87,9 +87,34 @@
             <label for="file">파일 첨부</label>
             <input type="file" id="file" name="file">
         </div>
-        <button type="submit">작성하기</button>
+        <button type="button" id="submit-button">작성하기</button>
     </form>
     <a href="/board/list" class="back-button">뒤로가기</a> <!-- 뒤로가기 버튼 추가 -->
 </div>
 </body>
 </html>
+
+<!-- jQuery를 CDN에서 가져오기 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#submit-button').click(function() {
+        let title = $('#title').val();
+        let content = $('#content').val();
+        // 파일 처리 로직은 생략
+
+        $.ajax({
+            url: '/board/createBoard',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ title: title, content: content }),
+            success: function(response) {
+                // 성공 시 /board/list로 리다이렉트
+                window.location.href = '/board/list';
+            },
+            error: function(xhr, status, error) {
+                // 실패 시 에러 처리
+                alert('게시글 작성에 실패했습니다.');
+            }
+        });
+    });
+</script>
