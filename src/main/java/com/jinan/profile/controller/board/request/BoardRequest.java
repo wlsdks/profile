@@ -6,6 +6,7 @@ import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Setter
 @Getter
 public class BoardRequest {
 
