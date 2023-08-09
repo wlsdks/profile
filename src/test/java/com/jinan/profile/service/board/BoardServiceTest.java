@@ -10,22 +10,64 @@ import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
+@TestConfiguration
 @DisplayName("[Board] - 서비스 레이어 테스트")
 class BoardServiceTest extends TotalTestSupport {
 
-    @Autowired private BoardService boardService;
-    @Autowired private BoardRepository boardRepository;
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private BoardService boardService;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @DisplayName("등록된 모든 게시글을 조회한다.")
+    @Test
+    void findAllBoardList() {
+        //given
+        User user = createUser();
+        Board board = createBoard(user);
+        Board board1 = createBoard(user);
+        Board board2 = createBoard(user);
+
+        User savedUser = userRepository.save(user);
+        List<BoardDto> savedBoardDtoList = boardRepository
+                .saveAll(List.of(board, board1, board2))
+                .stream()
+                .map(BoardDto::fromEntity)
+                .collect(Collectors.toList());
+
+
+        //when
+        List<BoardDto> boardDtoList = boardService.selectAllBoardList();
+
+        //then
+        assertThat(boardDtoList).hasSize(3);
+        assertThat(boardDtoList).isNotNull();
+        assertThat(boardDtoList.get(0)).isInstanceOf(BoardDto.class);
+        assertThat(boardDtoList).isEqualTo(savedBoardDtoList);
+
+    }
 
     @DisplayName("유저가 작성한 게시글을 저장한다.")
     @Test

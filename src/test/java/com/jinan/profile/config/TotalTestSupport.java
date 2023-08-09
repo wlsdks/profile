@@ -13,6 +13,4 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 public abstract class TotalTestSupport {
 
-
-
 }

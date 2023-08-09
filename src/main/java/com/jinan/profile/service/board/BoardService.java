@@ -60,4 +60,14 @@ public class BoardService {
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
 
+    /**
+     * 존재하는 모든 게시글을 가져온다.
+     */
+    public List<BoardDto> selectAllBoardList() {
+        return boardRepository.findAll()
+                .stream()
+                .map(BoardDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }
