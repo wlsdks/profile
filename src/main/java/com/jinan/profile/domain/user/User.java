@@ -3,6 +3,7 @@ package com.jinan.profile.domain.user;
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
+import com.jinan.profile.dto.user.UserDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -87,7 +88,8 @@ public class User extends AuditingFields {
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
     @Builder
-    private User(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+    private User(Long id, String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
+        this.id = id;
         this.loginId = loginId;
         this.password = password;
         this.username = username;
@@ -97,7 +99,19 @@ public class User extends AuditingFields {
     }
     // factory 메소드 of() 생성
     public static User of(String loginId, String password, String username, String email, RoleType roleType, UserStatus userStatus) {
-        return new User(loginId, password, username, email, roleType, userStatus);
+        return new User(null, loginId, password, username, email, roleType, userStatus);
+    }
+
+    // userDto를 User 엔티티로 변환시키는 메서드
+    public static User of(UserDto userDto) {
+        return User.builder()
+                .id(userDto.userId())
+                .loginId(userDto.loginId())
+                .password(userDto.password())
+                .email(userDto.email())
+                .roleType(userDto.roleType())
+                .userStatus(userDto.status())
+                .build();
     }
 
     /**
