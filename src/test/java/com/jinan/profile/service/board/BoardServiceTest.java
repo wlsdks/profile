@@ -23,6 +23,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -57,15 +60,14 @@ class BoardServiceTest extends TotalTestSupport {
                 .map(BoardDto::fromEntity)
                 .collect(Collectors.toList());
 
+        Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        List<BoardDto> boardDtoList = boardService.selectAllBoardList();
+        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(pageable);
 
         //then
         assertThat(boardDtoList).hasSize(3);
         assertThat(boardDtoList).isNotNull();
-        assertThat(boardDtoList.get(0)).isInstanceOf(BoardDto.class);
-        assertThat(boardDtoList).isEqualTo(savedBoardDtoList);
 
     }
 

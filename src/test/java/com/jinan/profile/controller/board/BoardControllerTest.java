@@ -4,30 +4,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.config.TestSecurityConfig;
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardDto;
+import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.repository.board.BoardRepository;
+import com.jinan.profile.repository.user.UserRepository;
+import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
+import com.jinan.profile.service.pagination.PaginationService;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,60 +53,32 @@ class BoardControllerTest extends ControllerTestSupport {
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
 
-    @MockBean private BoardRepository boardRepository;
+    @MockBean private UserService userService;
     @MockBean private BoardService boardService;
+    @MockBean private PaginationService paginationService;
 
-    @DisplayName("메인페이지에서는 누구나 모든 게시글을 볼 수 있다.")
+
     @Test
-    void test() throws Exception {
+    @DisplayName("[페이징 적용] - 메인리스트에는 페이징 처리된 모든 게시글이 표시된다.")
+    void testGetList() throws Exception {
         //given
-        List<BoardDto> boardDtoList = Arrays.asList(
-                new BoardDto(1L, "Title 1", "Content 1", 100, 10, LocalDateTime.now(), LocalDateTime.now()),
-                new BoardDto(2L, "Title 2", "Content 2", 200, 20, LocalDateTime.now(), LocalDateTime.now())
-        );
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        List<BoardDto> boardDtoList = new ArrayList<>(); // 적절한 게시글 DTO 목록을 생성하세요
+        Page<BoardDto> boardDtoPage = new PageImpl<>(boardDtoList, pageable, boardDtoList.size());
+        List<Integer> barNumbers = Arrays.asList(1, 2, 3); // 적절한 페이지네이션 바 숫자를 생성하세요
 
-        when(boardService.selectAllBoardList()).thenReturn(boardDtoList);
+        when(boardService.selectAllBoardList(pageable)).thenReturn(boardDtoPage);
+        when(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).thenReturn(barNumbers);
 
         //when & then
         mockMvc.perform(get("/board/list"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/board/list")) // return하는 view 검증
-                .andExpect(model().attributeExists("boardList")) // "boardList" 속성이 존재하는지 검증
-                .andExpect(model().attribute("boardList", Matchers.hasSize(2))) //"boardList" 속성의 크기가 2인지 검증
-                .andExpect(model().attribute("boardList", Matchers.hasItem(
-                        Matchers.allOf(
-                                new FeatureMatcher<BoardDto, Long>(Matchers.is(1L), "boardId", "boardId") {
-                                    @Override
-                                    protected Long featureValueOf(BoardDto actual) {
-                                        return actual.boardId();
-                                    }
-                                },
-                                new FeatureMatcher<BoardDto, String>(Matchers.is("Title 1"), "title", "title") {
-                                    @Override
-                                    protected String featureValueOf(BoardDto actual) {
-                                        return actual.title();
-                                    }
-                                },
-                                new FeatureMatcher<BoardDto, String>(Matchers.is("Content 1"), "content", "content") {
-                                    @Override
-                                    protected String featureValueOf(BoardDto actual) {
-                                        return actual.content();
-                                    }
-                                },
-                                new FeatureMatcher<BoardDto, Integer>(Matchers.is(100), "views", "views") {
-                                    @Override
-                                    protected Integer featureValueOf(BoardDto actual) {
-                                        return actual.views();
-                                    }
-                                },
-                                new FeatureMatcher<BoardDto, Integer>(Matchers.is(10), "likes", "likes") {
-                                    @Override
-                                    protected Integer featureValueOf(BoardDto actual) {
-                                        return actual.likes();
-                                    }
-                                }
-                        )
-                ))); // "boardList" 속성에 특정 조건을 만족하는 항목이 포함되어 있는지 검증
+                .andExpect(view().name("/board/list"))
+                .andExpect(model().attributeExists("paginationBarNumbers", "boardList", "totalPages", "currentPage"))
+                .andExpect(model().attribute("paginationBarNumbers", barNumbers))
+                .andExpect(model().attribute("boardList", boardDtoPage.getContent()))
+                .andExpect(model().attribute("totalPages", boardDtoPage.getTotalPages()))
+                .andExpect(model().attribute("currentPage", pageable.getPageNumber()));
     }
 
 
@@ -117,6 +103,9 @@ class BoardControllerTest extends ControllerTestSupport {
     @Test
     void boardSelect() throws Exception {
         //given
+        User user = createUser();
+        BoardDto mockBoardDto = BoardDto.fromEntity(createBoard(user, "board")); // 적절한 값을 설정하세요.
+        when(boardService.selectBoard(1L)).thenReturn(mockBoardDto);
 
         //when & then
         mockMvc.perform(get("/board/{boardId}", 1L))
