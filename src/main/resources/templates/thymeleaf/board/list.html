@@ -87,6 +87,36 @@
         .create-button:hover {
             background-color: #45a049;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        .pagination a:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+
+        .pagination a:last-child {
+            border-radius: 0 5px 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -114,6 +144,15 @@
         </tbody>
     </table>
     <a href="/board/create" class="create-button">새 글 작성</a>
+</div>
+
+<!--paging 추가-->
+<div class="pagination">
+    <a th:if="${currentPage > 1}" th:href="@{/board/list?page=} + ${currentPage - 1}">&laquo;</a>
+    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/board/list?page=} + ${i}" th:text="${i}" th:class="${i == currentPage ? 'active' : ''}"></a>
+    </th:block>
+    <a th:if="${currentPage < totalPages}" th:href="@{/board/list?page=} + ${currentPage + 1}">&raquo;</a>
 </div>
 </body>
 </html>

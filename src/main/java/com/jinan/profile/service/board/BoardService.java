@@ -8,6 +8,9 @@ import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,12 +65,13 @@ public class BoardService {
 
     /**
      * 존재하는 모든 게시글을 가져온다.
+     * paging을 적용시켜서 10개씩 페이지에 보여주도록 했다.
      */
-    public List<BoardDto> selectAllBoardList() {
-        return boardRepository.findAll()
-                .stream()
-                .map(BoardDto::fromEntity)
-                .collect(Collectors.toList());
+    public Page<BoardDto> selectAllBoardList(int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        return boardRepository.findAll(pageable)
+                .map(BoardDto::fromEntity);
     }
+
 
 }

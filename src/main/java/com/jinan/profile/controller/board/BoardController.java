@@ -10,6 +10,7 @@ import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,13 +34,18 @@ public class BoardController {
      * 모든 게시글을 조회해서 리스트에 보여준다.
      */
     @GetMapping("/list")
-    public String getList(Model model) {
+    public String getList(
+            Model model,
+            @RequestParam(defaultValue = "1") int page
+    ) {
+        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(page);
+        model.addAttribute("boardList", boardDtoList.getContent()); // getContent()로 실제 목록을 가져옵니다.
+        model.addAttribute("totalPages", boardDtoList.getTotalPages());
+        model.addAttribute("currentPage", page);
 
-        List<BoardDto> boardDtoList = boardService.selectAllBoardList();
-
-        model.addAttribute("boardList", boardDtoList);
         return "/board/list";
     }
+
 
     /**
      * CREATE - 게시글 작성 뷰 이동
