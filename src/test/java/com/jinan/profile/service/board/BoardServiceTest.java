@@ -161,6 +161,24 @@ class BoardServiceTest extends TotalTestSupport {
 
     }
 
+    @DisplayName("작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
+    @Test
+    void test() {
+        //given
+        User user = createUser();
+        User savedUser = userRepository.save(user);
+        Board board = createBoard(savedUser, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        //when
+        BoardDto actual = boardService.findById(savedBoard.getId());
+
+        //then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(BoardDto.fromEntity(savedBoard));
+        assertThat(actual).isInstanceOf(BoardDto.class);
+    }
+
 
     private Board createBoard(User user) {
         return Board.of("테스트 게시글",

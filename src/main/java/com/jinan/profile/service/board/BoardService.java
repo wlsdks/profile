@@ -1,6 +1,7 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ErrorCode;
@@ -73,4 +74,14 @@ public class BoardService {
                 .map(BoardDto::fromEntity);
     }
 
+    /**
+     * 게시글의 id를 통해 게시글 정보를 가져온다.
+     */
+    public BoardDto findById(Long boardId) {
+        return boardRepository.findById(boardId)
+                .map(BoardDto::fromEntity)
+                .orElseThrow(
+                        () -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)
+                );
+    }
 }
