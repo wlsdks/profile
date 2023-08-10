@@ -3,26 +3,41 @@
 <head>
     <title th:text="${board.title}">제목</title>
     <link rel="stylesheet" href="/css/board/detail.css">
-    <script>
-        function likePost() {
-            alert('좋아요를 눌렀습니다!');
-            // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
-        }
-    </script>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${board.title}">제목</h1>
-    <p class="info"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></p>
-    <p class="info"><strong>조회수:</strong> <span th:text="${board.views}">0</span></p>
-    <p class="info"><strong>좋아요 수:</strong> <span th:text="${board.likes}">0</span>
-        <button onclick="likePost()">좋아요</button>
-    </p>
+    <div class="header">
+        <h1 th:text="${board.title}">제목</h1>
+    </div>
+    <div class="info">
+        <div class="author-date">
+            <span class="author"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></span>
+            <span class="date"><strong>작성일:</strong> <span th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span></span>
+        </div>
+    </div>
     <div class="content">
         <strong>내용:</strong>
         <p th:text="${board.content}">내용</p>
     </div>
-    <a href="/board/list" class="back-button">목록으로 돌아가기</a>
+    <div class="likes-views">
+        <span class="views"><strong>조회수:</strong> <span th:text="${board.views}">0</span></span>
+        <div class="likes">
+            <button onclick="likePost()">좋아요</button>
+            <span th:text="${board.likes}">0</span>
+        </div>
+    </div>
+    <div class="actions">
+        <a href="/board/list" class="back-button">목록으로 돌아가기</a>
+        <a href="/board/edit" class="edit-button">수정하기</a>
+    </div>
 </div>
 </body>
 </html>
+
+
+<script>
+    function likePost() {
+        alert('좋아요를 눌렀습니다!');
+        // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
+    }
+</script>

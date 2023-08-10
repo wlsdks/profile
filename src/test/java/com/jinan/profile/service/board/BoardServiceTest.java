@@ -58,7 +58,7 @@ class BoardServiceTest extends TotalTestSupport {
                 .saveAll(List.of(board, board1, board2))
                 .stream()
                 .map(BoardDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
 
         Pageable pageable = PageRequest.of(0, 10);
 
