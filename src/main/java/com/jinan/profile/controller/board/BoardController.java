@@ -86,6 +86,22 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    /**
+     * UPDATE - 게시글 수정 기능
+     */
+    @GetMapping("/update/{boardId}")
+    public String updateBoard(@PathVariable Long boardId, Model model) {
+
+        // 해당 id의 게시글을 찾는다.
+        BoardResponse boardResponse = Optional.of(boardService.findById(boardId))
+                .map(BoardResponse::fromDto)
+                .get();
+
+        model.addAttribute("boardResponse", boardResponse);
+
+        return "/board/update";
+    }
+
 
     /**
      * READ - 게시글 단건 조회

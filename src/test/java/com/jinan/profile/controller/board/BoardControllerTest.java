@@ -39,8 +39,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,12 +50,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("[Board] - 컨트롤러 테스트")
 class BoardControllerTest extends ControllerTestSupport {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @MockBean private UserService userService;
-    @MockBean private BoardService boardService;
-    @MockBean private PaginationService paginationService;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private BoardService boardService;
+    @MockBean
+    private PaginationService paginationService;
 
 
     @Test
@@ -125,6 +130,35 @@ class BoardControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @DisplayName("게시글id를 통해 해당하는 게시글의 기존 정보를 모두 가져와서 수정하기 페이지에 뿌려준다.")
+    @Test
+    void updateViewReturn() throws Exception {
+        User user = createUser();
+        //given
+        Board board = Board.builder()
+                .id(1L)
+                .title("test")
+                .content("test")
+                .views(10)
+                .user(user)
+                .likes(20)
+                .build();
+
+        BoardDto boardDto = BoardDto.fromEntity(board);
+
+        given(boardService.findById(anyLong())).willReturn(boardDto);
+
+        //when
+        mockMvc.perform(get("/board/update/{boardId}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/board/update"))
+                .andExpect(model().attributeExists("boardResponse"));
+
+        //then
+
+    }
+
 
     private Board createBoard(User user, String title) {
         return Board.of(title,
