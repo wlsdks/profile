@@ -1,6 +1,7 @@
 package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.dto.user.UserDto;
@@ -45,12 +46,12 @@ public class BoardController {
             ModelMap map
     ) {
 
-        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(pageable);
-        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boardDtoList.getTotalPages());
+        Page<BoardResponse> boardResponses = boardService.selectAllBoardList(pageable).map(BoardResponse::fromDto);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boardResponses.getTotalPages());
 
         map.addAttribute("paginationBarNumbers", barNumbers);
-        map.addAttribute("boardList", boardDtoList.getContent()); // getContent()로 실제 목록을 가져옵니다.
-        map.addAttribute("totalPages", boardDtoList.getTotalPages());
+        map.addAttribute("boardList", boardResponses.getContent()); // getContent()로 실제 목록을 가져옵니다.
+        map.addAttribute("totalPages", boardResponses.getTotalPages());
         map.addAttribute("currentPage", pageable.getPageNumber());
 
         return "/board/list";
