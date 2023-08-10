@@ -1,66 +1,72 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background-color: #f5f6f7;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    width: 60%; /* 전체 화면의 3/5 */
-    margin: 40px;
-    background-color: #fff;
+    width: 50%;
+    margin: 40px auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden; /* 추가된 부분 */
 }
 
 h1 {
-    color: #333;
+    color: #1d2129;
+    margin: 0;
+    padding-bottom: 20px;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     font-weight: bold;
+    color: #4a4a4a;
 }
 
 input[type="text"],
-textarea {
+textarea,
+input[type="file"] {
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
-button {
+input[type="text"]:focus,
+textarea:focus {
+    border-color: #1877f2;
+}
+
+button, .back-button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #1877f2;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    font-weight: bold;
     transition: background-color 0.3s;
+    float: right; /* 오른쪽 정렬 */
+    margin: 10px; /* 간격 조정 */
 }
 
-button:hover {
-    background-color: #45a049;
+button:hover, .back-button:hover {
+    background-color: #155a8a;
 }
 
 .back-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 20px;
     background-color: #f2f2f2;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.back-button:hover {
-    background-color: #e0e0e0;
+    color: #333;
 }
