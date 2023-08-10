@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/css/board/update.css">
+    <title>게시글 수정</title>
+</head>
+<body>
+<div class="container">
+    <h1>게시글 수정</h1>
+    <form action="/board/updateBoard" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" th:value="${boardResponse.title}" required>
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" rows="10" required th:text="${boardResponse.content}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="file">파일 첨부</label>
+            <input type="file" id="file" name="file">
+        </div>
+        <button type="button" id="update-button">수정하기</button>
+    </form>
+    <a href="/board/list" class="back-button">뒤로가기</a>
+</div>
+</body>
+</html>
+
+
+<!-- jQuery를 CDN에서 가져오기 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#update-button').click(function () {
+        let title = $('#title').val();
+        let content = $('#content').val();
+        // 파일 처리 로직은 생략
+
+        $.ajax({
+            url: '/board/updateBoard',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({title: title, content: content}),
+            success: function (response) {
+                // 성공 시 /board/list로 리다이렉트
+                window.location.href = '/board/list';
+            },
+            error: function (xhr, status, error) {
+                // 실패 시 에러 처리
+                alert('게시글 수정에 실패했습니다.');
+            }
+        });
+    });
+</script>
