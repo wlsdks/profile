@@ -13,18 +13,22 @@
     <table>
         <thead>
         <tr>
+            <th>순번</th> <!-- 순번 칼럼 추가 -->
             <th>제목</th>
             <th>조회수</th>
             <th>좋아요 수</th>
             <th>작성자</th>
+            <th>작성일</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="board : ${boardList}">
+        <tr th:each="board, stat : ${boardList}">
+            <td th:text="${stat.count + currentPage * 10}"></td> <!-- 순번 표시 -->
             <td><a th:href="@{/board/{id}(id=${board.boardId})}" th:text="${board.title}">제목</a></td>
             <td th:text="${board.views}">0</td>
             <td th:text="${board.likes}">0</td>
             <td th:text="${board.userDto.username}">0</td>
+            <td th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">0</td>
         </tr>
         </tbody>
     </table>
