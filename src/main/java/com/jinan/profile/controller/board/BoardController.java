@@ -74,10 +74,12 @@ public class BoardController {
     /**
      * READ - 게시글 단건 조회
      */
-    @ResponseBody
     @GetMapping("/{boardId}")
-    public void selectBoard(@PathVariable Long boardId) {
-        boardService.selectBoard(boardId);
+    public String selectBoard(@PathVariable Long boardId, Model model) {
+        BoardDto boardDto = boardService.selectBoard(boardId);
+        model.addAttribute("board", boardDto);
+
+        return "/board/detail";
     }
 
     /**
