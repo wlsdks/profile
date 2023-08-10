@@ -7,6 +7,7 @@ import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -84,4 +85,17 @@ public class BoardService {
                         () -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)
                 );
     }
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public void updateBoard(BoardRequest request, Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new EntityNotFoundException("Board not found"));
+
+        board.change(request);
+    }
+
+
 }

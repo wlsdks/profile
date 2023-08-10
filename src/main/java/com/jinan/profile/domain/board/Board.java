@@ -59,6 +59,10 @@ public class Board extends AuditingFields {
     }
 
     // 생성자 factory 메소드
+    public static Board of(Long id, String title, String content, int views, int likes, User user) {
+        return new Board(id, title, content, views, likes, user);
+    }
+
     public static Board of(String title, String content, int views, int likes, User user) {
         return new Board(null, title, content, views, likes, user);
     }
@@ -66,12 +70,19 @@ public class Board extends AuditingFields {
     // request를 Board 엔티티로 변환시키는 메서드
     public static Board toRequest(BoardRequest request) {
         return of(
+                request.getId(),
                 request.getTitle(),
                 request.getContent(),
                 request.getViews(),
                 request.getLikes(),
                 request.getUser()
         );
+    }
+
+    public void change(BoardRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        // 다른 필드도 필요한 대로 변경
     }
 
     // custom Equals & hashCode 선언

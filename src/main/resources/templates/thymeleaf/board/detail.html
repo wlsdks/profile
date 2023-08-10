@@ -28,7 +28,7 @@
     </div>
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
-        <a href="/board/update" class="edit-button">수정하기</a>
+        <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button">수정하기</a>
     </div>
 </div>
 </body>

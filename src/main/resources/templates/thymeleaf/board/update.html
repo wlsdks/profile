@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="/css/board/update.css">
+    <link rel="stylesheet" href="/css/board/create.css">
     <title>게시글 수정</title>
 </head>
 <body>
 <div class="container">
     <h1>게시글 수정</h1>
-    <form action="/board/updateBoard" method="post" enctype="multipart/form-data">
-        <div class="form-group">
+    <form th:action="@{/board/updateBoard/{boardId}(boardId=${boardId})}" method="post" enctype="multipart/form-data" id="update-form">
+    <div class="form-group">
             <label for="title">제목</label>
             <input type="text" id="title" name="title" th:value="${boardResponse.title}" required>
         </div>
@@ -27,17 +27,16 @@
 </body>
 </html>
 
-
 <!-- jQuery를 CDN에서 가져오기 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $('#update-button').click(function () {
         let title = $('#title').val();
         let content = $('#content').val();
-        // 파일 처리 로직은 생략
+        let url = $('#update-form').attr('action'); // form의 action 속성에서 URL 가져오기
 
         $.ajax({
-            url: '/board/updateBoard',
+            url: url, // 동적 URL 사용
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({title: title, content: content}),

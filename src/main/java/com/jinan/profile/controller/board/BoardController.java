@@ -4,7 +4,6 @@ import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardDto;
-import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.UserService;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -41,7 +39,7 @@ public class BoardController {
      * 모든 게시글을 조회해서 리스트에 보여준다.
      */
     @GetMapping("/list")
-    public String getList(
+    public String boardListView(
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             ModelMap map
     ) {
@@ -61,7 +59,7 @@ public class BoardController {
      * CREATE - 게시글 작성 뷰 이동
      */
     @GetMapping("/create")
-    public String boardCreate(Model model) {
+    public String boardCreateView(Model model) {
         return "/board/create";
     }
 
@@ -87,10 +85,10 @@ public class BoardController {
     }
 
     /**
-     * UPDATE - 게시글 수정 기능
+     * UPDATE - 게시글 수정 뷰 이동
      */
     @GetMapping("/update/{boardId}")
-    public String updateBoard(@PathVariable Long boardId, Model model) {
+    public String updateBoardView(@PathVariable Long boardId, Model model) {
 
         // 해당 id의 게시글을 찾는다.
         BoardResponse boardResponse = Optional.of(boardService.findById(boardId))
@@ -98,8 +96,17 @@ public class BoardController {
                 .get();
 
         model.addAttribute("boardResponse", boardResponse);
-
+        model.addAttribute("boardId", boardId);
         return "/board/update";
+    }
+
+    /**
+     * action - 게시글 업데이트
+     */
+    @PostMapping("/updateBoard/{boardId}")
+    public String updateBoard(@RequestBody BoardRequest request, @PathVariable Long boardId) {
+        boardService.updateBoard(request, boardId);
+        return "redirect:/board/list";
     }
 
 
@@ -109,6 +116,8 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String selectBoard(@PathVariable Long boardId, Model model) {
         BoardDto boardDto = boardService.selectBoard(boardId);
+
+        model.addAttribute("boardId", boardId);
         model.addAttribute("board", boardDto);
 
         return "/board/detail";
