@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class BoardService {
 
@@ -29,6 +29,7 @@ public class BoardService {
     /**
      * 게시글을 저장한다. -> 게시글을 작성한 유저는 무조건 있어야 한다.
      */
+    @Transactional
     public BoardDto createBoard(BoardRequest request) {
         // 1. request에서 board 엔티티로 변환해 준다.
         Board board = Board.toRequest(request);
@@ -67,11 +68,9 @@ public class BoardService {
      * 존재하는 모든 게시글을 가져온다.
      * paging을 적용시켜서 10개씩 페이지에 보여주도록 했다.
      */
-    public Page<BoardDto> selectAllBoardList(int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+    public Page<BoardDto> selectAllBoardList(Pageable pageable) {
         return boardRepository.findAll(pageable)
                 .map(BoardDto::fromEntity);
     }
-
 
 }

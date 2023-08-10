@@ -8,12 +8,17 @@ import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
+import com.jinan.profile.service.pagination.PaginationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -28,6 +33,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final UserService userService;
+    private final PaginationService paginationService;
 
     /**
      * READ - 게시글 리스트 뷰 이동
@@ -35,17 +41,20 @@ public class BoardController {
      */
     @GetMapping("/list")
     public String getList(
-            Model model,
-            @RequestParam(defaultValue = "1") int page
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
     ) {
-        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(page);
-        model.addAttribute("boardList", boardDtoList.getContent()); // getContent()로 실제 목록을 가져옵니다.
-        model.addAttribute("totalPages", boardDtoList.getTotalPages());
-        model.addAttribute("currentPage", page);
+
+        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boardDtoList.getTotalPages());
+
+        map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("boardList", boardDtoList.getContent()); // getContent()로 실제 목록을 가져옵니다.
+        map.addAttribute("totalPages", boardDtoList.getTotalPages());
+        map.addAttribute("currentPage", pageable.getPageNumber());
 
         return "/board/list";
     }
-
 
     /**
      * CREATE - 게시글 작성 뷰 이동
