@@ -5,10 +5,7 @@ import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +48,9 @@ public class Board extends AuditingFields {
     private List<File> files = new ArrayList<>();
 
     // id, 생성일자, 수정일자는 자동으로 등록된다.
-
-    private Board(String title, String content, int views, int likes, User user) {
+    @Builder
+    private Board(Long id, String title, String content, int views, int likes, User user) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.views = views;
@@ -62,7 +60,7 @@ public class Board extends AuditingFields {
 
     // 생성자 factory 메소드
     public static Board of(String title, String content, int views, int likes, User user) {
-        return new Board(title, content, views, likes, user);
+        return new Board(null, title, content, views, likes, user);
     }
 
     // request를 Board 엔티티로 변환시키는 메서드
