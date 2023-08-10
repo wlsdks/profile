@@ -20,7 +20,7 @@ public class GlobalControllerAdvice {
      */
     @ExceptionHandler(ProfileApplicationException.class)
     public ModelAndView handleProfileApplicationException(ProfileApplicationException e) {
-        log.error("Error occurs {}", e.toString());
+        log.error("Error occurs : {}, message : {}", e.getErrorCode(), e.getErrorCode().getMessage());
 
         // Spring MVC는 알아서 'error'라는 이름의 뷰를 찾아서 렌더링한다.
         ModelAndView mav = new ModelAndView("error"); // 에러 페이지의 뷰 이름

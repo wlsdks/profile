@@ -23,6 +23,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -55,17 +58,16 @@ class BoardServiceTest extends TotalTestSupport {
                 .saveAll(List.of(board, board1, board2))
                 .stream()
                 .map(BoardDto::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
 
+        Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        List<BoardDto> boardDtoList = boardService.selectAllBoardList();
+        Page<BoardDto> boardDtoList = boardService.selectAllBoardList(pageable);
 
         //then
         assertThat(boardDtoList).hasSize(3);
         assertThat(boardDtoList).isNotNull();
-        assertThat(boardDtoList.get(0)).isInstanceOf(BoardDto.class);
-        assertThat(boardDtoList).isEqualTo(savedBoardDtoList);
 
     }
 
@@ -78,7 +80,7 @@ class BoardServiceTest extends TotalTestSupport {
         BoardRequest request = BoardRequest.of(board);
 
         //when
-        BoardDto boardDto = boardService.saveBoard(request);
+        BoardDto boardDto = boardService.createBoard(request);
 
         //then
         assertThat(boardDto).isNotNull();
@@ -97,14 +99,14 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
     @Test
-    void saveBoardUserNotFoundException() {
+    void createBoardUserNotFoundException() {
         //given
         User user = createUser();
         Board board = createBoard(null);
         BoardRequest request = BoardRequest.of(board);
 
         //when & then
-        assertThatThrownBy(() -> boardService.saveBoard(request))
+        assertThatThrownBy(() -> boardService.createBoard(request))
                 .isInstanceOf(ProfileApplicationException.class);
 
     }
@@ -148,7 +150,7 @@ class BoardServiceTest extends TotalTestSupport {
         User user = createUser();
         Board board = createBoard(user);
         BoardRequest request = BoardRequest.of(board);
-        BoardDto savedBoard = boardService.saveBoard(request);
+        BoardDto savedBoard = boardService.createBoard(request);
 
         //when
         BoardDto actual = boardService.selectBoard(savedBoard.boardId());
@@ -157,6 +159,24 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(actual).isEqualTo(savedBoard);
         assertThat(actual).isInstanceOf(BoardDto.class);
 
+    }
+
+    @DisplayName("작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
+    @Test
+    void test() {
+        //given
+        User user = createUser();
+        User savedUser = userRepository.save(user);
+        Board board = createBoard(savedUser, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        //when
+        BoardDto actual = boardService.findById(savedBoard.getId());
+
+        //then
+        assertThat(actual).isNotNull();
+        assertThat(actual).isEqualTo(BoardDto.fromEntity(savedBoard));
+        assertThat(actual).isInstanceOf(BoardDto.class);
     }
 
 

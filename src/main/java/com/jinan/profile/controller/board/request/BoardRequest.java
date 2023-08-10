@@ -3,9 +3,11 @@ package com.jinan.profile.controller.board.request;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Setter
 @Getter
 public class BoardRequest {
 
@@ -15,6 +17,7 @@ public class BoardRequest {
     private int views;          // 조회수
     private int likes;          // 좋아요 수
     private User user;        // 유저
+    private MultipartFile file;
 
     @Builder
     private BoardRequest(Long id, String title, String content, int views, int likes, User user) {

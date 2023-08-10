@@ -2,27 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" href="/css/board/create.css">
-    <title>게시글 작성</title>
+    <title>게시글 수정</title>
 </head>
 <body>
 <div class="container">
-    <h1>게시글 작성</h1>
-    <form action="/board/createBoard" method="post" enctype="multipart/form-data">
-        <div class="form-group">
+    <h1>게시글 수정</h1>
+    <form th:action="@{/board/updateBoard/{boardId}(boardId=${boardId})}" method="post" enctype="multipart/form-data" id="update-form">
+    <div class="form-group">
             <label for="title">제목</label>
-            <input type="text" id="title" name="title" required>
+            <input type="text" id="title" name="title" th:value="${boardResponse.title}" required>
         </div>
         <div class="form-group">
             <label for="content">내용</label>
-            <textarea id="content" name="content" rows="10" required></textarea>
+            <textarea id="content" name="content" rows="10" required th:text="${boardResponse.content}"></textarea>
         </div>
         <div class="form-group">
             <label for="file">파일 첨부</label>
             <input type="file" id="file" name="file">
         </div>
-        <button type="button" id="submit-button">작성하기</button>
+        <button type="button" id="update-button">수정하기</button>
     </form>
-    <a href="/board/list" class="back-button">뒤로가기</a> <!-- 뒤로가기 버튼 추가 -->
+    <a href="/board/list" class="back-button">뒤로가기</a>
 </div>
 </body>
 </html>
@@ -30,23 +30,23 @@
 <!-- jQuery를 CDN에서 가져오기 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $('#submit-button').click(function() {
+    $('#update-button').click(function () {
         let title = $('#title').val();
         let content = $('#content').val();
-        // 파일 처리 로직은 생략
+        let url = $('#update-form').attr('action'); // form의 action 속성에서 URL 가져오기
 
         $.ajax({
-            url: '/board/createBoard',
+            url: url, // 동적 URL 사용
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ title: title, content: content }),
-            success: function(response) {
+            data: JSON.stringify({title: title, content: content}),
+            success: function (response) {
                 // 성공 시 /board/list로 리다이렉트
                 window.location.href = '/board/list';
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // 실패 시 에러 처리
-                alert('게시글 작성에 실패했습니다.');
+                alert('게시글 수정에 실패했습니다.');
             }
         });
     });

@@ -1,0 +1,140 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f6f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 60%;
+    background-color: #fff;
+    padding: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.header {
+    margin-bottom: 20px; /* 제목과 작성자 사이의 간격을 늘림 */
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #606770;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.author-date {
+    display: flex;
+    align-items: center;
+}
+
+.author, .date {
+    margin-right: 10px; /* 작성자와 작성일 사이의 간격 */
+}
+
+.likes-views {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.views {
+    margin-right: 10px; /* 조회수와 좋아요 사이의 간격 */
+}
+
+h1 {
+    color: #1d2129;
+    margin: 0;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #155a8a;
+}
+
+.content {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 50vh; /* 뷰포트 높이의 50%로 최소 높이 설정 */
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.likes button {
+    padding: 8px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.likes button:hover {
+    background-color: #155a8a;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.edit-button, .back-button {
+    display: flex; /* Flexbox를 사용하여 내용을 중앙에 배치 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    padding: 10px 20px; /* 패딩을 조정하여 버튼의 높이와 너비를 적절히 설정 */
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s; /* 호버 효과를 부드럽게 만들기 위한 전환 효과 */
+    text-decoration: none;
+    color: #333;
+}
+
+.edit-button {
+    background-color: #1877f2;
+    color: #fff;
+}
+
+.edit-button:hover {
+    background-color: #155a8a;
+}
+
+.back-button {
+    background-color: #f2f2f2;
+}
+
+.back-button:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
