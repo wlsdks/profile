@@ -194,7 +194,7 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Gradle ###
-.gradle
+../../../study/workspace/profile/.gradle
 **/build/
 !src/**/build/
 
