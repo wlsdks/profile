@@ -27,7 +27,6 @@ public class CommentService {
      */
     public BoardCommentDto createComment(BoardCommentRequest request) {
 
-        // todo: fromRequest에서 getId를 할때 request가 null이라고 나온다. request안에있는 BoardRequest가 null이다.
         BoardComment boardComment = Optional.of(request)
                 .map(BoardCommentDto::fromRequest)
                 .map(BoardComment::fromDto)
