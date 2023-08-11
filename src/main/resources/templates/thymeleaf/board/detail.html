@@ -28,16 +28,39 @@
     </div>
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
-        <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button">수정하기</a>
+        <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button" th:data-board-id="${boardId}">수정하기</a>
     </div>
 </div>
 </body>
 </html>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $('.edit-button').click(function (e) {
+        e.preventDefault(); // 기본 링크 동작을 막습니다.
+        let boardId = $(this).data('board-id'); // data-board-id 속성에서 boardId 가져오기
+        let url = '/board/update/validUser?boardId=' + boardId; // 검증 URL에 boardId 포함
+
+        // 사용자 검증 요청을 보냅니다.
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                // 검증 성공 시 수정 페이지로 이동합니다.
+                debugger
+                window.location.href = '/board/update/' + boardId;
+            },
+            error: function (xhr, status, error) {
+                // 검증 실패 시 에러 메시지를 표시합니다.
+                alert('유저가 다릅니다. 수정할 수 없습니다.');
+            }
+        });
+    });
+
+
     function likePost() {
         alert('좋아요를 눌렀습니다!');
         // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
     }
+
 </script>
