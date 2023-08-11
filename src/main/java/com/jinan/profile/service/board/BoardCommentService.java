@@ -26,8 +26,11 @@ public class BoardCommentService {
     /**
      * 유저가 댓글을 작성하면 저장된다.
      */
-    public BoardCommentDto createComment(BoardCommentRequest request) {
+    public BoardCommentDto createComment(BoardCommentRequest request, Long boardId) {
+        // todo: 1.일단 저장할때 작성된 게시글의 boardId와 연관을 시켜줘야하니 request안의 BoardRequest 그리고 그 안의 id 값에 boardId를 넣어주고 계속 map으로 변환한다.
+        request.getBoardRequest().setId(boardId);
 
+        // todo: 2. 데이터를 저장하기 위해 request를 entity로 변환한다.
         BoardComment boardComment = Optional.of(request)
                 .map(BoardCommentDto::fromRequest)
                 .map(BoardComment::fromDto)

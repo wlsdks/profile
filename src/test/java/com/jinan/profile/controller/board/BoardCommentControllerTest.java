@@ -57,7 +57,7 @@ class BoardCommentControllerTest extends ControllerTestSupport {
         BoardCommentRequest boardCommentRequest = createBoardCommentRequest();
         String jsonResult = objectMapper.writeValueAsString(boardCommentRequest);
 
-        given(boardCommentService.createComment(any(BoardCommentRequest.class))).willReturn(any(BoardCommentDto.class));
+        given(boardCommentService.createComment(any(BoardCommentRequest.class), anyLong())).willReturn(any(BoardCommentDto.class));
 
         //when & then
         mockMvc.perform(post("/board/comment/create") // POST 메서드로 변경

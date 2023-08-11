@@ -71,7 +71,7 @@
         let boardId = $('.edit-button').data('board-id');
         let content = $('#comment-input').val();
         $.ajax({
-            url: '/board/comment/add/' + boardId,
+            url: '/board/comment/create/' + boardId,
             method: 'POST',
             data: { content: content },
             success: function() {

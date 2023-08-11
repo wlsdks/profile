@@ -39,8 +39,9 @@ public class BoardCommentController {
      */
     @ResponseBody
     @PostMapping("/create")
-    public ResponseEntity<?> createComment(@RequestBody BoardCommentRequest request) {
-        boardCommentService.createComment(request);
+    public ResponseEntity<?> createComment(@RequestBody BoardCommentRequest request, Long boardId) {
+
+        boardCommentService.createComment(request, boardId);
         return ResponseEntity.ok("댓글 저장에 성공했습니다.");
     }
 

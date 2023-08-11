@@ -47,7 +47,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
         request.setUserRequest(UserRequest.fromEntity(savedUser));
 
         //when
-        BoardCommentDto actual = boardCommentService.createComment(request);
+        BoardCommentDto actual = boardCommentService.createComment(request, savedBoard.getId());
 
         //then
         assertThat(actual).isNotNull();
