@@ -48,7 +48,7 @@ public class BoardComment extends AuditingFields {
     }
 
     // 생성자 factory method 선언
-    public BoardComment of(Board board, User user, String content) {
+    public static BoardComment of(Board board, User user, String content) {
         return new BoardComment(board, user, content);
     }
 
