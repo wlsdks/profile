@@ -93,9 +93,9 @@ public class BoardController {
     @GetMapping("/update/validUser")
     @ResponseBody
     public ResponseEntity<String> validUpdateUser(Long boardId, Authentication authentication) {
-        String username = authentication.getName();
+        String loginId = authentication.getName();
         // 유저 검증 로직 작성
-        boolean validUser = boardService.validUser(boardId, username);
+        boolean validUser = boardService.validUser(boardId, loginId);
         if (validUser) {
             // 검증된 유저인 경우, 200 OK 응답 반환
             return ResponseEntity.ok("검증된 유저입니다.");
