@@ -10,6 +10,7 @@ import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -18,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("[Comment] - 댓글 서비스 테스트")
 class CommentServiceTest extends TotalTestSupport {
 
-    private CommentService commentService;
+    @Autowired private CommentService commentService;
 
-    @DisplayName("유저가 댓글을 작성하면 저장된다.")
+    @DisplayName("존재하는 유저가 댓글을 작성하고 저장하는기능을 검증한다.")
     @Test
     void test() {
         //given
