@@ -5,8 +5,7 @@ import com.jinan.profile.domain.board.BoardComment;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
-import com.jinan.profile.repository.board.BoardRepository;
-import com.jinan.profile.repository.board.CommentRepository;
+import com.jinan.profile.repository.board.BoardCommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,9 +17,9 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class CommentService {
+public class BoardCommentService {
 
-    private final CommentRepository commentRepository;
+    private final BoardCommentRepository boardCommentRepository;
 
     /**
      * 유저가 댓글을 작성하면 저장된다.
@@ -32,7 +31,7 @@ public class CommentService {
                 .map(BoardComment::fromDto)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
-        return BoardCommentDto.fromEntity(commentRepository.save(boardComment));
+        return BoardCommentDto.fromEntity(boardCommentRepository.save(boardComment));
     }
 
 }

@@ -6,7 +6,7 @@ import com.jinan.profile.controller.board.request.BoardCommentRequest;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
-import com.jinan.profile.service.board.CommentService;
+import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,12 +21,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("[Comment] - 댓글 컨트롤러 테스트")
-class CommentControllerTest extends ControllerTestSupport {
+class BoardCommentControllerTest extends ControllerTestSupport {
 
     @Autowired private ObjectMapper objectMapper;
     @Autowired private MockMvc mockMvc;
 
-    @MockBean private CommentService commentService;
+    @MockBean private BoardCommentService boardCommentService;
     @MockBean private BoardService boardService;
     @MockBean private UserService userService;
     @MockBean private PaginationService paginationService;
@@ -39,7 +39,7 @@ class CommentControllerTest extends ControllerTestSupport {
         BoardCommentRequest boardCommentRequest = createBoardCommentRequest();
         String jsonResult = objectMapper.writeValueAsString(boardCommentRequest);
 
-        given(commentService.createComment(any(BoardCommentRequest.class))).willReturn(any(BoardCommentDto.class));
+        given(boardCommentService.createComment(any(BoardCommentRequest.class))).willReturn(any(BoardCommentDto.class));
 
         //when & then
         mockMvc.perform(post("/board/comment/create") // POST 메서드로 변경

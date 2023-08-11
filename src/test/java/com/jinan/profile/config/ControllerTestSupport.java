@@ -1,7 +1,7 @@
 package com.jinan.profile.config;
 
 import com.jinan.profile.controller.board.BoardController;
-import com.jinan.profile.controller.board.CommentController;
+import com.jinan.profile.controller.board.BoardCommentController;
 import com.jinan.profile.controller.chat.ChatMainController;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 @WebMvcTest({
         ChatMainController.class,
         BoardController.class,
-        CommentController.class
+        BoardCommentController.class
 })
 public abstract class ControllerTestSupport {
 

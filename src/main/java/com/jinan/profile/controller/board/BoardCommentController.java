@@ -1,7 +1,7 @@
 package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
-import com.jinan.profile.service.board.CommentService;
+import com.jinan.profile.service.board.BoardCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/board/comment")
 @RequiredArgsConstructor
 @Controller
-public class CommentController {
+public class BoardCommentController {
 
-    private final CommentService commentService;
+    private final BoardCommentService boardCommentService;
 
     /**
      * 게시글에 해당하는 댓글 조회
@@ -30,7 +30,7 @@ public class CommentController {
     @ResponseBody
     @PostMapping("/create")
     public ResponseEntity<?> createComment(@RequestBody BoardCommentRequest request) {
-        commentService.createComment(request);
+        boardCommentService.createComment(request);
         return ResponseEntity.ok("댓글 저장에 성공했습니다.");
     }
 

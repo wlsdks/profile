@@ -11,7 +11,7 @@ import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.repository.board.BoardRepository;
-import com.jinan.profile.repository.board.CommentRepository;
+import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,12 +22,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("[Comment] - 댓글 서비스 테스트")
-class CommentServiceTest extends TotalTestSupport {
+class BoardCommentServiceTest extends TotalTestSupport {
 
-    @Autowired private CommentService commentService;
+    @Autowired private BoardCommentService boardCommentService;
     @Autowired private UserRepository userRepository;
     @Autowired private BoardRepository boardRepository;
-    @Autowired private CommentRepository commentRepository;
+    @Autowired private BoardCommentRepository boardCommentRepository;
 
     @DisplayName("유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
     @Test
@@ -46,7 +46,7 @@ class CommentServiceTest extends TotalTestSupport {
         request.setUserRequest(UserRequest.fromEntity(savedUser));
 
         //when
-        BoardCommentDto actual = commentService.createComment(request);
+        BoardCommentDto actual = boardCommentService.createComment(request);
 
         //then
         assertThat(actual).isNotNull();
@@ -59,7 +59,7 @@ class CommentServiceTest extends TotalTestSupport {
                 user,
                 "내용"
         );
-        return commentRepository.save(comment);
+        return boardCommentRepository.save(comment);
     }
 
     private Board createBoard(User user, String title) {
