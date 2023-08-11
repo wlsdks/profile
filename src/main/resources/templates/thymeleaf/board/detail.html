@@ -12,7 +12,8 @@
     <div class="info">
         <div class="author-date">
             <span class="author"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></span>
-            <span class="date"><strong>작성일:</strong> <span th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span></span>
+            <span th:if="${board.createdAt != null}" th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
+            <span th:unless="${board.createdAt != null}">날짜 없음</span>
         </div>
     </div>
     <div class="content">

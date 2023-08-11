@@ -107,18 +107,21 @@ class BoardControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("사용자가 게시글을 조회한다.")
+    @DisplayName("사용자가 게시글 목록에서 제목을 클릭해서 게시글을 조회한다.")
     @Test
     void boardSelect() throws Exception {
         //given
         User user = createUser();
         BoardDto mockBoardDto = BoardDto.fromEntity(createBoard(user, "board")); // 적절한 값을 설정하세요.
-        when(boardService.selectBoard(1L)).thenReturn(mockBoardDto);
+        when(boardService.selectBoard(anyLong())).thenReturn(mockBoardDto);
 
         //when & then
         mockMvc.perform(get("/board/{boardId}", 1L))
-                .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("board")) // board 객체가 모델에 있는지 확인
+                .andExpect(model().attributeExists("boardId")) // board 객체가 모델에 있는지 확인
+                .andExpect(view().name("/board/detail"))
+                .andReturn();
     }
 
     @DisplayName("유저의 로그인id를 통해 그 유저의 모든 게시글을 조회한다.")
@@ -187,7 +190,8 @@ class BoardControllerTest extends ControllerTestSupport {
 
 
     private Board createBoard(User user, String title) {
-        return Board.of(title,
+        return Board.of(
+                title,
                 "테스트",
                 10,
                 20,

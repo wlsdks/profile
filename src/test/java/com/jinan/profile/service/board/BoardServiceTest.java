@@ -10,26 +10,15 @@ import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
-import org.aspectj.lang.annotation.After;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -48,7 +37,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void findAllBoardList() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         Board board = createBoard(user);
         Board board1 = createBoard(user);
         Board board2 = createBoard(user);
@@ -75,7 +64,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void saveBoard() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         Board board = createBoard(user);
         BoardRequest request = BoardRequest.of(board);
 
@@ -101,7 +90,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void createBoardUserNotFoundException() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         Board board = createBoard(null);
         BoardRequest request = BoardRequest.of(board);
 
@@ -115,7 +104,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void findByUserId() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         Board board1 = createBoard(user, "테스트1");
         Board board2 = createBoard(user, "테스트2");
         Board board3 = createBoard(user, "테스트3");
@@ -147,7 +136,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void selectBoard() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         Board board = createBoard(user);
         BoardRequest request = BoardRequest.of(board);
         BoardDto savedBoard = boardService.createBoard(request);
@@ -165,7 +154,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void test() {
         //given
-        User user = createUser();
+        User user = createUser("wlsdks12");
         User savedUser = userRepository.save(user);
         Board board = createBoard(savedUser, "test");
         Board savedBoard = boardRepository.save(board);
@@ -177,6 +166,24 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(actual).isNotNull();
         assertThat(actual).isEqualTo(BoardDto.fromEntity(savedBoard));
         assertThat(actual).isInstanceOf(BoardDto.class);
+    }
+
+    @DisplayName("게시글을 수정하기 전에 게시글을 작성한 유저가 수정하고자하는 유저와 같은지 검증한다.")
+    @Test
+    void validUser() {
+        //given
+        User user = createUser("dig04058");
+        User savedUser = userRepository.save(user);
+
+        Board board = createBoard(savedUser, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        //when
+        boolean actual = boardService.validUser(savedBoard.getId(), savedUser.getLoginId());
+
+        //then
+        assertThat(actual).isTrue();
+
     }
 
 
@@ -198,9 +205,9 @@ class BoardServiceTest extends TotalTestSupport {
         );
     }
 
-    private User createUser() {
+    private User createUser(String loginId) {
         return User.of(
-                "wlsdks12",
+                loginId,
                 "wlsdks12",
                 "wlsdks",
                 "wlsdks12@naver.com",
