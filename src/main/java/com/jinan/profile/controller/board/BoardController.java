@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -85,6 +88,24 @@ public class BoardController {
     }
 
     /**
+     * 게시글 수정할때 유저를 검증하는 ajax기능을 위한 컨트롤러
+     */
+    @GetMapping("/update/validUser")
+    @ResponseBody
+    public ResponseEntity<String> validUpdateUser(Long boardId, Authentication authentication) {
+        String loginId = authentication.getName();
+        // 유저 검증 로직 작성
+        boolean validUser = boardService.validUser(boardId, loginId);
+        if (validUser) {
+            // 검증된 유저인 경우, 200 OK 응답 반환
+            return ResponseEntity.ok("검증된 유저입니다.");
+        }
+        // 검증되지 않은 유저인 경우, 400 Bad Request 응답 반환
+        return ResponseEntity.status(ErrorCode.NOT_VALID_ERROR.getStatus()).body("검증되지 않은 유저입니다.");
+    }
+
+
+    /**
      * UPDATE - 게시글 수정 뷰 이동
      */
     @GetMapping("/update/{boardId}")
@@ -94,6 +115,7 @@ public class BoardController {
         BoardResponse boardResponse = Optional.of(boardService.findById(boardId))
                 .map(BoardResponse::fromDto)
                 .get();
+
 
         model.addAttribute("boardResponse", boardResponse);
         model.addAttribute("boardId", boardId);

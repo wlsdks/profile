@@ -4,9 +4,11 @@ import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.board.BoardDto;
+import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
+import com.jinan.profile.repository.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     /**
      * 게시글을 저장한다. -> 게시글을 작성한 유저는 무조건 있어야 한다.
@@ -84,6 +87,27 @@ public class BoardService {
                 .orElseThrow(
                         () -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)
                 );
+    }
+
+    /**
+     * 게시글을 수정하기 전에 게시글을 작성한 사람과 수정하려는 사람이 동일한 사람인지 검증한다.
+     */
+    public boolean validUser(Long boardId, String loginId) {
+
+        BoardDto boardDto = boardRepository.findById(boardId)
+                .map(BoardDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+        UserDto userDto = userRepository.findByLoginId(boardDto.userDto().loginId())
+                .map(UserDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+        // 시큐리티에 담긴 로그인id가 게시글 안에있던 유저정보에서 꺼내온 유저의 id와 다르다면 검증 실패다.
+        if (!loginId.equals(userDto.loginId())) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

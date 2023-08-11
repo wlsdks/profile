@@ -28,6 +28,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,18 +107,21 @@ class BoardControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("사용자가 게시글을 조회한다.")
+    @DisplayName("사용자가 게시글 목록에서 제목을 클릭해서 게시글을 조회한다.")
     @Test
     void boardSelect() throws Exception {
         //given
         User user = createUser();
         BoardDto mockBoardDto = BoardDto.fromEntity(createBoard(user, "board")); // 적절한 값을 설정하세요.
-        when(boardService.selectBoard(1L)).thenReturn(mockBoardDto);
+        when(boardService.selectBoard(anyLong())).thenReturn(mockBoardDto);
 
         //when & then
         mockMvc.perform(get("/board/{boardId}", 1L))
-                .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("board")) // board 객체가 모델에 있는지 확인
+                .andExpect(model().attributeExists("boardId")) // board 객체가 모델에 있는지 확인
+                .andExpect(view().name("/board/detail"))
+                .andReturn();
     }
 
     @DisplayName("유저의 로그인id를 통해 그 유저의 모든 게시글을 조회한다.")
@@ -159,9 +165,33 @@ class BoardControllerTest extends ControllerTestSupport {
 
     }
 
+    @DisplayName("게시글을 수정할때는 이 메서드에 요청을 보내서 게시글을 작성한 사람인지 검증한다.")
+    @Test
+    void test() throws Exception {
+        //given
+        String username = "user";
+        Authentication authentication = mock(Authentication.class);
+
+        given(authentication.getName()).willReturn(username);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        given(securityContext.getAuthentication()).willReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        given(boardService.validUser(anyLong(), eq(username))).willReturn(true);
+
+        //when & then
+        mockMvc.perform(
+                        get("/board/update/validUser")
+                                .param("boardId", "1")
+                )
+                .andExpect(status().isOk());
+    }
+
 
     private Board createBoard(User user, String title) {
-        return Board.of(title,
+        return Board.of(
+                title,
                 "테스트",
                 10,
                 20,
