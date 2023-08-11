@@ -56,7 +56,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
 
     @DisplayName("게시글의 id를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
     @Test
-    void test() {
+    void getBoardComment() {
         //given
         User savedUser = createUser();
         Board savedBoard = createBoard(savedUser, "test");

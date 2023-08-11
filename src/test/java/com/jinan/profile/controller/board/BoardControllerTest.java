@@ -9,6 +9,7 @@ import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.service.UserService;
+import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.board.BoardService;
 import com.jinan.profile.service.pagination.PaginationService;
 import org.junit.jupiter.api.DisplayName;
@@ -37,17 +38,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("[Board] - 컨트롤러 테스트")
 class BoardControllerTest extends ControllerTestSupport {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private MockMvc mockMvc;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private UserService userService;
-    @MockBean
-    private BoardService boardService;
-    @MockBean
-    private PaginationService paginationService;
+    @MockBean private UserService userService;
+    @MockBean private BoardService boardService;
+    @MockBean private PaginationService paginationService;
+    @MockBean private BoardCommentService boardCommentService;
 
 
     @Test

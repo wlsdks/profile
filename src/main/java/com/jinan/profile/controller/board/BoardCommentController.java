@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RequestMapping("/board/comment")
 @RequiredArgsConstructor
@@ -22,14 +25,13 @@ public class BoardCommentController {
      * 게시글에 해당하는 댓글 조회
      * 고민인게 이걸 ajax로 호출해서 아래에 뿌리도록 할까? 아니면 게시글을 조회할때 한번에 데이터를 동시에 가져오도록 할까?
      */
+    @ResponseBody
     @GetMapping("/get/{boardId}")
-    public String getComment(@PathVariable Long boardId, ModelMap modelMap) {
-
-//        BoardCommentResponse boardCommentResponse = boardCommentService.getBoardComment(boardId)
-//                .map(BoardCommentResponse::fromDto);
-
-        modelMap.addAttribute("comment", null);
-        return null;
+    public List<BoardCommentResponse> getComment(@PathVariable Long boardId) {
+        return boardCommentService.getBoardComment(boardId)
+                .stream()
+                .map(BoardCommentResponse::fromDto)
+                .toList();
     }
 
     /**
