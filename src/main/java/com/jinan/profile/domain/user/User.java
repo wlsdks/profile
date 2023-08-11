@@ -114,6 +114,19 @@ public class User extends AuditingFields {
                 .build();
     }
 
+    // dto -> entity 변환 메서드
+    public static User fromDto(UserDto dto) {
+        return new User(
+                dto.userId(),
+                dto.loginId(),
+                dto.password(),
+                dto.username(),
+                dto.email(),
+                dto.roleType(),
+                dto.status()
+        );
+    }
+
     /**
      * lombok의 equalsAndHashCode대신에 cmd+n으로 직접 만들었다.
      * lombok으로 만든다면 모든필드를 검사하지만 이렇게 직접 id만 만들면 id값만으로 비교하기때문에 최적화가 가능하다.

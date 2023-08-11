@@ -1,5 +1,6 @@
 package com.jinan.profile.dto.board;
 
+import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.domain.board.BoardSubComment;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,16 @@ public record BoardSubCommentDto(
                 entity.getContent(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
+        );
+    }
+
+    // request -> dto 변환 메서드
+    public static BoardSubCommentDto fromRequest(BoardSubCommentRequest request) {
+        return new BoardSubCommentDto(
+                request.getBoardSubCommentId(),
+                request.getContent(),
+                request.getCreatedAt(),
+                request.getUpdatedAt()
         );
     }
 

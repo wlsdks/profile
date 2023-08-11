@@ -4,6 +4,7 @@ import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.file.File;
 import com.jinan.profile.domain.user.User;
+import com.jinan.profile.dto.board.BoardDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -76,6 +77,18 @@ public class Board extends AuditingFields {
                 request.getViews(),
                 request.getLikes(),
                 request.getUser()
+        );
+    }
+
+    // dto -> entity 변환 메서드
+    public static Board fromDto(BoardDto dto) {
+        return of(
+                dto.boardId(),
+                dto.title(),
+                dto.content(),
+                dto.views(),
+                dto.likes(),
+                User.fromDto(dto.userDto())
         );
     }
 

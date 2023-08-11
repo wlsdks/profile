@@ -1,5 +1,6 @@
 package com.jinan.profile.dto.board;
 
+import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
@@ -41,6 +42,20 @@ public record BoardDto(
                         .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
+        );
+    }
+
+    // request -> dto 변환 메서드
+    public static BoardDto fromRequest(BoardRequest request) {
+        return of(
+                request.getId(),
+                request.getTitle(),
+                request.getContent(),
+                request.getViews(),
+                request.getLikes(),
+                UserDto.fromEntity(request.getUser()),
+                null,
+                null
         );
     }
 

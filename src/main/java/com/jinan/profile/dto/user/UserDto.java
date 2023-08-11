@@ -1,5 +1,6 @@
 package com.jinan.profile.dto.user;
 
+import com.jinan.profile.controller.user.request.UserRequest;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.UserStatus;
@@ -30,42 +31,19 @@ public record UserDto(
     // security에서 사용할 팩토리 메서드
     public static UserDto of(String loginId) {
         return new UserDto(
-                null,
-                loginId,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
+                null, loginId, null, null, null, null, null, null, null
         );
     }
 
     // Principal에서 사용할 factory method of 선언
     public static UserDto of(Long userId, String loginId, String username, String password, String email, RoleType roleType) {
         return new UserDto(
-                userId,
-                loginId,
-                username,
-                password,
-                null,
-                email,
-                roleType,
-                null,
-                null
+                userId, loginId, username, password, null, email, roleType, null, null
         );
     }
 
     // 서비스 레이어에서 entity를 dto로 변환시켜주는 코드
     public static UserDto fromEntity(User entity) {
-
-//        // stream으로 데이터를 변환해서 받아준다.
-//        List<UserDetailsDto> userDetails = entity.getUserDetails()
-//                .stream()
-//                .map(UserDetailsDto::fromEntity)
-//                .collect(Collectors.toList());
-
         return UserDto.of(
                 entity.getId(),
                 entity.getLoginId(),
@@ -80,5 +58,19 @@ public record UserDto(
         );
     }
 
+    // request -> dto 변환 메서드
+    public static UserDto fromRequest(UserRequest request) {
+        return of(
+                request.getUserId(),
+                request.getLoginId(),
+                request.getUsername(),
+                request.getPassword(),
+                request.getStatus(),
+                request.getEmail(),
+                request.getRoleType(),
+                request.getCreatedAt(),
+                request.getUpdatedAt()
+        );
+    }
 
 }

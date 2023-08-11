@@ -2,11 +2,9 @@ package com.jinan.profile.domain.board;
 
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.User;
+import com.jinan.profile.dto.board.BoardCommentDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +39,32 @@ public class BoardComment extends AuditingFields {
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     // 생성자 private 선언
-    private BoardComment(Board board, User user, String content) {
+    @Builder
+    private BoardComment(Long id, Board board, User user, String content) {
+        this.id = id;
         this.board = board;
         this.user = user;
         this.content = content;
     }
 
     // 생성자 factory method 선언
-    public BoardComment of(Board board, User user, String content) {
-        return new BoardComment(board, user, content);
+    public static BoardComment of(Long id, Board board, User user, String content) {
+        return new BoardComment(id, board, user, content);
+    }
+
+    // 생성자 factory method 선언
+    public static BoardComment of(Board board, User user, String content) {
+        return new BoardComment(null, board, user, content);
+    }
+
+    // dto -> entity로 변환하는 메서드
+    public static BoardComment fromDto(BoardCommentDto dto) {
+        return new BoardComment(
+                dto.boardCommentId(),
+                Board.fromDto(dto.boardDto()),
+                User.fromDto(dto.userDto()),
+                dto.content()
+        );
     }
 
     // equals and hashCode 최적화
@@ -64,4 +79,5 @@ public class BoardComment extends AuditingFields {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
 }

@@ -27,6 +27,13 @@
             <span th:text="${board.likes}">0</span>
         </div>
     </div>
+    <div class="comment-section">
+        <div class="comment-form">
+            <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
+            <button onclick="addComment()">댓글 작성</button>
+        </div>
+        <div id="comment-list"></div>
+    </div>
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
         <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button" th:data-board-id="${boardId}">수정하기</a>
@@ -58,6 +65,57 @@
         });
     });
 
+
+    // 댓글 작성 함수
+    function addComment() {
+        let boardId = $('.edit-button').data('board-id');
+        let content = $('#comment-input').val();
+        $.ajax({
+            url: '/board/comment/create/' + boardId,
+            method: 'POST',
+            data: { content: content },
+            success: function() {
+                getComments(boardId); // 댓글을 다시 불러옵니다.
+                $('#comment-input').val(''); // 입력창을 비웁니다.
+            }
+        });
+    }
+
+
+    // 댓글을 받아와서 뿌려주는 로직
+    function getComments(boardId) {
+        $.ajax({
+            url: '/board/comment/get/' + boardId,
+            method: 'GET',
+            success: function(comments) {
+                let commentListHtml = '';
+                comments.forEach(function(comment) {
+                    commentListHtml += '<div class="comment">' +
+                        '<span class="author">' + comment.userResponse.username + '</span>' +
+                        '<div class="content">' +
+                        '<p>' + comment.content + '</p>' +
+                        '</div>' +
+                        '<span class="date">' + comment.createdAt + '</span>' +
+                        '<div class="actions">' +
+                        '<button onclick="editComment(' + comment.boardCommentId + ')">수정</button>' +
+                        '<button onclick="deleteComment(' + comment.boardCommentId + ')">삭제</button>' +
+                        '</div>' +
+                        '</div>';
+                });
+                $('#comment-list').html(commentListHtml);
+            }
+        });
+    }
+
+    // 댓글 수정 함수
+    function editComment(commentId) {
+        // 댓글 수정 로직
+    }
+
+    // 댓글 삭제 함수
+    function deleteComment(commentId) {
+        // 댓글 삭제 로직
+    }
 
     function likePost() {
         alert('좋아요를 눌렀습니다!');
