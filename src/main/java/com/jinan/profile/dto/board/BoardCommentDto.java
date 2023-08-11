@@ -30,7 +30,7 @@ public record BoardCommentDto(
         );
     }
 
-    // entity를 받아서 dto를 만들어주는 코드
+    // entity -> dto 변환 메서드
     public static BoardCommentDto fromEntity(BoardComment entity) {
 
         // 순환참조가 안되도록 잘 확인하자

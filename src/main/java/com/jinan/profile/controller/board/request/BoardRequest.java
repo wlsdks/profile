@@ -2,14 +2,11 @@ package com.jinan.profile.controller.board.request;
 
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
-import com.jinan.profile.dto.board.BoardDto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
-@Setter
-@Getter
+@Data
 public class BoardRequest {
 
     private Long id;            // pk
@@ -30,17 +27,17 @@ public class BoardRequest {
         this.user = user;
     }
 
+    // todo: 여기를 일단 수정해야 한다.
     // board 엔티티를 request로 변환하는 메서드
-    public static BoardRequest of(Board board) {
-        return BoardRequest.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .views(board.getViews())
-                .likes(board.getLikes())
-                .user(board.getUser())
-                .build();
-
+    public static BoardRequest fromEntity(Board entity) {
+        return new BoardRequest(
+                entity.getId(),
+                entity.getTitle(),
+                entity.getContent(),
+                entity.getViews(),
+                entity.getLikes(),
+                entity.getUser()
+        );
     }
 
 }

@@ -1,5 +1,6 @@
 package com.jinan.profile.controller.user.request;
 
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import lombok.AccessLevel;
@@ -43,7 +44,19 @@ public class UserRequest {
         );
     }
 
-
-
+    // entity -> request 변환 메서드
+    public static UserRequest fromEntity(User entity) {
+        return new UserRequest(
+                entity.getId(),
+                entity.getLoginId(),
+                entity.getUsername(),
+                entity.getPassword(),
+                entity.getUserStatus(),
+                entity.getEmail(),
+                entity.getRoleType(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
 
 }

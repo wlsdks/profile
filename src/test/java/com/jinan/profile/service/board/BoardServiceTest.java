@@ -66,7 +66,7 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(user);
-        BoardRequest request = BoardRequest.of(board);
+        BoardRequest request = BoardRequest.fromEntity(board);
 
         //when
         BoardDto boardDto = boardService.createBoard(request);
@@ -92,7 +92,7 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(null);
-        BoardRequest request = BoardRequest.of(board);
+        BoardRequest request = BoardRequest.fromEntity(board);
 
         //when & then
         assertThatThrownBy(() -> boardService.createBoard(request))
@@ -138,7 +138,7 @@ class BoardServiceTest extends TotalTestSupport {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(user);
-        BoardRequest request = BoardRequest.of(board);
+        BoardRequest request = BoardRequest.fromEntity(board);
         BoardDto savedBoard = boardService.createBoard(request);
 
         //when
