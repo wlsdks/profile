@@ -1,14 +1,8 @@
 package com.jinan.profile.controller.board;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
-import com.jinan.profile.controller.board.request.BoardRequest;
-import com.jinan.profile.controller.user.request.UserRequest;
-import com.jinan.profile.domain.board.Board;
-import com.jinan.profile.domain.board.BoardComment;
-import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardService;
@@ -16,22 +10,14 @@ import com.jinan.profile.service.board.CommentService;
 import com.jinan.profile.service.pagination.PaginationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.thymeleaf.spring6.processor.SpringObjectTagProcessor;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("[Comment] - 댓글 컨트롤러 테스트")
