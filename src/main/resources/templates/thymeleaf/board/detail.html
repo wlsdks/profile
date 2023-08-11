@@ -27,8 +27,11 @@
             <span th:text="${board.likes}">0</span>
         </div>
     </div>
-    <div class="comments">
-        <h2>댓글</h2>
+    <div class="comment-section">
+        <div class="comment-form">
+            <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
+            <button onclick="addComment()">댓글 작성</button>
+        </div>
         <div id="comment-list"></div>
     </div>
     <div class="actions">
@@ -62,11 +65,22 @@
         });
     });
 
-    // 페이지가 로딩되면 댓글을 가져옵니다.
-    $(document).ready(function() {
-        let boardId = $('.edit-button').data('board-id'); // data-board-id 속성에서 boardId 가져오기
-        getComments(boardId);
-    });
+
+    // 댓글 작성 함수
+    function addComment() {
+        let boardId = $('.edit-button').data('board-id');
+        let content = $('#comment-input').val();
+        $.ajax({
+            url: '/board/comment/add/' + boardId,
+            method: 'POST',
+            data: { content: content },
+            success: function() {
+                getComments(boardId); // 댓글을 다시 불러옵니다.
+                $('#comment-input').val(''); // 입력창을 비웁니다.
+            }
+        });
+    }
+
 
     // 댓글을 받아와서 뿌려주는 로직
     function getComments(boardId) {
@@ -78,13 +92,29 @@
                 comments.forEach(function(comment) {
                     commentListHtml += '<div class="comment">' +
                         '<span class="author">' + comment.userResponse.username + '</span>' +
+                        '<div class="content">' +
                         '<p>' + comment.content + '</p>' +
+                        '</div>' +
                         '<span class="date">' + comment.createdAt + '</span>' +
+                        '<div class="actions">' +
+                        '<button onclick="editComment(' + comment.boardCommentId + ')">수정</button>' +
+                        '<button onclick="deleteComment(' + comment.boardCommentId + ')">삭제</button>' +
+                        '</div>' +
                         '</div>';
                 });
                 $('#comment-list').html(commentListHtml);
             }
         });
+    }
+
+    // 댓글 수정 함수
+    function editComment(commentId) {
+        // 댓글 수정 로직
+    }
+
+    // 댓글 삭제 함수
+    function deleteComment(commentId) {
+        // 댓글 삭제 로직
     }
 
     function likePost() {
