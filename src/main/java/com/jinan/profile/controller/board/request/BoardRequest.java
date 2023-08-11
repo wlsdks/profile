@@ -2,6 +2,7 @@ package com.jinan.profile.controller.board.request;
 
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.user.User;
+import com.jinan.profile.dto.board.BoardDto;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +42,5 @@ public class BoardRequest {
                 .build();
 
     }
-
 
 }
