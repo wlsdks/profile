@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -33,5 +35,19 @@ public class BoardCommentService {
 
         return BoardCommentDto.fromEntity(boardCommentRepository.save(boardComment));
     }
+
+    /**
+     * 게시글의 id를 통해 연관된 모든 댓글을 가져온다.
+     */
+    public List<BoardCommentDto> getBoardComment(Long boardId) {
+
+        return boardCommentRepository.findAllCommentsByBoardId(boardId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BAD_REQUEST_ERROR))
+                .stream()
+                .map(BoardCommentDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
 
     @DisplayName("유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
     @Test
-    void test() {
+    void createComment() {
         //given
         User savedUser = createUser();
         Board savedBoard = createBoard(savedUser, "test");
@@ -51,6 +52,24 @@ class BoardCommentServiceTest extends TotalTestSupport {
         //then
         assertThat(actual).isNotNull();
         assertThat(actual).isInstanceOf(BoardCommentDto.class);
+    }
+
+    @DisplayName("게시글의 id를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
+    @Test
+    void test() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        //when
+        List<BoardCommentDto> actual = boardCommentService.getBoardComment(savedBoard.getId());
+
+        //then
+        assertThat(actual).isNotNull();
+        assertThat(actual).hasSize(1);
+        assertThat(actual.get(0)).isEqualTo(BoardCommentDto.fromEntity(savedBoardComment));
+
     }
 
     private BoardComment createBoardComment(Board board, User user) {
