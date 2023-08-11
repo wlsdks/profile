@@ -109,7 +109,7 @@ public class BoardController {
      * UPDATE - 게시글 수정 뷰 이동
      */
     @GetMapping("/update/{boardId}")
-    public String updateBoardView(@PathVariable Long boardId, Model model, Principal principal) {
+    public String updateBoardView(@PathVariable Long boardId, Model model) {
 
         // 해당 id의 게시글을 찾는다.
         BoardResponse boardResponse = Optional.of(boardService.findById(boardId))
