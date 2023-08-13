@@ -89,11 +89,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                     // [STEP.2-4] 사용자 아이디가 존재하는지에 대한 여부를 체크한다.
                     if (loginId != null && !loginId.equalsIgnoreCase("")) {
-                        // Load UserDetails
                         UserDetails userDetails = userDetailsService.loadUserByUsername(loginId);
-                        // Create an authentication token
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        // Set the authentication in the SecurityContext
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         filterChain.doFilter(request, response);
                     } else {
@@ -118,10 +115,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
+
             PrintWriter printWriter = response.getWriter();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("error", true);
             jsonObject.put("message", "로그인 에러");
+
             printWriter.print(jsonObject);
             printWriter.flush();
             printWriter.close();
@@ -158,7 +157,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         jsonMap.put("message", resultMessage);
         jsonMap.put("reason", e.getMessage());
         JSONObject jsonObject = new JSONObject(jsonMap);
-        logger.error(resultMessage, e);
+        log.error(resultMessage, e);
         return jsonObject;
     }
 
