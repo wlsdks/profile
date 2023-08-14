@@ -34,14 +34,14 @@ function getComments(boardId, page) {
     $.ajax({
         url: '/board/comment/get/' + boardId,
         method: 'GET',
-        data: {page: page - 1}, // 페이지 번호는 0부터 시작하므로 -1
+        data: {page: page - 1},
         success: function (response) {
             let comments = response.content;
             let commentListHtml = '';
             comments.forEach(function (comment) {
-                commentListHtml += `<div class="comment" onmouseover="showActions(this)" onmouseout="hideActions(this)">`;
+                commentListHtml += `<div class="comment" data-comment-id="${comment.boardCommentId}" onmouseover="showActions(this)" onmouseout="hideActions(this)">`;
                 commentListHtml += `<span class="author">${comment.userResponse.username}:</span> `;
-                commentListHtml += `${comment.content} `;
+                commentListHtml += `<span class="content">${comment.content}</span> `;
                 commentListHtml += `<div class="actions" style="display:none;">
                         <button onclick="editComment(${comment.boardCommentId})">수정</button>
                         <button onclick="deleteComment(${comment.boardCommentId})">삭제</button>
@@ -77,21 +77,52 @@ function addComment() {
     });
 }
 
-// 댓글 수정 함수 UPDATE
+// UPDATE - 댓글 수정창을 보여주도록 하는 함수
 function editComment(commentId) {
     // 사용자 검증 요청
     $.ajax({
         url: '/board/comment/validComment?commentId=' + commentId,
         type: 'GET',
         success: function (response) {
-            // 검증 성공 시 수정 로직
-            // 여기에 댓글 수정 로직을 추가할 수 있습니다.
+            // 댓글 요소 선택
+            let commentElement = $(`.comment[data-comment-id=${commentId}]`);
+
+            // 현재 댓글 내용 가져오기
+            let currentContent = commentElement.find('.content').text();
+
+            // 댓글 내용을 입력창으로 바꾸기
+            commentElement.find('.content').html(`
+                <textarea class="edit-input">${currentContent}</textarea>
+                <button onclick="updateComment(${commentId})">수정 완료</button>
+            `);
         },
         error: function (xhr, status, error) {
             alert('유저가 다릅니다. 수정할 수 없습니다.');
         }
     });
 }
+
+// UPDATE - 댓글 수정 완료후 저장 요청하는 함수
+function updateComment(commentId) {
+    let newContent = $(`.comment[data-comment-id=${commentId}] .edit-input`).val();
+
+    // 서버로 수정된 내용 전송
+    $.ajax({
+        url: '/board/comment/update/' + commentId,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({content: newContent}),
+        success: function () {
+            // 댓글 목록 다시 불러오기
+            let boardId = $('.edit-button').data('board-id');
+            getComments(boardId, currentPage);
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
+        }
+    });
+}
+
 
 // 댓글 삭제 함수 DELETE
 function deleteComment(commentId) {
