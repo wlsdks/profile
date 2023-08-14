@@ -61,6 +61,12 @@ public enum ErrorCode {
     INSERT_ERROR(200, "9999", "Insert Transaction Error Exception"),    // Transaction Insert Error
     UPDATE_ERROR(200, "9999", "Update Transaction Error Exception"),    // Transaction Update Error
     DELETE_ERROR(200, "9999", "Delete Transaction Error Exception"),    // Transaction Delete Error
+
+
+    COMMENT_NOT_FOUND(404, "4120", "존재하지 않는 댓글입니다."),
+    USER_NOT_AUTHORIZED(401, "4121", "허가받지 못한 다른 유저입니다."),
+    INVALID_INPUT(404, "4222", "잘못된 입력값입니다.")
+
     ;
 
 

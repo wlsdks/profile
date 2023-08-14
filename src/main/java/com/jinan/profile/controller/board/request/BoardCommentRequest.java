@@ -12,7 +12,6 @@ public class BoardCommentRequest {
 
     String content;
 
-
     @Builder
     private BoardCommentRequest(String content) {
         this.content = content;
