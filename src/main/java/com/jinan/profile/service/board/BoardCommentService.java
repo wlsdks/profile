@@ -5,6 +5,7 @@ import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.board.BoardComment;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
+import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
@@ -12,6 +13,8 @@ import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,16 +60,11 @@ public class BoardCommentService {
 
     /**
      * 게시글의 id를 통해 연관된 모든 댓글을 가져온다.
+     * 페이징 처리된 데이터를 받아온다.
      */
-    public List<BoardCommentDto> getBoardComment(Long boardId) {
-
-        return boardCommentRepository.findAllCommentsByBoardId(boardId)
-                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BAD_REQUEST_ERROR))
-                .stream()
-                .map(BoardCommentDto::fromEntity)
-                .collect(Collectors.toList());
+    public Page<BoardCommentDto> getBoardComment(Long boardId, Pageable pageable) {
+        return boardCommentRepository.findAllCommentsByBoardId(boardId, pageable)
+                .map(BoardCommentDto::fromEntity);
     }
-
-
 
 }

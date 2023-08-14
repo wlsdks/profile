@@ -2,9 +2,15 @@ package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
 import com.jinan.profile.controller.board.response.BoardCommentResponse;
+import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.service.board.BoardCommentService;
+import com.jinan.profile.service.pagination.PaginationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,6 +27,7 @@ import java.util.stream.Collectors;
 public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
+    private final PaginationService paginationService;
 
     /**
      * 게시글에 해당하는 댓글 조회
@@ -28,11 +35,17 @@ public class BoardCommentController {
      */
     @ResponseBody
     @GetMapping("/get/{boardId}")
-    public List<BoardCommentResponse> getComment(@PathVariable Long boardId) {
-        return boardCommentService.getBoardComment(boardId)
-                .stream()
-                .map(BoardCommentResponse::fromDto)
-                .toList();
+    public Page<BoardCommentResponse> getComment(
+            @PathVariable Long boardId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+
+        // 페이징된 데이터 세팅
+        Page<BoardCommentResponse> BoardCommentResponses = boardCommentService.getBoardComment(boardId, pageable)
+                .map(BoardCommentResponse::fromDto);
+        paginationService.getPaginationBarNumbers(pageable.getPageNumber(), BoardCommentResponses.getTotalPages());
+
+        return BoardCommentResponses;
     }
 
     /**
