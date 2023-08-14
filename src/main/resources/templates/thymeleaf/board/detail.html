@@ -3,6 +3,8 @@
 <head>
     <title th:text="${board.title}">제목</title>
     <link rel="stylesheet" href="/css/board/detail.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/boardcomment/detail.js"></script>
 </head>
 <body>
 <div class="container">
@@ -33,6 +35,7 @@
             <button onclick="addComment()">댓글 작성</button>
         </div>
         <div id="comment-list"></div>
+        <div id="pagination"></div>
     </div>
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
@@ -41,85 +44,3 @@
 </div>
 </body>
 </html>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $('.edit-button').click(function (e) {
-        e.preventDefault(); // 기본 링크 동작을 막습니다.
-        let boardId = $(this).data('board-id'); // data-board-id 속성에서 boardId 가져오기
-        let url = '/board/update/validUser?boardId=' + boardId; // 검증 URL에 boardId 포함
-
-        // 사용자 검증 요청을 보냅니다.
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function (response) {
-                // 검증 성공 시 수정 페이지로 이동합니다.
-                debugger
-                window.location.href = '/board/update/' + boardId;
-            },
-            error: function (xhr, status, error) {
-                // 검증 실패 시 에러 메시지를 표시합니다.
-                alert('유저가 다릅니다. 수정할 수 없습니다.');
-            }
-        });
-    });
-
-
-    // 댓글 작성 함수
-    function addComment() {
-        let boardId = $('.edit-button').data('board-id');
-        let content = $('#comment-input').val();
-        $.ajax({
-            url: '/board/comment/create/' + boardId,
-            method: 'POST',
-            data: { content: content },
-            success: function() {
-                getComments(boardId); // 댓글을 다시 불러옵니다.
-                $('#comment-input').val(''); // 입력창을 비웁니다.
-            }
-        });
-    }
-
-
-    // 댓글을 받아와서 뿌려주는 로직
-    function getComments(boardId) {
-        $.ajax({
-            url: '/board/comment/get/' + boardId,
-            method: 'GET',
-            success: function(comments) {
-                let commentListHtml = '';
-                comments.forEach(function(comment) {
-                    commentListHtml += '<div class="comment">' +
-                        '<span class="author">' + comment.userResponse.username + '</span>' +
-                        '<div class="content">' +
-                        '<p>' + comment.content + '</p>' +
-                        '</div>' +
-                        '<span class="date">' + comment.createdAt + '</span>' +
-                        '<div class="actions">' +
-                        '<button onclick="editComment(' + comment.boardCommentId + ')">수정</button>' +
-                        '<button onclick="deleteComment(' + comment.boardCommentId + ')">삭제</button>' +
-                        '</div>' +
-                        '</div>';
-                });
-                $('#comment-list').html(commentListHtml);
-            }
-        });
-    }
-
-    // 댓글 수정 함수
-    function editComment(commentId) {
-        // 댓글 수정 로직
-    }
-
-    // 댓글 삭제 함수
-    function deleteComment(commentId) {
-        // 댓글 삭제 로직
-    }
-
-    function likePost() {
-        alert('좋아요를 눌렀습니다!');
-        // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
-    }
-
-</script>
