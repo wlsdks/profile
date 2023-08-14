@@ -85,12 +85,9 @@ public class BoardComment extends AuditingFields {
     }
 
 
-    public void changeUser(User entity) {
-        this.user = entity;
-    }
-
-    public void changeBoard(Board entity) {
-        this.board = entity;
+    public void changeUserAndBoard(User user, Board board) {
+        this.user = user;
+        this.board = board;
     }
 
     public void changeContent(String content) {
