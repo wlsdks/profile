@@ -1,5 +1,6 @@
 package com.jinan.profile.domain.board;
 
+import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
@@ -57,6 +58,10 @@ public class BoardComment extends AuditingFields {
         return new BoardComment(null, board, user, content);
     }
 
+    public static BoardComment of(String content) {
+        return new BoardComment(null, null, null, content);
+    }
+
     // dto -> entity로 변환하는 메서드
     public static BoardComment fromDto(BoardCommentDto dto) {
         return new BoardComment(
@@ -78,6 +83,15 @@ public class BoardComment extends AuditingFields {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+
+    public void changeUser(User entity) {
+        this.user = entity;
+    }
+
+    public void changeBoard(Board entity) {
+        this.board = entity;
     }
 
 }

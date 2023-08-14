@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,12 +39,18 @@ public class BoardCommentController {
      * 댓글 저장하기 ajax로 저장기능 동작
      */
     @ResponseBody
-    @PostMapping("/create")
-    public ResponseEntity<?> createComment(@RequestBody BoardCommentRequest request, Long boardId) {
+    @PostMapping("/create/{boardId}") // boardId를 경로 변수로 받습니다.
+    public ResponseEntity<?> createComment(
+            @RequestBody BoardCommentRequest request,
+            @PathVariable Long boardId,
+            Principal principal
+    ) { // @PathVariable 어노테이션 추가
 
-        boardCommentService.createComment(request, boardId);
+        String loginId = principal.getName();
+        boardCommentService.createComment(request, boardId, loginId);
         return ResponseEntity.ok("댓글 저장에 성공했습니다.");
     }
+
 
 
 }

@@ -1,13 +1,18 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
+import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.board.BoardComment;
+import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
+import com.jinan.profile.repository.board.BoardRepository;
+import com.jinan.profile.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,21 +25,32 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class BoardCommentService {
+    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
 
     private final BoardCommentRepository boardCommentRepository;
 
     /**
      * 유저가 댓글을 작성하면 저장된다.
      */
-    public BoardCommentDto createComment(BoardCommentRequest request, Long boardId) {
-        // todo: 1.일단 저장할때 작성된 게시글의 boardId와 연관을 시켜줘야하니 request안의 BoardRequest 그리고 그 안의 id 값에 boardId를 넣어주고 계속 map으로 변환한다.
-        request.getBoardRequest().setId(boardId);
+    public BoardCommentDto createComment(BoardCommentRequest request, Long boardId, String loginId) {
 
-        // todo: 2. 데이터를 저장하기 위해 request를 entity로 변환한다.
-        BoardComment boardComment = Optional.of(request)
-                .map(BoardCommentDto::fromRequest)
-                .map(BoardComment::fromDto)
+        // 1. boardId로 board를 꺼내서 BoardRequest에 넣어야 한다.
+        BoardComment boardComment = BoardComment.of(request.getContent());
+
+        // 1. boardComment에 board는 boardId로 받아와서 세팅한다.
+        Board board = boardRepository
+                .findById(boardId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. user는 loginId로 받아와서 세팅한다.
+        User user = userRepository
+                .findByLoginId(loginId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+
+        // 3. user, board를 세팅한다.
+        boardComment.changeUser(user);
+        boardComment.changeBoard(board);
 
         return BoardCommentDto.fromEntity(boardCommentRepository.save(boardComment));
     }
