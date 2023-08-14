@@ -5,64 +5,116 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹 메인페이지</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>
-<div class="sidebar">
-    <ul>
-        <li>메뉴 1</li>
-        <li>메뉴 2</li>
-        <li>메뉴 3</li>
-    </ul>
-</div>
-
-<div class="header">
-    <a href="/main/rootPage" class="main-button">HOME</a> <!-- 메인페이지 버튼 추가 -->
-    <h1>Recipia</h1>
-</div>
-
-<div class="main-content">
-    <p>환영합니다! 여긴 레시피아 메인 홈페이지입니다.</p>
-    <button id="logout">로그아웃</button>
-
-    <div class="services">
-        <a href="/main/page" class="service-card">
-            <h2>실시간 채팅방</h2>
-        </a>
-        <a href="/board/list" class="service-card">
-            <h2>게시판 페이지</h2>
-        </a>
-        <a href="/portfolio" class="service-card">
-            <h2>레시피아 요리 쇼핑몰 페이지</h2>
-        </a>
-        <a href="/contact" class="service-card">
-            <h2>레시피아 소개 페이지</h2>
-        </a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a href="/main/rootPage" class="navbar-brand">Recipia</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="#">메뉴 1</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">메뉴 2</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">메뉴 3</a></li>
+        </ul>
+        <button id="logout" class="btn btn-danger ml-auto">로그아웃</button>
     </div>
+</nav>
 
+<!-- 사이드바 -->
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
 </div>
 
-<!-- jQuery를 CDN에서 가져오기 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- 기존 내비게이션 바 코드는 유지합니다. -->
+    <!-- 사이드바 열기 버튼 추가 -->
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+</nav>
+
+<div class="row tight services">
+    <!-- 카드 내용 -->
+    <div class="container mt-5">
+        <p class="lead">환영합니다! 여긴 레시피아 메인 홈페이지입니다.</p>
+        <div class="row services">
+            <div class="col-md-3">
+                <a href="/main/page" class="service-card">
+                    <img src="/images/chat.png" alt="실시간 채팅방"/>
+                    <h2>실시간 채팅방</h2>
+                    <p>친구들과 실시간으로 대화하세요!</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/board/list" class="service-card">
+                    <img src="/images/board.png" alt="게시판 페이지"/>
+                    <h2>게시판 페이지</h2>
+                    <p>커뮤니티에서 의견을 나눠보세요!</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/portfolio" class="service-card">
+                    <img src="/images/shop.png" alt="레시피아 요리 쇼핑몰 페이지"/>
+                    <h2>레시피아 요리 쇼핑몰 페이지</h2>
+                    <p>맛있는 요리 재료를 구매하세요!</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/contact" class="service-card">
+                    <img src="/images/contact.png" alt="레시피아 소개 페이지"/>
+                    <h2>레시피아 소개 페이지</h2>
+                    <p>레시피아에 대해 더 알아보세요!</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 푸터 -->
+<div class="footer">
+    <p>&copy; 2023 Recipia. All rights reserved.</p>
+</div>
+
+
+<!-- jQuery를 CDN에서 가져오기 --> <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#logout').click(function() {
+    $(document).ready(function () {
+        $('#logout').click(function () {
             // 로그아웃 요청을 서버에 전송
             $.ajax({
                 url: '/user/logout',
                 type: 'GET',
-                success: function() {
+                success: function () {
                     // 로그인 페이지로 리다이렉트
                     window.location.href = '/login';
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                 }
             });
         });
     });
+
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+    }
 </script>
 </body>
 </html>
