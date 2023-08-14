@@ -40,12 +40,12 @@ function getComments(boardId, page) {
             let commentListHtml = '';
             comments.forEach(function (comment) {
                 commentListHtml += `<div class="comment" data-comment-id="${comment.boardCommentId}" onmouseover="showActions(this)" onmouseout="hideActions(this)">`;
-                commentListHtml += `<span class="author">${comment.userResponse.username}:</span> `;
-                commentListHtml += `<span class="content">${comment.content}</span> `;
-                commentListHtml += `<div class="actions" style="display:none;">
-                        <button onclick="editComment(${comment.boardCommentId})">수정</button>
-                        <button onclick="deleteComment(${comment.boardCommentId})">삭제</button>
-                    </div>`;
+                commentListHtml += `<span class="author">${comment.userResponse.username}:</span>`;
+                commentListHtml += `<div class="content">${comment.content}</div>`;
+                commentListHtml += `<div class="actions" style="display:none;">`; // 클래스 이름을 원래대로 돌림
+                commentListHtml += `<button onclick="editComment(${comment.boardCommentId})">수정</button>`; // 클래스 제거
+                commentListHtml += `<button onclick="deleteComment(${comment.boardCommentId})">삭제</button>`; // 클래스 제거
+                commentListHtml += `</div>`;
                 commentListHtml += `</div>`;
             });
             $('#comment-list').html(commentListHtml);
@@ -131,7 +131,10 @@ function deleteComment(commentId) {
         type: 'DELETE',
         success: function () {
             alert('댓글이 삭제되었습니다.');
-            // 댓글 목록을 다시 불러올 수 있습니다.
+
+            // 댓글 목록을 다시 불러온다.
+            let boardId = $('.edit-button').data('board-id');
+            getComments(boardId, currentPage);
         },
         error: function (xhr, status, error) {
             alert('유저가 다릅니다. 삭제할 수 없습니다.');

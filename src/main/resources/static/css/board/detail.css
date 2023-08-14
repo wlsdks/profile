@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    width: 50%;
+    width: 40%;
     background-color: #fff;
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -69,12 +69,13 @@ button:hover {
 }
 
 .content {
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     padding: 15px;
     margin: 10px 0;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-height: 10vh; /* 뷰포트 높이의 10%로 최소 높이 설정 */
+    /*background-color: #fff;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+    min-height: 0vh; /* 뷰포트 높이의 10%로 최소 높이 설정 */
+    width: 65%;
 }
 
 .likes {
@@ -96,12 +97,6 @@ button:hover {
 
 .likes button:hover {
     background-color: #155a8a;
-}
-
-.actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
 }
 
 .edit-button, .back-button {
@@ -175,6 +170,8 @@ button:hover {
 }
 
 .comment {
+    position: relative; /* 추가 */
+    height: 14px;
     margin: 10px 0;
     font-size: 14px;
     display: flex;
@@ -207,22 +204,4 @@ button:hover {
 
 .actions button:hover {
     background-color: #155a8a;
-}
-
-
-/* 목록으로 돌아가기와 수정하기 버튼 */
-.actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.edit-button, .back-button {
-    display: flex; /* Flexbox를 사용하여 내용을 중앙에 배치 */
-    align-items: center; /* 세로 중앙 정렬 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    padding: 10px 20px; /* 패딩을 조정하여 버튼의 높이와 너비를 적절히 설정 */
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s; /* 호버 효과를 부드럽게 만들기 위한 전환 효과 */
 }
