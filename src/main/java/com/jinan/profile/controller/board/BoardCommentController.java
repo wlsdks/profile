@@ -41,11 +41,14 @@ public class BoardCommentController {
             @RequestBody BoardCommentRequest request,
             @PathVariable Long boardId,
             Principal principal
-    ) { // @PathVariable 어노테이션 추가
-
-        String loginId = principal.getName();
-        boardCommentService.createComment(request, boardId, loginId);
-        return ResponseEntity.ok("댓글 저장에 성공했습니다.");
+    ) {
+        try {
+            String loginId = principal.getName();
+            boardCommentService.createComment(request, boardId, loginId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ProfileApplicationException e) {
+            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -87,6 +90,19 @@ public class BoardCommentController {
     }
 
     /**
+     * DELETE - 댓글 삭제
+     */
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Principal principal) {
+        try {
+            boardCommentService.deleteComment(commentId, principal.getName());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ProfileApplicationException e) {
+            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
      * VALID - 댓글 작성자를 검증하는 로직
      * 본인일때만 작성한 댓글을 수정하거나 삭제할 수 있다.
      */
@@ -100,21 +116,6 @@ public class BoardCommentController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /**
-     * DELETE - 댓글 삭제
-     */
-    @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Principal principal) {
-        try {
-            boardCommentService.deleteComment(commentId, principal.getName());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ProfileApplicationException e) {
-            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-
 
 
 }

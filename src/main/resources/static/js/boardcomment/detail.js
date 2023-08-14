@@ -99,7 +99,7 @@ function editComment(commentId) {
             `);
         },
         error: function (xhr, status, error) {
-            alert('유저가 다릅니다. 수정할 수 없습니다.');
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
         }
     });
 }
@@ -132,7 +132,7 @@ function deleteComment(commentId) {
         url: '/board/comment/delete/' + commentId,
         type: 'DELETE',
         success: function () {
-            alert('댓글이 삭제되었습니다.');
+            // alert('댓글이 삭제되었습니다.');
 
             // 댓글 목록을 다시 불러온다.
             let boardId = $('.edit-button').data('board-id');
