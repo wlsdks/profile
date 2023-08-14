@@ -71,7 +71,9 @@ function addComment() {
         contentType: 'application/json', // Content-Type 설정
         data: JSON.stringify({content: content}), // JSON 형식으로 변환
         success: function () {
-            getComments(boardId); // 댓글을 다시 불러옵니다.
+            // 댓글을 다시 불러온다.
+            let boardId = $('.edit-button').data('board-id');
+            getComments(boardId, currentPage);
             $('#comment-input').val(''); // 입력창을 비웁니다.
         }
     });
