@@ -2,14 +2,24 @@ package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
 import com.jinan.profile.controller.board.response.BoardCommentResponse;
+import com.jinan.profile.controller.board.response.BoardResponse;
+import com.jinan.profile.exception.ProfileApplicationException;
+import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.service.board.BoardCommentService;
+import com.jinan.profile.service.pagination.PaginationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,29 +30,91 @@ import java.util.stream.Collectors;
 public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
+    private final PaginationService paginationService;
 
     /**
-     * 게시글에 해당하는 댓글 조회
-     * 고민인게 이걸 ajax로 호출해서 아래에 뿌리도록 할까? 아니면 게시글을 조회할때 한번에 데이터를 동시에 가져오도록 할까?
+     * CREATE - 댓글 저장하기 ajax로 저장기능 동작
      */
     @ResponseBody
-    @GetMapping("/get/{boardId}")
-    public List<BoardCommentResponse> getComment(@PathVariable Long boardId) {
-        return boardCommentService.getBoardComment(boardId)
-                .stream()
-                .map(BoardCommentResponse::fromDto)
-                .toList();
+    @PostMapping("/create/{boardId}") // boardId를 경로 변수로 받습니다.
+    public ResponseEntity<?> createComment(
+            @RequestBody BoardCommentRequest request,
+            @PathVariable Long boardId,
+            Principal principal
+    ) {
+        try {
+            String loginId = principal.getName();
+            boardCommentService.createComment(request, boardId, loginId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ProfileApplicationException e) {
+            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
-     * 댓글 저장하기 ajax로 저장기능 동작
+     * READ - 게시글에 해당하는 댓글 조회
      */
     @ResponseBody
-    @PostMapping("/create")
-    public ResponseEntity<?> createComment(@RequestBody BoardCommentRequest request, Long boardId) {
+    @GetMapping("/get/{boardId}")
+    public Page<BoardCommentResponse> getComment(
+            @PathVariable Long boardId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
 
-        boardCommentService.createComment(request, boardId);
-        return ResponseEntity.ok("댓글 저장에 성공했습니다.");
+        // 페이징된 데이터 세팅
+        Page<BoardCommentResponse> BoardCommentResponses = boardCommentService.getBoardComment(boardId, pageable)
+                .map(BoardCommentResponse::fromDto);
+        paginationService.getPaginationBarNumbers(pageable.getPageNumber(), BoardCommentResponses.getTotalPages());
+
+        return BoardCommentResponses;
+    }
+
+    /**
+     * UPDATE - 댓글을 수정한다.
+     * content, commentId를 받아와서 서비스에서 변경감지로 업데이트를 처리한다.
+     */
+    @ResponseBody
+    @PostMapping("/update/{commentId}")
+    public ResponseEntity<?> updateBoardComment(
+            @RequestBody BoardCommentRequest request, // 여기로 data로 보낸값이 바인딩되어 들어온다.
+            @PathVariable Long commentId,
+            Principal principal
+    ) {
+        try {
+            String loginId = principal.getName();
+            boardCommentService.updateBoardComment(request, commentId, loginId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ProfileApplicationException e) {
+            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * DELETE - 댓글 삭제
+     */
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Principal principal) {
+        try {
+            boardCommentService.deleteComment(commentId, principal.getName());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (ProfileApplicationException e) {
+            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * VALID - 댓글 작성자를 검증하는 로직
+     * 본인일때만 작성한 댓글을 수정하거나 삭제할 수 있다.
+     */
+    @ResponseBody
+    @GetMapping("/validComment")
+    public ResponseEntity<?> validComment(@RequestParam Long commentId, Principal principal) {
+        boolean isValid = boardCommentService.isValidCommentAuthor(commentId, principal.getName());
+
+        if (!isValid) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

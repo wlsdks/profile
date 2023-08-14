@@ -57,6 +57,10 @@ public class BoardComment extends AuditingFields {
         return new BoardComment(null, board, user, content);
     }
 
+    public static BoardComment of(String content) {
+        return new BoardComment(null, null, null, content);
+    }
+
     // dto -> entity로 변환하는 메서드
     public static BoardComment fromDto(BoardCommentDto dto) {
         return new BoardComment(
@@ -80,4 +84,13 @@ public class BoardComment extends AuditingFields {
         return Objects.hash(getId());
     }
 
+
+    public void changeUserAndBoard(User user, Board board) {
+        this.user = user;
+        this.board = board;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }
