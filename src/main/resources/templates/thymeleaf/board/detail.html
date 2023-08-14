@@ -44,6 +44,11 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).ready(function() {
+        let boardId = $('.edit-button').data('board-id'); // boardId 가져오기
+        getComments(boardId); // 페이지 로드가 완료되면 댓글을 불러옵니다.
+    });
+
     $('.edit-button').click(function (e) {
         e.preventDefault(); // 기본 링크 동작을 막습니다.
         let boardId = $(this).data('board-id'); // data-board-id 속성에서 boardId 가져오기
@@ -71,9 +76,10 @@
         let boardId = $('.edit-button').data('board-id');
         let content = $('#comment-input').val();
         $.ajax({
-            url: '/board/comment/create/' + boardId,
+            url: '/board/comment/create/' + boardId, // 경로에 boardId 포함
             method: 'POST',
-            data: { content: content },
+            contentType: 'application/json', // Content-Type 설정
+            data: JSON.stringify({ content: content }), // JSON 형식으로 변환
             success: function() {
                 getComments(boardId); // 댓글을 다시 불러옵니다.
                 $('#comment-input').val(''); // 입력창을 비웁니다.
@@ -84,23 +90,26 @@
 
     // 댓글을 받아와서 뿌려주는 로직
     function getComments(boardId) {
+        let loginId = "dig04058"; // 현재 로그인한 사용자 ID를 가져옵니다.
+
         $.ajax({
             url: '/board/comment/get/' + boardId,
             method: 'GET',
             success: function(comments) {
                 let commentListHtml = '';
                 comments.forEach(function(comment) {
-                    commentListHtml += '<div class="comment">' +
-                        '<span class="author">' + comment.userResponse.username + '</span>' +
-                        '<div class="content">' +
-                        '<p>' + comment.content + '</p>' +
-                        '</div>' +
-                        '<span class="date">' + comment.createdAt + '</span>' +
-                        '<div class="actions">' +
-                        '<button onclick="editComment(' + comment.boardCommentId + ')">수정</button>' +
-                        '<button onclick="deleteComment(' + comment.boardCommentId + ')">삭제</button>' +
-                        '</div>' +
-                        '</div>';
+                    commentListHtml += `<div class="comment">`;
+                    commentListHtml += `<span class="author">${comment.userResponse.username}:</span> `;
+                    commentListHtml += `${comment.content} `;
+                    if (comment.userResponse.id === loginId) { // 작성자와 로그인한 사용자가 같을 경우
+                        commentListHtml += `
+                <div class="actions">
+                    <button onclick="likeComment(${comment.boardCommentId})">공감</button>
+                    <button onclick="editComment(${comment.boardCommentId})">수정</button>
+                    <button onclick="deleteComment(${comment.boardCommentId}, '${loginId}')">삭제</button>
+                </div>`;
+                    }
+                    commentListHtml += `</div>`;
                 });
                 $('#comment-list').html(commentListHtml);
             }
