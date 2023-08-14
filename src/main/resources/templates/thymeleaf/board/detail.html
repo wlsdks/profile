@@ -33,6 +33,7 @@
             <button onclick="addComment()">댓글 작성</button>
         </div>
         <div id="comment-list"></div>
+        <div id="pagination"></div>
     </div>
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
@@ -44,9 +45,10 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // 페이지 로드가 완료되면 댓글을 불러옵니다.
     $(document).ready(function() {
         let boardId = $('.edit-button').data('board-id'); // boardId 가져오기
-        getComments(boardId); // 페이지 로드가 완료되면 댓글을 불러옵니다.
+        getComments(boardId, currentPage); // 첫 페이지 댓글 불러오기
     });
 
     $('.edit-button').click(function (e) {
@@ -87,34 +89,37 @@
         });
     }
 
+    /** 댓글 페이징 로직 **/
+    let currentPage = 1; // 현재 페이지 번호
 
     // 댓글을 받아와서 뿌려주는 로직
-    function getComments(boardId) {
-        let loginId = "dig04058"; // 현재 로그인한 사용자 ID를 가져옵니다.
-
+    function getComments(boardId, page) {
         $.ajax({
             url: '/board/comment/get/' + boardId,
             method: 'GET',
-            success: function(comments) {
+            data: { page: page - 1 }, // 페이지 번호는 0부터 시작하므로 -1
+            success: function(response) {
+                let comments = response.content; // 페이징된 댓글 내용
                 let commentListHtml = '';
                 comments.forEach(function(comment) {
                     commentListHtml += `<div class="comment">`;
                     commentListHtml += `<span class="author">${comment.userResponse.username}:</span> `;
                     commentListHtml += `${comment.content} `;
-                    if (comment.userResponse.id === loginId) { // 작성자와 로그인한 사용자가 같을 경우
-                        commentListHtml += `
-                <div class="actions">
-                    <button onclick="likeComment(${comment.boardCommentId})">공감</button>
-                    <button onclick="editComment(${comment.boardCommentId})">수정</button>
-                    <button onclick="deleteComment(${comment.boardCommentId}, '${loginId}')">삭제</button>
-                </div>`;
-                    }
                     commentListHtml += `</div>`;
                 });
                 $('#comment-list').html(commentListHtml);
+
+                // 페이징 처리
+                let totalPages = response.totalPages; // 전체 페이지 수
+                let paginationHtml = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationHtml += `<button onclick="getComments(${boardId}, ${i})">${i}</button>`;
+                }
+                $('#pagination').html(paginationHtml);
             }
         });
     }
+
 
     // 댓글 수정 함수
     function editComment(commentId) {
