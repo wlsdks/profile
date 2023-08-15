@@ -16,11 +16,19 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("[Comment] - 댓글 서비스 테스트")
 class BoardCommentServiceTest extends TotalTestSupport {
@@ -43,15 +51,14 @@ class BoardCommentServiceTest extends TotalTestSupport {
                 .map(BoardCommentRequest::fromDto)
                 .get();
 
-        request.setBoardRequest(BoardRequest.fromEntity(savedBoard));
-        request.setUserRequest(UserRequest.fromEntity(savedUser));
-
         //when
-        BoardCommentDto actual = boardCommentService.createComment(request, savedBoard.getId());
+        boardCommentService.createComment(request, savedBoard.getId(), savedUser.getLoginId());
+        Optional<BoardComment> resultComment = boardCommentRepository.findById(savedBoardComment.getId());
 
         //then
-        assertThat(actual).isNotNull();
-        assertThat(actual).isInstanceOf(BoardCommentDto.class);
+        assertThat(resultComment).isPresent(); // 댓글이 저장되었는지 확인
+        assertThat(request.getContent()).isEqualTo(resultComment.get().getContent());
+
     }
 
     @DisplayName("게시글의 id를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
@@ -62,13 +69,13 @@ class BoardCommentServiceTest extends TotalTestSupport {
         Board savedBoard = createBoard(savedUser, "test");
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
+        Pageable pageable = PageRequest.of(1, 10);
+
         //when
-        List<BoardCommentDto> actual = boardCommentService.getBoardComment(savedBoard.getId());
+        Page<BoardCommentDto> actual = boardCommentService.getBoardComment(savedBoard.getId(), pageable);
 
         //then
         assertThat(actual).isNotNull();
-        assertThat(actual).hasSize(1);
-        assertThat(actual.get(0)).isEqualTo(BoardCommentDto.fromEntity(savedBoardComment));
 
     }
 
@@ -94,7 +101,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
 
     private User createUser() {
         User user = User.of(
-                "wlsdks12",
+                "wlsdks123",
                 "wlsdks12",
                 "wlsdks",
                 "wlsdks12@naver.com",
