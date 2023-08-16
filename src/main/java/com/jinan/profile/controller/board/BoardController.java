@@ -107,6 +107,8 @@ public class BoardController {
 
     /**
      * UPDATE - 게시글 수정 뷰 이동
+     * 게시글을 작성한 유저 본인만 수정 뷰로 이동하도록 한다.
+     * javaScript에서 먼저 ajax로 valid 코드를 호출한다. 이후 통과하면 아래의 메서드가 동작한다.
      */
     @GetMapping("/update/{boardId}")
     public String updateBoardView(@PathVariable Long boardId, Model model) {
