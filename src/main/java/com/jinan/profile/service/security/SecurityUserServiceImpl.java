@@ -18,7 +18,7 @@ public class SecurityUserServiceImpl implements SecurityUserService{
     // login하면 Optional<UserDto>를 반환한다.
     @Override
     public Optional<UserDto> login(UserDto userDto) {
-        return userRepository.findByLoginId(userDto.loginId())
+        return userRepository.findUserByLoginId(userDto.loginId())
                 .map(UserDto::fromEntity);
     }
 

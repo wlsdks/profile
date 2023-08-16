@@ -1,7 +1,6 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
-import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.dto.user.UserDto;
@@ -13,7 +12,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,15 +97,13 @@ public class BoardService {
                 .map(BoardDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
-        UserDto userDto = userRepository.findByLoginId(boardDto.userDto().loginId())
-                .map(UserDto::fromEntity)
-                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+        // user정보를 board에서 꺼내는데 만약 board안에 user가 없으면 예외처리를 한다.
+        String boardLoginId = Optional.of(boardDto.userDto())
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)).loginId();
 
-        // 시큐리티에 담긴 로그인id가 게시글 안에있던 유저정보에서 꺼내온 유저의 id와 다르다면 검증 실패다.
-        if (!loginId.equals(userDto.loginId())) {
+        if (!boardLoginId.equals(loginId)) {
             return false;
         }
-
         return true;
     }
 

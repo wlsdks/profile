@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class BoardCommentService {
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
         // 3. user는 loginId로 받아와서 세팅한다.
-        User user = userRepository.findByLoginId(loginId)
+        User user = userRepository.findUserByLoginId(loginId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
         // 4. user, board를 세팅한다. 엔티티가 영속화되지 않았기때문에 영속성 컨텍스트에 아직 포함되지 않았다. 즉, save()를 써줘야 한다.
@@ -120,7 +118,7 @@ public class BoardCommentService {
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 유저정보를 가져온다.
-        User user = userRepository.findByLoginId(loginId)
+        User user = userRepository.findUserByLoginId(loginId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
         // 3. 댓글의 유저와 가져온 유저정보를 비교한다.

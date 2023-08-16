@@ -105,10 +105,9 @@ class BoardServiceTest extends TotalTestSupport {
                 .isInstanceOf(ProfileApplicationException.class);
     }
 
-
-    @DisplayName("[happy]-유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
+    @DisplayName("[bad]-게시글 엔티티 안에 유저가 없는(존재해서는 안되는)게시글을 저장하면 예외가 발생한다.")
     @Test
-    void createBoardUserNotFoundException() {
+    void createBoardUserNotFoundUserException() {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(null);
@@ -138,10 +137,9 @@ class BoardServiceTest extends TotalTestSupport {
         //then
         assertThat(boardList.get(0)).isInstanceOf(BoardDto.class);
         assertThat(boardList).hasSize(3);
-
     }
 
-    @DisplayName("[happy]-존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
+    @DisplayName("[bad]-존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
     @Test
     void findByLoginIdException() {
         //given
@@ -167,7 +165,6 @@ class BoardServiceTest extends TotalTestSupport {
         //then
         assertThat(actual).isEqualTo(savedBoard);
         assertThat(actual).isInstanceOf(BoardDto.class);
-
     }
 
     @DisplayName("[happy]-작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
@@ -188,6 +185,20 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(actual).isInstanceOf(BoardDto.class);
     }
 
+    @DisplayName("[bad]-존재하지 않는 게시글pk값으로 게시글의 정보를 조회하면 조회에 실패한다.")
+    @Test
+    void findByIdException() {
+        //given
+        User user = createUser("wlsdks12");
+        User savedUser = userRepository.save(user);
+        Board board = createBoard(savedUser, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        //when & then
+        assertThatThrownBy(() -> boardService.findById(100L))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
     @DisplayName("[happy]-게시글을 수정하기 전에 게시글을 작성한 유저가 수정하고자하는 유저와 같은지 검증한다.")
     @Test
     void validUser() {
@@ -203,7 +214,23 @@ class BoardServiceTest extends TotalTestSupport {
 
         //then
         assertThat(actual).isTrue();
+    }
 
+    @DisplayName("[bad]-게시글을 작성한 유저가 수정하고자하는 유저와 다르다면 검증은 실패한다.")
+    @Test
+    void validUserException() {
+        //given
+        User user = createUser("dig04058");
+        User savedUser = userRepository.save(user);
+
+        Board board = createBoard(savedUser, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        //when
+        boolean validUser = boardService.validUser(savedBoard.getId(), "annonymousId");
+
+        //then
+        assertThat(validUser).isFalse();
     }
 
     @DisplayName("[happy]-게시글을 올린 유저 본인이 게시글을 수정하면 게시글이 수정된다.")

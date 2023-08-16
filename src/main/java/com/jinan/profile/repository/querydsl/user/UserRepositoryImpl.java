@@ -18,7 +18,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<User> findByLoginId(String loginId) {
+    public Optional<User> findUserByLoginId(String loginId) {
         return Optional.ofNullable(queryFactory.select(user)
                 .from(user)
                 .where(user.loginId.eq(loginId))
