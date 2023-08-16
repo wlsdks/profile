@@ -41,7 +41,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
     @Autowired private BoardRepository boardRepository;
     @Autowired private BoardCommentRepository boardCommentRepository;
 
-    @DisplayName("유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
+    @DisplayName("[happy]-유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
     @Test
     void createComment() {
         //given
@@ -61,7 +61,24 @@ class BoardCommentServiceTest extends TotalTestSupport {
         //then
         assertThat(resultComment).isPresent(); // 댓글이 저장되었는지 확인
         assertThat(request.getContent()).isEqualTo(resultComment.get().getContent());
+    }
 
+    @DisplayName("[bad]-존재하지 않는 유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글 저장은 실패한다.")
+    @Test
+    void createCommentException() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        BoardCommentRequest request = Optional.of(savedBoardComment)
+                .map(BoardCommentDto::fromEntity)
+                .map(BoardCommentRequest::fromDto)
+                .get();
+
+        //when & then
+        assertThatThrownBy(() -> boardCommentService.createComment(request, savedBoard.getId(), "digggggggg"))
+                .isInstanceOf(ProfileApplicationException.class);
     }
 
     @DisplayName("[happy]-게시글의 id(pk)를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
