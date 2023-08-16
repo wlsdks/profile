@@ -23,10 +23,10 @@ public class Board extends AuditingFields {
     @Column(name = "board_id")
     private Long id;            // pk
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;       // 제목
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;     // 내용
 
     @Column(name = "views")
