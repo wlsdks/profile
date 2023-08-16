@@ -33,7 +33,7 @@ class BoardServiceTest extends TotalTestSupport {
     @Autowired
     private UserRepository userRepository;
 
-    @DisplayName("등록된 모든 게시글을 조회한다.")
+    @DisplayName("[happy]-등록된 모든 게시글을 조회한다.")
     @Test
     void selectAllBoardList() {
         //given
@@ -57,10 +57,9 @@ class BoardServiceTest extends TotalTestSupport {
         //then
         assertThat(boardDtoList).hasSize(3);
         assertThat(boardDtoList).isNotNull();
-
     }
 
-    @DisplayName("유저가 작성한 게시글을 저장한다.")
+    @DisplayName("[happy]-유저가 작성한 게시글을 저장한다.")
     @Test
     void createBoard() {
         //given
@@ -78,15 +77,36 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(boardDto.title()).isEqualTo("테스트 게시글");
         assertThat(boardDto.content()).isEqualTo("테스트");
         assertThat(boardDto).isInstanceOf(BoardDto.class);
-
-
-        // 만약 컬렉션이 있다면
-//        assertThat(boardDto.getComments()).hasSize(0);
-//        assertThat(boardDto.getComments()).contains(commentDto);
-//        assertThat(boardDto.getComments()).isEmpty();
     }
 
-    @DisplayName("유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
+    @DisplayName("[bad]-게시글 제목이 공백인 채로(null말고 empty) 유저가 게시글을 작성하고 저장하면 실패한다.")
+    @Test
+    void createBoardExceptionWithEmptyTitle() {
+        //given
+        User user = createUser("wlsdks12");
+        Board board = createBoardTitleEmpty(user);
+        BoardRequest request = BoardRequest.fromEntity(board);
+
+        //when
+        assertThatThrownBy(() -> boardService.createBoard(request))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[bad]-게시글 내용이 공백인 채로(null말고 empty) 유저가 게시글을 작성하고 저장하면 실패한다.")
+    @Test
+    void createBoardExceptionWithEmptyContent() {
+        //given
+        User user = createUser("wlsdks12");
+        Board board = createBoardContentEmpty(user);
+        BoardRequest request = BoardRequest.fromEntity(board);
+
+        //when
+        assertThatThrownBy(() -> boardService.createBoard(request))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+
+    @DisplayName("[happy]-유저가 지정되지 않은 게시글을 저장하면 예외가 발생한다.")
     @Test
     void createBoardUserNotFoundException() {
         //given
@@ -100,7 +120,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     }
 
-    @DisplayName("유저의 로그인id를 통해 유저가 작성한 게시글을 조회한다.")
+    @DisplayName("[happy]-유저의 로그인id를 통해 유저가 작성한 게시글을 조회한다.")
     @Test
     void findByLoginId() {
         //given
@@ -121,7 +141,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     }
 
-    @DisplayName("존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
+    @DisplayName("[happy]-존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
     @Test
     void findByLoginIdException() {
         //given
@@ -132,7 +152,7 @@ class BoardServiceTest extends TotalTestSupport {
                 .isInstanceOf(ProfileApplicationException.class);
     }
 
-    @DisplayName("조회하고싶은 게시글을 클릭하면 그 게시글의 id로 게시글 단건을 조회한다.")
+    @DisplayName("[happy]-조회하고싶은 게시글을 클릭하면 그 게시글의 id로 게시글 단건을 조회한다.")
     @Test
     void selectBoard() {
         //given
@@ -150,7 +170,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     }
 
-    @DisplayName("작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
+    @DisplayName("[happy]-작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
     @Test
     void findById() {
         //given
@@ -168,7 +188,7 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(actual).isInstanceOf(BoardDto.class);
     }
 
-    @DisplayName("게시글을 수정하기 전에 게시글을 작성한 유저가 수정하고자하는 유저와 같은지 검증한다.")
+    @DisplayName("[happy]-게시글을 수정하기 전에 게시글을 작성한 유저가 수정하고자하는 유저와 같은지 검증한다.")
     @Test
     void validUser() {
         //given
@@ -186,7 +206,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     }
 
-    @DisplayName("게시글을 올린 유저 본인이 게시글을 수정하면 게시글이 수정된다.")
+    @DisplayName("[happy]-게시글을 올린 유저 본인이 게시글을 수정하면 게시글이 수정된다.")
     @Test
     void updateBoard() {
         //given
@@ -211,8 +231,29 @@ class BoardServiceTest extends TotalTestSupport {
 
 
     private Board createBoard(User user) {
-        return Board.of("테스트 게시글",
+        return Board.of(
+                "테스트 게시글",
                 "테스트",
+                10,
+                20,
+                user
+        );
+    }
+
+    private Board createBoardTitleEmpty(User user) {
+        return Board.of(
+                "",
+                "테스트",
+                10,
+                20,
+                user
+        );
+    }
+
+    private Board createBoardContentEmpty(User user) {
+        return Board.of(
+                "테스트 게시글",
+                "",
                 10,
                 20,
                 user

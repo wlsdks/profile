@@ -40,7 +40,7 @@ public class BoardService {
         // 1. request에서 board 엔티티로 변환해 준다.
         Board board = Board.toRequest(request);
 
-        if (board.getUser() == null) {
+        if (board.getUser() == null || board.getContent().isEmpty() || board.getTitle().isEmpty()) {
             throw new ProfileApplicationException(ErrorCode.USER_NOT_FOUND);
         }
 
