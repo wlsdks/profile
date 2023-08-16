@@ -35,7 +35,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("등록된 모든 게시글을 조회한다.")
     @Test
-    void findAllBoardList() {
+    void selectAllBoardList() {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(user);
@@ -62,7 +62,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("유저가 작성한 게시글을 저장한다.")
     @Test
-    void saveBoard() {
+    void createBoard() {
         //given
         User user = createUser("wlsdks12");
         Board board = createBoard(user);
@@ -102,7 +102,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("유저의 로그인id를 통해 유저가 작성한 게시글을 조회한다.")
     @Test
-    void findByUserId() {
+    void findByLoginId() {
         //given
         User user = createUser("wlsdks12");
         Board board1 = createBoard(user, "테스트1");
@@ -123,7 +123,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("존재하지않는 유저의 로그인id로 게시글을 조회하면 예외가 발생한다.")
     @Test
-    void findByUserIdExceptionCase() {
+    void findByLoginIdException() {
         //given
         String loginId = "anonymous";
 
@@ -152,7 +152,7 @@ class BoardServiceTest extends TotalTestSupport {
 
     @DisplayName("작성된 게시글의 pk값인 id를 통해서 게시글의 정보를 조회한다.")
     @Test
-    void test() {
+    void findById() {
         //given
         User user = createUser("wlsdks12");
         User savedUser = userRepository.save(user);
@@ -185,6 +185,19 @@ class BoardServiceTest extends TotalTestSupport {
         assertThat(actual).isTrue();
 
     }
+
+    @DisplayName("게시글을 올린 유저 본인이 게시글을 수정하면 게시글이 수정된다.")
+    @Test
+    void updateBoard() {
+        //given
+
+        //when
+
+        //then
+
+    }
+
+
 
 
     private Board createBoard(User user) {
