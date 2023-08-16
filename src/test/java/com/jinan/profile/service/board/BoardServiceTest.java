@@ -190,11 +190,21 @@ class BoardServiceTest extends TotalTestSupport {
     @Test
     void updateBoard() {
         //given
+        User user = createUser("wlsdks12");
+        User savedUser = userRepository.save(user);
+        Board board = createBoard(user, "test");
+        Board savedBoard = boardRepository.save(board);
+
+        BoardRequest boardRequest = BoardRequest.fromEntity(savedBoard);
 
         //when
+        BoardDto boardDto = boardService.updateBoard(boardRequest, savedBoard.getId(), savedUser.getLoginId());
 
         //then
-
+        assertThat(boardDto).isNotNull();
+        assertThat(boardDto).isInstanceOf(BoardDto.class);
+        assertThat(boardDto).hasFieldOrPropertyWithValue("title", savedBoard.getTitle());
+        assertThat(boardDto).hasFieldOrPropertyWithValue("content", savedBoard.getContent());
     }
 
 

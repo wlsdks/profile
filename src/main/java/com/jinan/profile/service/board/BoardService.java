@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -114,11 +115,22 @@ public class BoardService {
      * 게시글 수정
      */
     @Transactional
-    public void updateBoard(BoardRequest request, Long boardId) {
+    public BoardDto updateBoard(BoardRequest request, Long boardId, String loginId) {
+
+        // 1. 게시글을 받아온다.
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found"));
 
+        // 2. 게시글 작성 user와 수정을 요청한 user가 같은지 검증
+        String boardUserId = board.getUser().getLoginId();
+        if (!Objects.equals(boardUserId, loginId)) {
+            throw new ProfileApplicationException(ErrorCode.USER_NOT_AUTHORIZED);
+        }
+
+        // 3. board의 값을 변경하면 변경감지로 자동으로 바뀌겠지만 테스트를 위해 return을 만들어 준다.
         board.change(request);
+        return Optional.of(boardRepository.save(board)).map(BoardDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
 
 
