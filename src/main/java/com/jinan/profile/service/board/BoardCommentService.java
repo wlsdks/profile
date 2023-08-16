@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -57,7 +59,10 @@ public class BoardCommentService {
      * 게시글의 id를 통해 연관된 모든 댓글을 가져온다. -> 페이징 처리된 데이터를 받아온다.
      */
     public Page<BoardCommentDto> getBoardComment(Long boardId, Pageable pageable) {
-        return boardCommentRepository.findAllCommentsByBoardId(boardId, pageable)
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BOARD_NOT_FOUND));
+
+        return boardCommentRepository.findAllCommentsByBoardId(board.getId(), pageable)
                 .map(BoardCommentDto::fromEntity);
     }
 
