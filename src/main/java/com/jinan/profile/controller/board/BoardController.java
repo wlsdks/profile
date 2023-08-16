@@ -88,6 +88,7 @@ public class BoardController {
 
     /**
      * 게시글 수정할때 유저를 검증하는 ajax기능을 위한 컨트롤러
+     * 지금은 사용하고 있지 않지만 이걸 util클래스로 빼낸다음 게시글 이외에도 유저 검증이 필요한 곳에서 사용할 수 있을것으로 보인다.
      */
     @GetMapping("/update/validUser")
     @ResponseBody
@@ -123,10 +124,17 @@ public class BoardController {
 
     /**
      * action - 게시글 업데이트
+     * 게시글을 올린 유저인지 인증을 거쳐서 업데이트를 가능하도록 한다.
      */
     @PostMapping("/updateBoard/{boardId}")
-    public String updateBoard(@RequestBody BoardRequest request, @PathVariable Long boardId) {
-        boardService.updateBoard(request, boardId);
+    public String updateBoard(
+            @RequestBody BoardRequest request,
+            @PathVariable Long boardId,
+            Principal principal
+    ) {
+
+        String loginId = principal.getName();
+        BoardDto boardDto = boardService.updateBoard(request, boardId, loginId);
         return "redirect:/board/list";
     }
 

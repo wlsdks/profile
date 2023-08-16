@@ -1,5 +1,6 @@
 package com.jinan.profile.controller.board;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.controller.board.request.BoardRequest;
@@ -21,8 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,7 +151,7 @@ class BoardControllerTest extends ControllerTestSupport {
 
     @DisplayName("게시글을 수정할때는 이 메서드에 요청을 보내서 게시글을 작성한 사람인지 검증한다.")
     @Test
-    void test() throws Exception {
+    void validUserController() throws Exception {
         //given
         String username = "user";
         Authentication authentication = mock(Authentication.class);
@@ -167,6 +170,26 @@ class BoardControllerTest extends ControllerTestSupport {
                                 .param("boardId", "1")
                 )
                 .andExpect(status().isOk());
+    }
+
+    @WithMockUser
+    @DisplayName("게시글을 작성한 사용자가 수정하기를 요청하면 문제없이 게시글이 수정된다.")
+    @Test
+    void updateBoardController() throws Exception {
+        //given
+        BoardRequest mockRequest = mock(BoardRequest.class);
+        BoardDto mockBoardDto = mock(BoardDto.class);
+        Long boardId = 1L;
+
+        // when & then
+        given(boardService.updateBoard(any(BoardRequest.class), eq(boardId), anyString()))
+                .willReturn(mockBoardDto);
+
+        mockMvc.perform(post("/board/updateBoard/" + boardId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mockRequest)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isFound());
     }
 
 
