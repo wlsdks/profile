@@ -10,6 +10,8 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardCommentDto;
+import com.jinan.profile.exception.ErrorCode;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.user.UserRepository;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,7 +41,7 @@ class BoardCommentServiceTest extends TotalTestSupport {
     @Autowired private BoardRepository boardRepository;
     @Autowired private BoardCommentRepository boardCommentRepository;
 
-    @DisplayName("유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
+    @DisplayName("[happy]-유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글이 저장되는지 검증한다.")
     @Test
     void createComment() {
         //given
@@ -58,10 +61,27 @@ class BoardCommentServiceTest extends TotalTestSupport {
         //then
         assertThat(resultComment).isPresent(); // 댓글이 저장되었는지 확인
         assertThat(request.getContent()).isEqualTo(resultComment.get().getContent());
-
     }
 
-    @DisplayName("게시글의 id를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
+    @DisplayName("[bad]-존재하지 않는 유저가 댓글을 작성하고 저장버튼을 눌렀을때 댓글 저장은 실패한다.")
+    @Test
+    void createCommentException() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        BoardCommentRequest request = Optional.of(savedBoardComment)
+                .map(BoardCommentDto::fromEntity)
+                .map(BoardCommentRequest::fromDto)
+                .get();
+
+        //when & then
+        assertThatThrownBy(() -> boardCommentService.createComment(request, savedBoard.getId(), "digggggggg"))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[happy]-게시글의 id(pk)를 통해 게시글과 연관된 모든 댓글정보를 조회한다.")
     @Test
     void getBoardComment() {
         //given
@@ -76,7 +96,45 @@ class BoardCommentServiceTest extends TotalTestSupport {
 
         //then
         assertThat(actual).isNotNull();
+    }
 
+    @DisplayName("[bad]-존재하지 않는 게시글의 id(pk)를 통해 게시글과 연관된 모든 댓글정보를 조회하면 실패한다.")
+    @Test
+    void getBoardCommentException() {
+        //given
+        Pageable pageable = PageRequest.of(1, 10);
+
+        //when & then
+        assertThatThrownBy(() -> boardCommentService.getBoardComment(100L, pageable))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[happy]-댓글id(pk)와 로그인한 유저의id(loginId)를 받아서 댓글 작성자가 맞는지 검증한다.")
+    @Test
+    void isValidCommentAuthor() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        //when
+        boolean result = boardCommentService.isValidCommentAuthor(savedBoardComment.getId(), savedUser.getLoginId());
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("[bad]-댓글id(pk)와 로그인한 유저의id(loginId)가 다르다면 검증은 실패한다.")
+    @Test
+    void isValidCommentAuthorException() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        //then
+        assertThatThrownBy(() -> boardCommentService.isValidCommentAuthor(savedBoardComment.getId(), "dig04058"))
+                .isInstanceOf(ProfileApplicationException.class);
     }
 
     private BoardComment createBoardComment(Board board, User user) {

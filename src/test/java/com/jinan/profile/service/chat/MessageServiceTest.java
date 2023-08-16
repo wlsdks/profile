@@ -44,7 +44,7 @@ class MessageServiceTest {
     @Autowired private MessageService messageService;
 
 
-    @DisplayName("사용자가 채팅방에서 메시지를 입력해서 보내면 db에 저장된다.")
+    @DisplayName("[happy]-사용자가 채팅방에서 메시지를 입력해서 보내면 db에 저장된다.")
     @Test
     void saveMessage() {
         //given
@@ -65,7 +65,7 @@ class MessageServiceTest {
         assertThat(actual.user()).isEqualTo(UserDto.fromEntity(testUser));
     }
 
-    @DisplayName("존재하지않는 사용자가 메시지를 입력해서 보내면 예외가 발생한다.")
+    @DisplayName("[bad]-존재하지않는 사용자가 메시지를 입력해서 보내면 예외가 발생한다.")
     @Test
     void saveMessageException() {
         //given
@@ -77,11 +77,9 @@ class MessageServiceTest {
         //when&then
         assertThatThrownBy(() -> messageService.saveMessage(1L, 1L, "test message"))
                 .isInstanceOf(ProfileApplicationException.class);
-//                .hasMessage("유저를 찾을수 없습니다.");
-
     }
 
-    @DisplayName("사용자와 채팅방을 연결해주는 map에 데이터가 들어가야 한다.")
+    @DisplayName("[happy]-사용자와 채팅방을 연결해주는 map에 데이터가 들어가야 한다.")
     @Test
     void test() {
         //given
@@ -102,7 +100,6 @@ class MessageServiceTest {
         assertThat(actual.text()).isEqualTo("test message");
         assertThat(actual.user()).isEqualTo(UserDto.fromEntity(testUser));
         assertThat(actual.chatRoom()).isEqualTo(ChatRoomDto.fromEntity(testChatRoom));
-
     }
 
 }

@@ -1,7 +1,6 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
-import com.jinan.profile.controller.board.response.BoardResponse;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.dto.user.UserDto;
@@ -13,12 +12,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ public class BoardService {
         // 1. request에서 board 엔티티로 변환해 준다.
         Board board = Board.toRequest(request);
 
-        if (board.getUser() == null) {
+        if (board.getUser() == null || board.getContent().isEmpty() || board.getTitle().isEmpty()) {
             throw new ProfileApplicationException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -98,15 +97,13 @@ public class BoardService {
                 .map(BoardDto::fromEntity)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
-        UserDto userDto = userRepository.findByLoginId(boardDto.userDto().loginId())
-                .map(UserDto::fromEntity)
-                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
+        // user정보를 board에서 꺼내는데 만약 board안에 user가 없으면 예외처리를 한다.
+        String boardLoginId = Optional.of(boardDto.userDto())
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND)).loginId();
 
-        // 시큐리티에 담긴 로그인id가 게시글 안에있던 유저정보에서 꺼내온 유저의 id와 다르다면 검증 실패다.
-        if (!loginId.equals(userDto.loginId())) {
+        if (!boardLoginId.equals(loginId)) {
             return false;
         }
-
         return true;
     }
 
@@ -114,11 +111,22 @@ public class BoardService {
      * 게시글 수정
      */
     @Transactional
-    public void updateBoard(BoardRequest request, Long boardId) {
+    public BoardDto updateBoard(BoardRequest request, Long boardId, String loginId) {
+
+        // 1. 게시글을 받아온다.
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found"));
 
+        // 2. 게시글 작성 user와 수정을 요청한 user가 같은지 검증
+        String boardUserId = board.getUser().getLoginId();
+        if (!Objects.equals(boardUserId, loginId)) {
+            throw new ProfileApplicationException(ErrorCode.USER_NOT_AUTHORIZED);
+        }
+
+        // 3. board의 값을 변경하면 변경감지로 자동으로 바뀌겠지만 테스트를 위해 return을 만들어 준다.
         board.change(request);
+        return Optional.of(boardRepository.save(board)).map(BoardDto::fromEntity)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
     }
 
 
