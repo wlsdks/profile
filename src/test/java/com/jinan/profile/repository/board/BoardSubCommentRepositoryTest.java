@@ -11,6 +11,9 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,8 +45,38 @@ class BoardSubCommentRepositoryTest extends TotalTestSupport {
 
     }
 
+    @DisplayName("[happy] - 특정 게시글이 가진 대댓글을 조회한다.")
+    @Test
+    void findAllById() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        Long boardId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
+        //when
+        Page<BoardSubComment> result = boardSubCommentRepository.findAllById(boardId, pageable);
 
+        //then
+        assertThat(savedBoardSubComment).isNotNull();
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(1);
+        assertThat(result).isInstanceOf(Page.class);
+    }
+
+    // 유저, 게시글, 댓글, 대댓글을 모두 영속화시키는 method이다.
+    private BoardSubComment makeSavedBoardSubComment() {
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+        return createBoardSubComment(savedUser, savedBoardComment);
+    }
+
+    private BoardSubComment createBoardSubComment(User savedUser, BoardComment savedBoardComment) {
+        BoardSubComment boardSubComment = BoardSubComment.of(
+                savedBoardComment, savedUser, "test"
+        );
+        return boardSubCommentRepository.save(boardSubComment);
+    }
 
     private BoardComment createBoardComment(Board board, User user) {
         BoardComment comment = BoardComment.of(
