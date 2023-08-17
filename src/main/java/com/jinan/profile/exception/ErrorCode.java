@@ -67,9 +67,12 @@ public enum ErrorCode {
     USER_NOT_AUTHORIZED(401, "4121", "허가받지 못한 다른 유저입니다."),
     INVALID_INPUT(404, "4222", "잘못된 입력값입니다."),
 
-    BOARD_NOT_FOUND(404, "3343", "존재하지 않는 게시글입니다.")
+    BOARD_NOT_FOUND(404, "3343", "존재하지 않는 게시글입니다."),
+    BOARD_COMMENT_NOT_FOUND(404, "3344", "존재하지 않는 댓글입니다.")
+
 
     ;
+
 
 
     private int status;

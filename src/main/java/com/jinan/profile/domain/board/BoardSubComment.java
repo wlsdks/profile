@@ -42,7 +42,7 @@ public class BoardSubComment extends AuditingFields {
     }
 
     // 생성자 factory method 선언
-    public BoardSubComment of(BoardComment boardComment, User user, String content) {
+    public static BoardSubComment of(BoardComment boardComment, User user, String content) {
         return new BoardSubComment(boardComment, user, content);
     }
 
