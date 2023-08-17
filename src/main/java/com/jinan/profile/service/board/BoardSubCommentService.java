@@ -13,27 +13,30 @@ import com.jinan.profile.repository.board.BoardSubCommentRepository;
 import com.jinan.profile.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class BoardSubCommentService {
-    private final BoardSubCommentRepository boardSubCommentRepository;
 
+    private final BoardSubCommentRepository boardSubCommentRepository;
     private final UserRepository userRepository;
     private final BoardCommentRepository boardCommentRepository;
 
-    public void getSubCommentList() {
-
-    }
 
     /**
-     * 대댓글을 저장한다.
+     * CREATE - 대댓글 저장
+     * 대댓글pk, 저장하려는 유저의 id, 대댓글 내용을 param으로 받아서 데이터를 가공 후에 저장한다.
      */
     @Transactional
     public BoardSubCommentDto saveBoardSubComment(Long boardCommentId, String loginId, String content) {
@@ -54,5 +57,13 @@ public class BoardSubCommentService {
         BoardSubComment boardSubComment = BoardSubComment.of(boardComment, user, content);
 
         return BoardSubCommentDto.fromEntity(boardSubCommentRepository.save(boardSubComment));
+    }
+
+    /**
+     * READ - 게시글이 가진 대댓글 조회
+     */
+    public Page<BoardSubCommentDto> getBoardSubCommentList(Long boardId, Pageable pageable) {
+        return boardSubCommentRepository.findAllById(boardId, pageable)
+                .map(BoardSubCommentDto::fromEntity);
     }
 }

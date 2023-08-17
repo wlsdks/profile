@@ -13,10 +13,15 @@ import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.board.BoardSubCommentRepository;
 import com.jinan.profile.repository.user.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,7 +46,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     void saveBoardSubComment() {
         //given
         User savedUser = createUser();
-        Board savedBoard = createBoard(savedUser, "test");
+        Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
         Long boardCommentId = 1L;
@@ -60,7 +65,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     void saveBoardSubCommentException1() {
         //given
         User savedUser = createUser();
-        Board savedBoard = createBoard(savedUser, "test");
+        Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
         Long boardCommentId = 1L;
@@ -76,7 +81,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     void saveBoardSubCommentException2() {
         //given
         User savedUser = createUser();
-        Board savedBoard = createBoard(savedUser, "test");
+        Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
         // 2L -> board_id의 댓글은 존재하지 않는다.
@@ -93,7 +98,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     void saveBoardSubCommentException3() {
         //given
         User savedUser = createUser();
-        Board savedBoard = createBoard(savedUser, "test");
+        Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
         Long boardCommentId = 1L;
@@ -110,11 +115,38 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         );
     }
 
+    @DisplayName("[happy]-특정 게시글이 가진 대댓글을 조회한다.")
+    @Test
+    void test() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        Long boardId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        //when
+        Page<BoardSubCommentDto> boardSubCommentList = boardSubCommentService.getBoardSubCommentList(boardId, pageable);
+
+        //then
+        assertThat(savedBoardSubComment).isNotNull();
+        assertThat(boardSubCommentList).isNotNull();
+        assertThat(boardSubCommentList).hasSize(1);
+        assertThat(boardSubCommentList).isInstanceOf(Page.class);
+    }
+
+    // 유저, 게시글, 댓글, 대댓글을 모두 영속화시키는 method이다.
+    private BoardSubComment makeSavedBoardSubComment() {
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser);
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+        return createBoardSubComment(savedUser, savedBoardComment);
+    }
+
 
     private BoardSubComment createBoardSubComment(User savedUser, BoardComment savedBoardComment) {
-        return BoardSubComment.of(
+        BoardSubComment boardSubComment = BoardSubComment.of(
                 savedBoardComment, savedUser, "test"
         );
+        return boardSubCommentRepository.save(boardSubComment);
     }
 
     private BoardComment createBoardComment(Board board, User user) {
@@ -126,9 +158,9 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         return boardCommentRepository.save(comment);
     }
 
-    private Board createBoard(User user, String title) {
+    private Board createBoard(User user) {
         Board board = Board.of(
-                title,
+                "test",
                 "테스트",
                 10,
                 20,
