@@ -68,7 +68,8 @@ public enum ErrorCode {
     INVALID_INPUT(404, "4222", "잘못된 입력값입니다."),
 
     BOARD_NOT_FOUND(404, "3343", "존재하지 않는 게시글입니다."),
-    BOARD_COMMENT_NOT_FOUND(404, "3344", "존재하지 않는 댓글입니다.")
+    BOARD_COMMENT_NOT_FOUND(404, "3344", "존재하지 않는 댓글입니다."),
+    NOT_VALID_BOARD_SUB_COMMENT_CONTENT(404, "3345", "대댓글의 내용은 null이거나 공백이어서는 안됩니다.")
 
 
     ;

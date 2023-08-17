@@ -8,6 +8,7 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardSubCommentDto;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.board.BoardSubCommentRepository;
@@ -17,20 +18,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("[BoardSubComment] - 리포지토리 테스트")
 class BoardSubCommentServiceTest extends TotalTestSupport {
 
-    @Autowired private BoardSubCommentService boardSubCommentService;
-    @Autowired private BoardSubCommentRepository boardSubCommentRepository;
-    @Autowired private BoardCommentRepository boardCommentRepository;
-    @Autowired private BoardRepository boardRepository;
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private BoardSubCommentService boardSubCommentService;
+    @Autowired
+    private BoardSubCommentRepository boardSubCommentRepository;
+    @Autowired
+    private BoardCommentRepository boardCommentRepository;
+    @Autowired
+    private BoardRepository boardRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
-    @DisplayName("사용자가 작성된 댓글에 대댓글을 작성해서 저장한다.")
+    @DisplayName("[happy] - 사용자가 작성된 댓글에 대댓글을 작성해서 저장한다.")
     @Test
     void saveBoardSubComment() {
         //given
@@ -42,14 +48,67 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         String loginId = "wlsdks123";
 
         //when
-        BoardSubCommentDto savedBoardSubCommentDto = boardSubCommentService.saveBoardSubComment(boardCommentId, loginId, "test content");
+        BoardSubCommentDto savedBoardSubCommentDto = boardSubCommentService.saveBoardSubComment(savedBoardComment.getId(), loginId, "test content");
 
         //then
         assertThat(savedBoardSubCommentDto).isNotNull();
         assertThat(savedBoardSubCommentDto).isInstanceOf(BoardSubCommentDto.class);
     }
 
+    @DisplayName("[bad]-존재하지 않는 사용자가 댓글에 대댓글을 작성하면 예외가 발생한다.")
+    @Test
+    void saveBoardSubCommentException1() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
+        Long boardCommentId = 1L;
+        String loginId = "ssssss";
+
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.saveBoardSubComment(boardCommentId, loginId, "test content"))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[bad]-존재하지 않는 댓글에 사용자가 대댓글을 작성하면 예외가 발생한다.")
+    @Test
+    void saveBoardSubCommentException2() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        // 2L -> board_id의 댓글은 존재하지 않는다.
+        Long boardCommentId = 100L;
+        String loginId = "wlsdks123";
+
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.saveBoardSubComment(boardCommentId, loginId, "test content"))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[bad]-대댓글에 null이거나 공백 문자를 적어서 저장했을때는 예외가 발생한다.")
+    @Test
+    void saveBoardSubCommentException3() {
+        //given
+        User savedUser = createUser();
+        Board savedBoard = createBoard(savedUser, "test");
+        BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        Long boardCommentId = 1L;
+        String loginId = "wlsdks123";
+
+        //when & then
+        //junit5의 테스트인 assertAll과 assertJ의 assertThatThrownBy를 함께 사용했다.
+        assertAll(
+            () -> assertThatThrownBy(() -> boardSubCommentService.saveBoardSubComment(boardCommentId, loginId, ""))
+                    .isInstanceOf(ProfileApplicationException.class),
+
+            () -> assertThatThrownBy(() -> boardSubCommentService.saveBoardSubComment(boardCommentId, loginId, null))
+                    .isInstanceOf(ProfileApplicationException.class)
+        );
+    }
 
 
     private BoardSubComment createBoardSubComment(User savedUser, BoardComment savedBoardComment) {

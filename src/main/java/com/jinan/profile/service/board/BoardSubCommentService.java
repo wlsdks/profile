@@ -38,6 +38,10 @@ public class BoardSubCommentService {
     @Transactional
     public BoardSubCommentDto saveBoardSubComment(Long boardCommentId, String loginId, String content) {
 
+        if (content == null || content.isEmpty()) {
+            throw new ProfileApplicationException(ErrorCode.NOT_VALID_BOARD_SUB_COMMENT_CONTENT);
+        }
+
         // 1. 댓글정보를 가져온다.
         BoardComment boardComment = boardCommentRepository.findById(boardCommentId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BOARD_COMMENT_NOT_FOUND));
