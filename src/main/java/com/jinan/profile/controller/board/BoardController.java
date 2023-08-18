@@ -93,8 +93,10 @@ public class BoardController {
      */
     @GetMapping("/update/validUser")
     @ResponseBody
-    public ResponseEntity<String> validUpdateUser(Long boardId, Authentication authentication) {
-        String loginId = authentication.getName();
+    public ResponseEntity<String> validUpdateUser(Long boardId) {
+
+        String loginId = securityService.getCurrentUsername();
+
         // 유저 검증 로직 작성
         boolean validUser = boardService.validUser(boardId, loginId);
         if (validUser) {

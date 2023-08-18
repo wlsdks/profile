@@ -160,16 +160,13 @@ class BoardControllerTest extends ControllerTestSupport {
     @Test
     void validUserController() throws Exception {
         String username = "user";
-        //  테스트 환경에서 이 Authentication 객체를 요청에 주입하기 위해서는 특별한 방법을 사용해야 한다.
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, "password");
 
+        given(securityService.getCurrentUsername()).willReturn(username);
         given(boardService.validUser(anyLong(), eq(username))).willReturn(true);
 
         mockMvc.perform(
                         get("/board/update/validUser")
-                                .param("boardId", "1")
-                                // .with() 메서드는 요청 자체에 대한 다양한 설정을 수행할 수 있게 해주는 메서드다. 여기서는 Authentication 객체를 요청에 주입하기 위해 .with(authentication(authentication))를 사용하고 있다.
-                                .with(authentication(authentication))) // 이 부분을 사용하여 Authentication 객체를 요청에 주입한다.
+                                .param("boardId", "1"))
                 .andExpect(status().isOk());
 
     }
