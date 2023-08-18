@@ -6,6 +6,7 @@ import com.jinan.profile.controller.board.BoardController;
 import com.jinan.profile.controller.board.BoardSubCommentController;
 import com.jinan.profile.controller.chat.ChatMainController;
 import com.jinan.profile.repository.board.BoardCommentRepository;
+import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardCommentService;
@@ -42,6 +43,7 @@ public abstract class ControllerTestSupport {
 
     // mock repository
     @MockBean protected BoardCommentRepository boardCommentRepository;
-    @MockBean private UserRepository userRepository;
+    @MockBean protected UserRepository userRepository;
+    @MockBean protected BoardRepository boardRepository;
 
 }
