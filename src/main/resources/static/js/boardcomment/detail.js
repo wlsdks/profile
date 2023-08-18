@@ -16,7 +16,6 @@ $('.edit-button').click(function (e) {
         type: 'GET',
         success: function (response) {
             // 검증 성공 시 수정 페이지로 이동합니다.
-            debugger
             window.location.href = '/board/update/' + boardId;
         },
         error: function (xhr, status, error) {
@@ -26,58 +25,34 @@ $('.edit-button').click(function (e) {
     });
 });
 
+let scrollPosition = 0; // 초기 스크롤 위치
 
-// READ - 댓글을 받아와서 뿌려주는 로직 (페이징 적용)
-let currentPage = 1;
+// 페이지 로딩 시 스크롤 위치 저장
+$(document).ready(function () {
+    scrollPosition = $(window).scrollTop();
+});
 
-function getComments(boardId, page) {
-    $.ajax({
-        url: '/board/comment/get/' + boardId,
-        method: 'GET',
-        data: {page: page - 1},
-        success: function (response) {
-            let comments = response.content;
-            let commentListHtml = '';
-            comments.forEach(function (comment) {
-                commentListHtml += `<div class="comment" data-comment-id="${comment.boardCommentId}" onmouseover="showActions(this)" onmouseout="hideActions(this)">`;
-                commentListHtml += `<span class="author">${comment.userResponse.username}:</span>`;
-                commentListHtml += `<div class="content">${comment.content}</div>`;
-                commentListHtml += `<div class="actions" style="display:none;">`; // 클래스 이름을 원래대로 돌림
-                commentListHtml += `<button onclick="editComment(${comment.boardCommentId})">수정</button>`; // 클래스 제거
-                commentListHtml += `<button onclick="deleteComment(${comment.boardCommentId})">삭제</button>`; // 클래스 제거
-                commentListHtml += `</div>`;
-                commentListHtml += `</div>`;
-            });
-            $('#comment-list').html(commentListHtml);
-
-            // 페이징 처리
-            let totalPages = response.totalPages; // 전체 페이지 수
-            let paginationHtml = '';
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `<button onclick="getComments(${boardId}, ${i})">${i}</button>`;
-            }
-            $('#pagination').html(paginationHtml);
-        }
-    });
-}
-
-// 댓글 작성 함수 CREATE
+// 댓글 추가 후 리로딩
 function addComment() {
     let boardId = $('.edit-button').data('board-id');
     let content = $('#comment-input').val();
     $.ajax({
-        url: '/board/comment/create/' + boardId, // 경로에 boardId 포함
+        url: '/board/comment/create/' + boardId,
         method: 'POST',
-        contentType: 'application/json', // Content-Type 설정
-        data: JSON.stringify({content: content}), // JSON 형식으로 변환
+        contentType: 'application/json',
+        data: JSON.stringify({content: content}),
         success: function () {
-            // 댓글을 다시 불러온다.
-            let boardId = $('.edit-button').data('board-id');
-            getComments(boardId, currentPage);
-            $('#comment-input').val(''); // 입력창을 비웁니다.
+            // 페이지 리로딩 후 스크롤 위치 이동
+            location.reload();
         }
     });
 }
+
+// 페이지 리로딩 후 스크롤 위치 이동
+$(window).on('load', function () {
+    $(window).scrollTop(scrollPosition);
+});
+
 
 // UPDATE - 댓글 수정창을 보여주도록 하는 함수
 function editComment(commentId) {
@@ -155,9 +130,7 @@ function hideActions(element) {
     $(element).find('.actions').hide();
 }
 
-
 function likePost() {
     alert('좋아요를 눌렀습니다!');
     // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
 }
-

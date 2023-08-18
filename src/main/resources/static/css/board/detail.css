@@ -205,3 +205,57 @@ button:hover {
 .actions button:hover {
     background-color: #155a8a;
 }
+
+/* 대댓글 영역 스타일 */
+.subcomment-form {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.subcomment-form textarea {
+    flex: 1; /* textarea가 남은 공간을 모두 차지하도록 합니다. */
+    height: 40px;
+    padding: 5px;
+    margin-right: 10px; /* 버튼과의 간격을 조정합니다. */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.subcomment-form button {
+    padding: 8px 16px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination span {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a:hover {
+    background-color: #e0e0e0;
+}

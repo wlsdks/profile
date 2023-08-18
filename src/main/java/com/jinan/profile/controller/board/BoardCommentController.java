@@ -3,6 +3,8 @@ package com.jinan.profile.controller.board;
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
 import com.jinan.profile.controller.board.response.BoardCommentResponse;
 import com.jinan.profile.controller.board.response.BoardResponse;
+import com.jinan.profile.controller.board.response.BoardSubCommentResponse;
+import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.service.board.BoardCommentService;
@@ -21,7 +23,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,10 +48,17 @@ public class BoardCommentController {
             @PathVariable Long boardId
     ) {
         String loginId = securityService.getCurrentUsername();
-        boardCommentService.createComment(request, boardId, loginId);
+        BoardCommentResponse boardCommentResponse = BoardCommentResponse.fromDto(boardCommentService.createComment(request, boardId, loginId));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        // 댓글 정보를 응답합니다.
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", boardCommentResponse.getBoardCommentId()); // 댓글 ID를 추가
+        response.put("username", boardCommentResponse.getUserResponse().getUsername());
+        response.put("content", boardCommentResponse.getContent());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     /**
      * READ - 게시글에 해당하는 댓글 조회

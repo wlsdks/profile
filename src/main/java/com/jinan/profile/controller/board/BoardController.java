@@ -1,13 +1,17 @@
 package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.controller.board.response.BoardCommentResponse;
 import com.jinan.profile.controller.board.response.BoardResponse;
+import com.jinan.profile.controller.board.response.BoardSubCommentResponse;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.UserService;
+import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.board.BoardService;
+import com.jinan.profile.service.board.BoardSubCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
 import com.jinan.profile.service.security.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +42,8 @@ public class BoardController {
     private final UserService userService;
     private final PaginationService paginationService;
     private final SecurityService securityService;
+    private final BoardCommentService boardCommentService;
+    private final BoardSubCommentService boardSubCommentService;
 
     /**
      * READ - 게시글 리스트 뷰 이동
@@ -144,18 +150,47 @@ public class BoardController {
     }
 
 
+//    /**
+//     * READ - 게시글 단건 조회
+//     */
+//    @GetMapping("/{boardId}")
+//    public String selectBoard(@PathVariable Long boardId, Model model) {
+//        BoardDto boardDto = boardService.selectBoard(boardId);
+//
+//        model.addAttribute("boardId", boardId);
+//        model.addAttribute("board", boardDto);
+//
+//        return "/board/detail";
+//    }
+
     /**
      * READ - 게시글 단건 조회
      */
     @GetMapping("/{boardId}")
-    public String selectBoard(@PathVariable Long boardId, Model model) {
-        BoardDto boardDto = boardService.selectBoard(boardId);
+    public String boardDetail(
+            @PathVariable Long boardId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ) {
+        // 게시글 상세 정보 가져오기
+        BoardResponse boardResponse = BoardResponse.fromDto(boardService.selectBoard(boardId));
+        map.addAttribute("board", boardResponse);
 
-        model.addAttribute("boardId", boardId);
-        model.addAttribute("board", boardDto);
+        // 댓글 목록 가져오기
+        Page<BoardCommentResponse> boardComment = boardCommentService.getBoardComment(boardId, pageable)
+                .map(BoardCommentResponse::fromDto);
 
-        return "/board/detail";
+        map.addAttribute("boardComment", boardComment);
+
+        // 대댓글 목록 가져오기 (옵션: 필요한 경우)
+        Page<BoardSubCommentResponse> boardSubComment = boardSubCommentService.getBoardSubCommentList(boardId, pageable)
+                .map(BoardSubCommentResponse::fromDto);
+
+        map.addAttribute("boardSubComment", boardSubComment);
+
+        return "board/detail";  // 타임리프 템플릿 경로
     }
+
 
     /**
      * READ - 로그인 id로 모든 게시글 조회

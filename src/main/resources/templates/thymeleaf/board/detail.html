@@ -14,7 +14,8 @@
     <div class="info">
         <div class="author-date">
             <span class="author"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></span>
-            <span th:if="${board.createdAt != null}" th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
+            <span th:if="${board.createdAt != null}"
+                  th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
             <span th:unless="${board.createdAt != null}">날짜 없음</span>
         </div>
     </div>
@@ -34,9 +35,45 @@
             <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
             <button onclick="addComment()">댓글 작성</button>
         </div>
-        <div id="comment-list"></div>
-        <div id="pagination"></div>
+
+        <!-- 댓글 리스트 추가 -->
+        <ul>
+            <li th:each="comment : ${boardComment}">
+                <div class="comment">
+                    <!-- comment.author를 comment.userResponse.username(예시)로 변경 -->
+                    <span th:text="${comment.userResponse.username}">작성자</span>: <span
+                        th:text="${comment.content}">내용</span>
+                </div>
+
+                <!-- 대댓글 리스트 추가 -->
+                <ul>
+                    <!-- boardSubComment를 comment.boardSubComments로 변경하고 조건 수정 -->
+                    <li th:each="subComment : ${comment.boardSubComments}">
+                        <div class="sub-comment">
+                            <!-- BoardSubCommentResponse에 작성자 정보가 없으므로 일단 static으로 작성자를 표시 -->
+                            <span>작성자</span>: <span th:text="${subComment.content}">내용</span>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="pagination">
+            <span th:if="${boardComment != null}">
+                <!-- 이전 페이지로 이동하는 버튼 -->
+                <a th:if="${boardComment.number > 0}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number - 1})}">&lt;</a>
+
+                <!-- 페이지 번호 표시 -->
+                <span th:each="i : ${#numbers.sequence(0, boardComment.totalPages - 1)}">
+                    <a th:href="@{/board/{boardId}(boardId=${board.boardId},page=${i})}" th:text="${i + 1}" th:classappend="${i == boardComment.number} ? 'active' : ''"></a>
+                </span>
+
+                <!-- 다음 페이지로 이동하는 버튼 -->
+                <a th:if="${boardComment.number < boardComment.totalPages - 1}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number + 1})}">&gt;</a>
+            </span>
+        </div>
     </div>
+
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
         <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button" th:data-board-id="${boardId}">수정하기</a>
