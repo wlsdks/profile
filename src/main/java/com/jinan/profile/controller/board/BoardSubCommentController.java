@@ -2,8 +2,8 @@ package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.controller.board.response.BoardSubCommentResponse;
-import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.board.BoardSubCommentService;
+import com.jinan.profile.service.security.SecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/board/subcomment/ajax")
@@ -24,6 +22,7 @@ import java.security.Principal;
 public class BoardSubCommentController {
 
     private final BoardSubCommentService boardSubCommentService;
+    private final SecurityService securityService;
 //    private final PaginationService paginationService;
 
     /**
@@ -32,12 +31,11 @@ public class BoardSubCommentController {
      */
     @ResponseBody
     @PostMapping("/create")
-    public ResponseEntity<?> saveBoardSubComment(
-            @RequestBody BoardSubCommentRequest request,
-            Principal principal
-    ) {
-        String loginId = principal.getName();
+    public ResponseEntity<?> saveBoardSubComment(@RequestBody BoardSubCommentRequest request) {
+
+        String loginId = securityService.getCurrentUsername();
         boardSubCommentService.saveBoardSubComment(request.getBoardSubCommentId(), loginId, request.getContent());
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -64,12 +62,11 @@ public class BoardSubCommentController {
      * 대댓글 작성자는 본인이 작성한 대댓글을 수정할 수 있다.
      */
     @PostMapping("/update")
-    public ResponseEntity<?> updateBoardSubComment(
-            @RequestBody BoardSubCommentRequest request,
-            Principal principal
-    ) {
-        String loginId = principal.getName();
+    public ResponseEntity<?> updateBoardSubComment(@RequestBody BoardSubCommentRequest request) {
+
+        String loginId = securityService.getCurrentUsername();
         boardSubCommentService.updateBoardSubComment(request, loginId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -78,12 +75,11 @@ public class BoardSubCommentController {
      * 대댓글 작성자 본인이 작성한 대댓글을 삭제하는 기능
      */
     @DeleteMapping("/delete/{boardSubCommentId}")
-    public ResponseEntity<?> deleteBoardSubComment(
-            @PathVariable Long boardSubCommentId,
-            Principal principal
-    ) {
-        String loginId = principal.getName();
+    public ResponseEntity<?> deleteBoardSubComment(@PathVariable Long boardSubCommentId) {
+
+        String loginId = securityService.getCurrentUsername();
         boardSubCommentService.deleteBoardSubComment(boardSubCommentId, loginId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
