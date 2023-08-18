@@ -2,6 +2,7 @@ package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.controller.board.response.BoardSubCommentResponse;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.board.BoardSubCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +19,7 @@ import java.security.Principal;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/board/subcomment")
+@RequestMapping("/board/subcomment/ajax")
 @Controller
 public class BoardSubCommentController {
 
@@ -28,44 +31,60 @@ public class BoardSubCommentController {
      * 대댓글을 저장하는 컨트롤러
      */
     @ResponseBody
-    @PostMapping("/action/save")
-    public void saveBoardSubComment(
+    @PostMapping("/create")
+    public ResponseEntity<?> saveBoardSubComment(
             @RequestBody BoardSubCommentRequest request,
             Principal principal
     ) {
-
         String loginId = principal.getName();
         boardSubCommentService.saveBoardSubComment(request.getBoardSubCommentId(), loginId, request.getContent());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
      * [READ]
-     * 각각의 게시글에 달린 대댓글을 리스트로 받아오는 컨트롤러
-     * ajax로 호출한다. -> 동작: 댓글 하단의 댓글보기를 클릭하면 이 컨트롤러를 통해 그 댓글의 대댓글 정보를 보여준다.
+     * 각 게시글별로 달린 대댓글을 리스트로 받아온다.
+     * 동작: ajax로 호출하며 댓글 하단에 있는 댓글보기 버튼을 클릭하면 이 컨트롤러로 대댓글을 받아온다.
      */
     @ResponseBody
     @GetMapping("/get/{boardId}")
-    public Page<BoardSubCommentResponse> getBoardSubCommentList(
+    public ResponseEntity<?> getBoardSubCommentList(
             @PathVariable Long boardId,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 대댓글을 받아서 응답값을 response 객체로 변환한다.
-        return boardSubCommentService.getBoardSubCommentList(boardId, pageable)
+        Page<BoardSubCommentResponse> subCommentResponses = boardSubCommentService.getBoardSubCommentList(boardId, pageable)
                 .map(BoardSubCommentResponse::fromDto);
+
+        return new ResponseEntity<>(subCommentResponses, HttpStatus.OK);
     }
 
     /**
      * [UPDATE]
      * 대댓글 작성자는 본인이 작성한 대댓글을 수정할 수 있다.
      */
-    @PostMapping("/action/update")
-    public void updateBoardSubComment(
+    @PostMapping("/update")
+    public ResponseEntity<?> updateBoardSubComment(
             @RequestBody BoardSubCommentRequest request,
             Principal principal
     ) {
         String loginId = principal.getName();
         boardSubCommentService.updateBoardSubComment(request, loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * [DELETE]
+     * 대댓글 작성자 본인이 작성한 대댓글을 삭제하는 기능
+     */
+    @DeleteMapping("/delete/{boardSubCommentId}")
+    public ResponseEntity<?> deleteBoardSubComment(
+            @PathVariable Long boardSubCommentId,
+            Principal principal
+    ) {
+        String loginId = principal.getName();
+        boardSubCommentService.deleteBoardSubComment(boardSubCommentId, loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
