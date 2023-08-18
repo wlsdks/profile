@@ -42,13 +42,9 @@ public class BoardCommentController {
             @PathVariable Long boardId,
             Principal principal
     ) {
-        try {
-            String loginId = principal.getName();
-            boardCommentService.createComment(request, boardId, loginId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ProfileApplicationException e) {
-            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        String loginId = principal.getName();
+        boardCommentService.createComment(request, boardId, loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -56,17 +52,17 @@ public class BoardCommentController {
      */
     @ResponseBody
     @GetMapping("/get/{boardId}")
-    public Page<BoardCommentResponse> getComment(
+    public ResponseEntity<?> getComment(
             @PathVariable Long boardId,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-
         // 페이징된 데이터 세팅
         Page<BoardCommentResponse> BoardCommentResponses = boardCommentService.getBoardComment(boardId, pageable)
                 .map(BoardCommentResponse::fromDto);
+
         paginationService.getPaginationBarNumbers(pageable.getPageNumber(), BoardCommentResponses.getTotalPages());
 
-        return BoardCommentResponses;
+        return new ResponseEntity<>(BoardCommentResponses, HttpStatus.OK);
     }
 
     /**
@@ -80,13 +76,10 @@ public class BoardCommentController {
             @PathVariable Long commentId,
             Principal principal
     ) {
-        try {
-            String loginId = principal.getName();
-            boardCommentService.updateBoardComment(request, commentId, loginId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ProfileApplicationException e) {
-            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.BAD_REQUEST);
-        }
+
+        String loginId = principal.getName();
+        boardCommentService.updateBoardComment(request, commentId, loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -94,12 +87,9 @@ public class BoardCommentController {
      */
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Principal principal) {
-        try {
-            boardCommentService.deleteComment(commentId, principal.getName());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ProfileApplicationException e) {
-            return new ResponseEntity<>(e.getErrorCode().getMessage(), HttpStatus.UNAUTHORIZED);
-        }
+
+        boardCommentService.deleteComment(commentId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

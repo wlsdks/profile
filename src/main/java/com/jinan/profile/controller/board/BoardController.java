@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -156,11 +157,13 @@ public class BoardController {
 
     /**
      * READ - 로그인 id로 모든 게시글 조회
+     * 이게 필요한지 한번 더 확인해보자
      */
     @ResponseBody
     @GetMapping("/getAllBoard")
-    public void selectAllBoardByLoginId(String loginId) {
+    public ResponseEntity<?> selectAllBoardByLoginId(String loginId) {
         boardService.findByLoginId(loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
