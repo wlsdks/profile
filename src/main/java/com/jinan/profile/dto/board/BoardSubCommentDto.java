@@ -32,7 +32,7 @@ public record BoardSubCommentDto(
     // request -> dto 변환 메서드
     public static BoardSubCommentDto fromRequest(BoardSubCommentRequest request) {
         return new BoardSubCommentDto(
-                request.getBoardSubCommentId(),
+                null,
                 request.getContent(),
                 request.getCreatedAt(),
                 request.getUpdatedAt()

@@ -1,6 +1,7 @@
 package com.jinan.profile.service.board;
 
 import com.jinan.profile.config.TotalTestSupport;
+import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.board.BoardComment;
 import com.jinan.profile.domain.board.BoardSubComment;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -115,7 +118,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
 
     @DisplayName("[happy]-특정 게시글이 가진 대댓글을 조회한다.")
     @Test
-    void test() {
+    void getBoardSubCommentList() {
         //given
         BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
         Long boardId = savedBoardSubComment.getBoardComment().getBoard().getId();
@@ -129,6 +132,50 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         assertThat(boardSubCommentList).isNotNull();
         assertThat(boardSubCommentList).hasSize(1);
         assertThat(boardSubCommentList).isInstanceOf(Page.class);
+    }
+
+    @DisplayName("[happy]-대댓글 작성자가 대댓글을 수정하면 적용된다.")
+    @Test
+    void updateBoardSubComment() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        BoardSubCommentDto boardSubCommentDto = BoardSubCommentDto.fromEntity(savedBoardSubComment);
+        BoardSubCommentRequest request = BoardSubCommentRequest.fromDto(boardSubCommentDto);
+        String loginId = savedBoardSubComment.getUser().getLoginId();
+
+        //when
+        boardSubCommentService.updateBoardSubComment(request, loginId);
+
+        //then
+        BoardSubComment updatedBoardSubComment = boardSubCommentRepository.findById(request.getBoardSubCommentId()).orElseThrow();
+        assertThat(updatedBoardSubComment.getContent()).isEqualTo(request.getContent());
+    }
+
+    @DisplayName("[bad]-대댓글 작성자가 아닌 유저가 대댓글을 수정하면 예외가 발생한다.")
+    @Test
+    void updateBoardSubCommentException() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+
+        Long boardSubCommentId = savedBoardSubComment.getId();
+        BoardSubCommentRequest request = createBoardSubCommentRequest(boardSubCommentId);
+
+        String loginId = savedBoardSubComment.getUser().getLoginId();
+
+        //when
+        boardSubCommentService.updateBoardSubComment(request, loginId);
+
+        //then
+        BoardSubComment updatedBoardSubComment = boardSubCommentRepository
+                .findById(request.getBoardSubCommentId()).orElseThrow();
+
+        assertThat(updatedBoardSubComment.getContent()).isEqualTo(request.getContent());
+    }
+
+    private BoardSubCommentRequest createBoardSubCommentRequest(long boardSubCommentId) {
+        return BoardSubCommentRequest.of(
+                boardSubCommentId, "test", LocalDateTime.now(), LocalDateTime.now()
+        );
     }
 
     // 유저, 게시글, 댓글, 대댓글을 모두 영속화시키는 method이다.

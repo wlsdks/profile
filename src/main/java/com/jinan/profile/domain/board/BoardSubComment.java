@@ -1,5 +1,6 @@
 package com.jinan.profile.domain.board;
 
+import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.domain.AuditingFields;
 import com.jinan.profile.domain.user.User;
 import jakarta.persistence.*;
@@ -57,5 +58,10 @@ public class BoardSubComment extends AuditingFields {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    // 변경감지용 메서드
+    public void changeContent(BoardSubCommentRequest request) {
+        this.content = request.getContent();
     }
 }

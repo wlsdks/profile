@@ -1,11 +1,10 @@
 package com.jinan.profile.service.board;
 
+import com.jinan.profile.controller.board.request.BoardSubCommentRequest;
 import com.jinan.profile.domain.board.BoardComment;
 import com.jinan.profile.domain.board.BoardSubComment;
 import com.jinan.profile.domain.user.User;
-import com.jinan.profile.dto.board.BoardCommentDto;
 import com.jinan.profile.dto.board.BoardSubCommentDto;
-import com.jinan.profile.dto.user.UserDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
@@ -14,14 +13,9 @@ import com.jinan.profile.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -66,4 +60,25 @@ public class BoardSubCommentService {
         return boardSubCommentRepository.findAllByBoardId(boardId, pageable)
                 .map(BoardSubCommentDto::fromEntity);
     }
+
+    /**
+     * UPDATE - 작성한 대댓글 수정(변경감지 update)
+     */
+    public void updateBoardSubComment(BoardSubCommentRequest request, String loginId) {
+
+        // 1. 저장된 대댓글 엔티티를 받아온다.
+        BoardSubComment boardSubComment = boardSubCommentRepository.findById(request.getBoardSubCommentId())
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BOARD_SUB_COMMENT_NOT_FOUND));
+
+        // 2. 유저를 확인해서 예외처리를 한다.
+        String boardSubCommentUserLoginId = boardSubComment.getUser().getLoginId();
+        if (!boardSubCommentUserLoginId.equals(loginId)) {
+            throw new ProfileApplicationException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // 3. 엔티티의 값을 변경한다.
+        boardSubComment.changeContent(request);
+    }
+
+
 }
