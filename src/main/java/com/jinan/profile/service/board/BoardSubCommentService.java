@@ -80,5 +80,24 @@ public class BoardSubCommentService {
         boardSubComment.changeContent(request);
     }
 
+    /**
+     * DELETE - 작성한 대댓글 삭제하기
+     */
+    public void deleteBoardSubComment(Long boardSubCommentId, String loginId) {
+
+        // 1. 저장된 대댓글 엔티티를 받아온다.
+        BoardSubComment boardSubComment = boardSubCommentRepository.findById(boardSubCommentId)
+                .orElseThrow(() -> new ProfileApplicationException(ErrorCode.BOARD_SUB_COMMENT_NOT_FOUND));
+
+        // 2. 대댓글 유저와 삭제를 요청한 유저를 비교/검증 한다.
+        String boardSubCommentUserLoginId = boardSubComment.getUser().getLoginId();
+        if (!boardSubCommentUserLoginId.equals(loginId)) {
+            throw new ProfileApplicationException(ErrorCode.INVALID_USER);
+        }
+
+        // 3. 삭제한다.
+        boardSubCommentRepository.deleteById(boardSubCommentId);
+    }
+
 
 }

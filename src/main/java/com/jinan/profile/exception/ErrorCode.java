@@ -77,8 +77,8 @@ public enum ErrorCode {
     ;
 
 
-
     private int status;
     private String code;
     private String message;
+
 }

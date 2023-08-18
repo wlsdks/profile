@@ -9,6 +9,7 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardSubCommentDto;
+import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.board.BoardRepository;
@@ -181,6 +182,49 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         //when & then
         assertThatThrownBy(() -> boardSubCommentService.updateBoardSubComment(request, loginId))
                 .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[happy]-대댓글을 작성한 유저가 삭제를 누르면 잘 삭제된다.")
+    @Test
+    void deleteBoardSubComment() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        Long boardSubCommentId = savedBoardSubComment.getId();
+        String loginId = savedBoardSubComment.getUser().getLoginId();
+
+        //when
+        boardSubCommentService.deleteBoardSubComment(boardSubCommentId, loginId);
+
+        //then
+        assertThat(boardSubCommentRepository.findById(boardSubCommentId)).isEmpty();
+    }
+
+    @DisplayName("[bad]-대댓글을 작성한 유저랑 다른 유저가 삭제를 누르면 예외가 발생한다.")
+    @Test
+    void deleteBoardSubCommentException1() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        Long boardSubCommentId = savedBoardSubComment.getId();
+        String loginId = "otherUser";
+
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.deleteBoardSubComment(boardSubCommentId, loginId))
+                .isInstanceOf(ProfileApplicationException.class)
+                .hasMessage(ErrorCode.INVALID_USER.getMessage());
+    }
+
+    @DisplayName("[bad]-존재하지 않는 대댓글에 유저가 삭제를 실행하면 예외가 발생한다.")
+    @Test
+    void deleteBoardSubCommentException2() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+        Long boardSubCommentId = 100L;
+        String loginId = savedBoardSubComment.getUser().getLoginId();
+
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.deleteBoardSubComment(boardSubCommentId, loginId))
+                .isInstanceOf(ProfileApplicationException.class)
+                .hasMessage(ErrorCode.BOARD_SUB_COMMENT_NOT_FOUND.getMessage());
     }
 
 
