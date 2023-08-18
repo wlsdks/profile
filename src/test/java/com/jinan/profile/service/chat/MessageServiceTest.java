@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 
+@DisplayName("실시간 채팅 service 테스트")
 class MessageServiceTest extends TotalTestSupport {
 
     @MockBean private UserRepository userRepository;

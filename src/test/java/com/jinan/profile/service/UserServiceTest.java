@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("유저 service 테스트")
 class UserServiceTest extends TotalTestSupport {
 
     @Autowired private UserService userService;

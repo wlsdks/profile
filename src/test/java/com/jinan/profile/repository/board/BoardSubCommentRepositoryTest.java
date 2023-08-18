@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("대댓글 repository 테스트")
 class BoardSubCommentRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardSubCommentRepository boardSubCommentRepository;

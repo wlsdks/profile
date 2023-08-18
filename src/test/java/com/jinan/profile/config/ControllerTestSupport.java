@@ -6,6 +6,7 @@ import com.jinan.profile.controller.board.BoardController;
 import com.jinan.profile.controller.board.BoardSubCommentController;
 import com.jinan.profile.controller.chat.ChatMainController;
 import com.jinan.profile.repository.board.BoardCommentRepository;
+import com.jinan.profile.repository.user.UserRepository;
 import com.jinan.profile.service.UserService;
 import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.board.BoardService;
@@ -28,14 +29,19 @@ import org.springframework.test.web.servlet.MockMvc;
 })
 public abstract class ControllerTestSupport {
 
+    // util
     @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper objectMapper;
 
+    // mock service
     @MockBean protected UserService userService;
     @MockBean protected BoardService boardService;
     @MockBean protected PaginationService paginationService;
     @MockBean protected BoardCommentService boardCommentService;
     @MockBean protected BoardSubCommentService boardSubCommentService;
+
+    // mock repository
     @MockBean protected BoardCommentRepository boardCommentRepository;
+    @MockBean private UserRepository userRepository;
 
 }

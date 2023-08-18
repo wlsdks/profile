@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("댓글 service 테스트")
 class BoardCommentServiceTest extends TotalTestSupport {
 
     @Autowired private BoardCommentService boardCommentService;

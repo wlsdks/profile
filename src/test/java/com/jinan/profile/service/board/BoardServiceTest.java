@@ -22,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("게시글 service 테스트")
 class BoardServiceTest extends TotalTestSupport {
 
     @Autowired private BoardService boardService;

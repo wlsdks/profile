@@ -17,7 +17,7 @@ import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@DisplayName("댓글 Repository 테스트")
 class BoardCommentRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardCommentRepository boardCommentRepository;

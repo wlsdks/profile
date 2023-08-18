@@ -1,4 +1,4 @@
-package com.jinan.profile.repository.querydsl.board;
+package com.jinan.profile.repository.board;
 
 import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.domain.board.Board;
@@ -19,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@DisplayName("게시글 repository 테스트")
 class BoardRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardRepository boardRepository;

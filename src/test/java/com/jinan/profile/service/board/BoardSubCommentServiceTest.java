@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("대댓글 service 테스트")
 class BoardSubCommentServiceTest extends TotalTestSupport {
 
     @Autowired
