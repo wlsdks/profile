@@ -13,7 +13,6 @@ import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.board.BoardSubCommentRepository;
 import com.jinan.profile.repository.user.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("[BoardSubComment] - 리포지토리 테스트")
 class BoardSubCommentServiceTest extends TotalTestSupport {
 
     @Autowired
@@ -120,7 +117,7 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     void test() {
         //given
         BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
-        Long boardId = 1L;
+        Long boardId = savedBoardSubComment.getBoardComment().getBoard().getId();
         Pageable pageable = PageRequest.of(0, 10);
 
         //when

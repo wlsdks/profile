@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("대댓글 리포지토리 테스트")
 class BoardSubCommentRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardSubCommentRepository boardSubCommentRepository;
@@ -45,23 +45,28 @@ class BoardSubCommentRepositoryTest extends TotalTestSupport {
 
     }
 
+    @Transactional(readOnly = true)
     @DisplayName("[happy] - 특정 게시글이 가진 대댓글을 조회한다.")
     @Test
     void findAllById() {
         //given
         BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
-        Long boardId = 1L;
+        Long boardId = savedBoardSubComment.getBoardComment().getBoard().getId();
         Pageable pageable = PageRequest.of(0, 10);
 
         //when
-        Page<BoardSubComment> result = boardSubCommentRepository.findAllById(boardId, pageable);
+        Page<BoardSubComment> result = boardSubCommentRepository.findAllByBoardId(boardId, pageable);
 
         //then
         assertThat(savedBoardSubComment).isNotNull();
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(1);
-        assertThat(result).isInstanceOf(Page.class);
+        assertThat(result.getContent()).hasSize(1); // 현재 페이지의 항목 수
+        assertThat(result.getTotalPages()).isEqualTo(1); // 전체 페이지 수
+        assertThat(result.getTotalElements()).isEqualTo(1); // 전체 항목 수
+        assertThat(result.getNumber()).isEqualTo(0); // 현재 페이지 번호
+        assertThat(result.getSize()).isEqualTo(10); // 페이지 당 항목 수
     }
+
 
     // 유저, 게시글, 댓글, 대댓글을 모두 영속화시키는 method이다.
     private BoardSubComment makeSavedBoardSubComment() {
