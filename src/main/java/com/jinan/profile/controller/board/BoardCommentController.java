@@ -7,6 +7,7 @@ import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.board.BoardCommentRepository;
 import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
+import com.jinan.profile.service.security.SecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
     private final PaginationService paginationService;
+    private final SecurityService securityService;
 
     /**
      * CREATE - 댓글 저장하기 ajax로 저장기능 동작
@@ -39,11 +41,11 @@ public class BoardCommentController {
     @PostMapping("/create/{boardId}") // boardId를 경로 변수로 받습니다.
     public ResponseEntity<?> createComment(
             @RequestBody BoardCommentRequest request,
-            @PathVariable Long boardId,
-            Principal principal
+            @PathVariable Long boardId
     ) {
-        String loginId = principal.getName();
+        String loginId = securityService.getCurrentUsername();
         boardCommentService.createComment(request, boardId, loginId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -73,12 +75,12 @@ public class BoardCommentController {
     @PostMapping("/update/{commentId}")
     public ResponseEntity<?> updateBoardComment(
             @RequestBody BoardCommentRequest request, // 여기로 data로 보낸값이 바인딩되어 들어온다.
-            @PathVariable Long commentId,
-            Principal principal
+            @PathVariable Long commentId
     ) {
 
-        String loginId = principal.getName();
+        String loginId = securityService.getCurrentUsername();
         boardCommentService.updateBoardComment(request, commentId, loginId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -86,9 +88,11 @@ public class BoardCommentController {
      * DELETE - 댓글 삭제
      */
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Principal principal) {
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
 
-        boardCommentService.deleteComment(commentId, principal.getName());
+        String loginId = securityService.getCurrentUsername();
+        boardCommentService.deleteComment(commentId, loginId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -98,8 +102,10 @@ public class BoardCommentController {
      */
     @ResponseBody
     @GetMapping("/validComment")
-    public ResponseEntity<?> validComment(@RequestParam Long commentId, Principal principal) {
-        boolean isValid = boardCommentService.isValidCommentAuthor(commentId, principal.getName());
+    public ResponseEntity<?> validComment(@RequestParam Long commentId) {
+
+        String loginId = securityService.getCurrentUsername();
+        boolean isValid = boardCommentService.isValidCommentAuthor(commentId, loginId);
 
         if (!isValid) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
