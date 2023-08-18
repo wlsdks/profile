@@ -153,24 +153,37 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
 
     @DisplayName("[bad]-대댓글 작성자가 아닌 유저가 대댓글을 수정하면 예외가 발생한다.")
     @Test
-    void updateBoardSubCommentException() {
+    void updateBoardSubCommentException1() {
         //given
         BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
 
         Long boardSubCommentId = savedBoardSubComment.getId();
         BoardSubCommentRequest request = createBoardSubCommentRequest(boardSubCommentId);
 
+        String loginId = "annonymousUser";
+
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.updateBoardSubComment(request, loginId))
+                .isInstanceOf(ProfileApplicationException.class);
+    }
+
+    @DisplayName("[bad]-존재하지 않는 대댓글을 유저가 수정하면 예외가 발생한다.")
+    @Test
+    void updateBoardSubCommentException2() {
+        //given
+        BoardSubComment savedBoardSubComment = makeSavedBoardSubComment();
+
+        Long boardSubCommentId = savedBoardSubComment.getId();
+        BoardSubCommentRequest request = createBoardSubCommentRequest(10L);
+
         String loginId = savedBoardSubComment.getUser().getLoginId();
 
-        //when
-        boardSubCommentService.updateBoardSubComment(request, loginId);
-
-        //then
-        BoardSubComment updatedBoardSubComment = boardSubCommentRepository
-                .findById(request.getBoardSubCommentId()).orElseThrow();
-
-        assertThat(updatedBoardSubComment.getContent()).isEqualTo(request.getContent());
+        //when & then
+        assertThatThrownBy(() -> boardSubCommentService.updateBoardSubComment(request, loginId))
+                .isInstanceOf(ProfileApplicationException.class);
     }
+
+
 
     private BoardSubCommentRequest createBoardSubCommentRequest(long boardSubCommentId) {
         return BoardSubCommentRequest.of(
