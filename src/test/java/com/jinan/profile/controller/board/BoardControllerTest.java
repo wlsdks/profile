@@ -1,7 +1,5 @@
 package com.jinan.profile.controller.board;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.board.Board;
@@ -9,23 +7,15 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardDto;
-import com.jinan.profile.service.UserService;
-import com.jinan.profile.service.board.BoardCommentService;
-import com.jinan.profile.service.board.BoardService;
-import com.jinan.profile.service.pagination.PaginationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,21 +24,12 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("[Board] - 컨트롤러 테스트")
 class BoardControllerTest extends ControllerTestSupport {
-
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-
-    @MockBean private UserService userService;
-    @MockBean private BoardService boardService;
-    @MockBean private PaginationService paginationService;
-    @MockBean private BoardCommentService boardCommentService;
-
 
     @Test
     @DisplayName("[페이징 적용] - 메인리스트에는 페이징 처리된 모든 게시글이 표시된다.")

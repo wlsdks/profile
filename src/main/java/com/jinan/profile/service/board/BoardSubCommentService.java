@@ -63,7 +63,7 @@ public class BoardSubCommentService {
      * READ - 게시글이 가진 대댓글 조회
      */
     public Page<BoardSubCommentDto> getBoardSubCommentList(Long boardId, Pageable pageable) {
-        return boardSubCommentRepository.findAllById(boardId, pageable)
+        return boardSubCommentRepository.findAllByBoardId(boardId, pageable)
                 .map(BoardSubCommentDto::fromEntity);
     }
 }

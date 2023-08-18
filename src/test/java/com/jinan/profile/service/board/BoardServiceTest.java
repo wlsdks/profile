@@ -13,25 +13,20 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@TestConfiguration
-@DisplayName("[Board] - 서비스 레이어 테스트")
 class BoardServiceTest extends TotalTestSupport {
 
-    @Autowired
-    private BoardService boardService;
-    @Autowired
-    private BoardRepository boardRepository;
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private BoardService boardService;
+    @Autowired private BoardRepository boardRepository;
+    @Autowired private UserRepository userRepository;
 
     @DisplayName("[happy]-등록된 모든 게시글을 조회한다.")
     @Test

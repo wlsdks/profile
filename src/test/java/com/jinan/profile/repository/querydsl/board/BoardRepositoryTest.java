@@ -19,7 +19,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@DisplayName("[Board] - querydsl 리포지토리 테스트")
 class BoardRepositoryTest extends TotalTestSupport {
 
     @Autowired private BoardRepository boardRepository;

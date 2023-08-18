@@ -2,38 +2,28 @@ package com.jinan.profile.service.board;
 
 import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.controller.board.request.BoardCommentRequest;
-import com.jinan.profile.controller.board.request.BoardRequest;
-import com.jinan.profile.controller.user.request.UserRequest;
 import com.jinan.profile.domain.board.Board;
 import com.jinan.profile.domain.board.BoardComment;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardCommentDto;
-import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
-import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.board.BoardCommentRepository;
+import com.jinan.profile.repository.board.BoardRepository;
 import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("[Comment] - 댓글 서비스 테스트")
 class BoardCommentServiceTest extends TotalTestSupport {
 
     @Autowired private BoardCommentService boardCommentService;
