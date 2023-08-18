@@ -13,6 +13,7 @@ import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.board.BoardService;
 import com.jinan.profile.service.board.BoardSubCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
+import com.jinan.profile.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,6 +41,7 @@ public abstract class ControllerTestSupport {
     @MockBean protected PaginationService paginationService;
     @MockBean protected BoardCommentService boardCommentService;
     @MockBean protected BoardSubCommentService boardSubCommentService;
+    @MockBean protected SecurityService securityService;
 
     // mock repository
     @MockBean protected BoardCommentRepository boardCommentRepository;

@@ -67,22 +67,17 @@ class BoardControllerTest extends ControllerTestSupport {
         User user = createUser();
         Board board = createBoard(user, "테스트 데이터");
 
-        given(userRepository.findUserByLoginId(anyString())).willReturn(Optional.of(user));
+        given(securityService.getCurrentUsername()).willReturn("wlsdks12");
+        given(userService.findByLoginId(anyString())).willReturn(UserDto.fromEntity(user));
         given(boardRepository.save(any(Board.class))).willReturn(board);
 
         BoardRequest request = createBoardRequest(board);
 
-        //  테스트 환경에서 이 Authentication 객체를 요청에 주입하기 위해서는 특별한 방법을 사용해야 한다.
-        String username = "wlsdks12";
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, "wlsdks12");
-
         //when
         mockMvc.perform(post("/board/createBoard")
                         .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(authentication(authentication))) // 이 부분을 사용하여 Authentication 객체를 요청에 주입한다.
-                .andDo(print())
-                .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection());
     }
 
     private BoardRequest createBoardRequest(Board board) {
