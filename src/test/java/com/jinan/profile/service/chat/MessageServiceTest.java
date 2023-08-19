@@ -1,6 +1,6 @@
 package com.jinan.profile.service.chat;
 
-import com.jinan.profile.config.TestSecurityConfig;
+import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.domain.user.User;
@@ -16,11 +16,7 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,12 +27,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 
-@DisplayName("실시간 채팅 서비스레이어 테스트")
-@Profile("test")
-@Transactional(readOnly = true)
-@Import(TestSecurityConfig.class)
-@SpringBootTest
-class MessageServiceTest {
+@DisplayName("실시간 채팅 service 테스트")
+class MessageServiceTest extends TotalTestSupport {
 
     @MockBean private UserRepository userRepository;
     @MockBean private ChatRoomRepository chatRoomRepository;
@@ -44,7 +36,7 @@ class MessageServiceTest {
     @Autowired private MessageService messageService;
 
 
-    @DisplayName("사용자가 채팅방에서 메시지를 입력해서 보내면 db에 저장된다.")
+    @DisplayName("[happy]-사용자가 채팅방에서 메시지를 입력해서 보내면 db에 저장된다.")
     @Test
     void saveMessage() {
         //given
@@ -65,7 +57,7 @@ class MessageServiceTest {
         assertThat(actual.user()).isEqualTo(UserDto.fromEntity(testUser));
     }
 
-    @DisplayName("존재하지않는 사용자가 메시지를 입력해서 보내면 예외가 발생한다.")
+    @DisplayName("[bad]-존재하지않는 사용자가 메시지를 입력해서 보내면 예외가 발생한다.")
     @Test
     void saveMessageException() {
         //given
@@ -77,11 +69,9 @@ class MessageServiceTest {
         //when&then
         assertThatThrownBy(() -> messageService.saveMessage(1L, 1L, "test message"))
                 .isInstanceOf(ProfileApplicationException.class);
-//                .hasMessage("유저를 찾을수 없습니다.");
-
     }
 
-    @DisplayName("사용자와 채팅방을 연결해주는 map에 데이터가 들어가야 한다.")
+    @DisplayName("[happy]-사용자와 채팅방을 연결해주는 map에 데이터가 들어가야 한다.")
     @Test
     void test() {
         //given
@@ -102,7 +92,6 @@ class MessageServiceTest {
         assertThat(actual.text()).isEqualTo("test message");
         assertThat(actual.user()).isEqualTo(UserDto.fromEntity(testUser));
         assertThat(actual.chatRoom()).isEqualTo(ChatRoomDto.fromEntity(testChatRoom));
-
     }
 
 }

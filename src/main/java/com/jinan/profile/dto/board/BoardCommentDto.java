@@ -30,6 +30,13 @@ public record BoardCommentDto(
         );
     }
 
+    // factory method 선언
+    public static BoardCommentDto of(String content) {
+        return new BoardCommentDto(
+                null, content, null, null, null, null, null
+        );
+    }
+
     // entity -> dto 변환 메서드
     public static BoardCommentDto fromEntity(BoardComment entity) {
 
@@ -52,17 +59,8 @@ public record BoardCommentDto(
 
     // request -> dto 변환 메서드
     public static BoardCommentDto fromRequest(BoardCommentRequest request) {
-        return new BoardCommentDto(
-                request.getBoardCommentId(),
-                request.getContent(),
-                BoardDto.fromRequest(request.getBoardRequest()),
-                UserDto.fromRequest(request.getUserRequest()),
-                request.getBoardSubComments()
-                        .stream()
-                        .map(BoardSubCommentDto::fromRequest)
-                        .toList(),
-                request.getCreatedAt(),
-                request.getUpdatedAt()
+        return of(
+                request.getContent()
         );
     }
 

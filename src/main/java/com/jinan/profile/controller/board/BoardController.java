@@ -1,14 +1,19 @@
 package com.jinan.profile.controller.board;
 
 import com.jinan.profile.controller.board.request.BoardRequest;
+import com.jinan.profile.controller.board.response.BoardCommentResponse;
 import com.jinan.profile.controller.board.response.BoardResponse;
+import com.jinan.profile.controller.board.response.BoardSubCommentResponse;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardDto;
 import com.jinan.profile.exception.ErrorCode;
 import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.service.UserService;
+import com.jinan.profile.service.board.BoardCommentService;
 import com.jinan.profile.service.board.BoardService;
+import com.jinan.profile.service.board.BoardSubCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
+import com.jinan.profile.service.security.SecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,6 +45,9 @@ public class BoardController {
     private final BoardService boardService;
     private final UserService userService;
     private final PaginationService paginationService;
+    private final SecurityService securityService;
+    private final BoardCommentService boardCommentService;
+    private final BoardSubCommentService boardSubCommentService;
 
     /**
      * READ - 게시글 리스트 뷰 이동
@@ -75,29 +83,30 @@ public class BoardController {
      * request로 받아온 데이터를 db에 저장한다.
      */
     @PostMapping("/createBoard")
-    public String createBoard(@RequestBody BoardRequest request, Principal principal) {
-        // 현재 인증된 사용자의 loginId 가져오기
-        String loginId = principal.getName();
+    public String createBoard(@RequestBody BoardRequest request) {
 
-        // 사용자 로그인id를 사용하여 사용자의 전체 정보 가져오기 (예: 서비스 또는 리포지토리에서)
+        String loginId = securityService.getCurrentUsername();
+
         User user = Optional.ofNullable(userService.findByLoginId(loginId))
                 .map(User::of)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
 
-        // 사용자 정보를 request에 추가
         request.setUser(user);
-
         boardService.createBoard(request);
+
         return "redirect:/board/list";
     }
 
     /**
      * 게시글 수정할때 유저를 검증하는 ajax기능을 위한 컨트롤러
+     * 지금은 사용하고 있지 않지만 이걸 util클래스로 빼낸다음 게시글 이외에도 유저 검증이 필요한 곳에서 사용할 수 있을것으로 보인다.
      */
     @GetMapping("/update/validUser")
     @ResponseBody
-    public ResponseEntity<String> validUpdateUser(Long boardId, Authentication authentication) {
-        String loginId = authentication.getName();
+    public ResponseEntity<String> validUpdateUser(Long boardId) {
+
+        String loginId = securityService.getCurrentUsername();
+
         // 유저 검증 로직 작성
         boolean validUser = boardService.validUser(boardId, loginId);
         if (validUser) {
@@ -111,6 +120,8 @@ public class BoardController {
 
     /**
      * UPDATE - 게시글 수정 뷰 이동
+     * 게시글을 작성한 유저 본인만 수정 뷰로 이동하도록 한다.
+     * javaScript에서 먼저 ajax로 valid 코드를 호출한다. 이후 통과하면 아래의 메서드가 동작한다.
      */
     @GetMapping("/update/{boardId}")
     public String updateBoardView(@PathVariable Long boardId, Model model) {
@@ -128,34 +139,72 @@ public class BoardController {
 
     /**
      * action - 게시글 업데이트
+     * 게시글을 올린 유저인지 인증을 거쳐서 업데이트를 가능하도록 한다.
      */
     @PostMapping("/updateBoard/{boardId}")
-    public String updateBoard(@RequestBody BoardRequest request, @PathVariable Long boardId) {
-        boardService.updateBoard(request, boardId);
+    public String updateBoard(
+            @RequestBody BoardRequest request,
+            @PathVariable Long boardId,
+            Principal principal
+    ) {
+
+        String loginId = principal.getName();
+        BoardDto boardDto = boardService.updateBoard(request, boardId, loginId);
         return "redirect:/board/list";
     }
 
+
+//    /**
+//     * READ - 게시글 단건 조회
+//     */
+//    @GetMapping("/{boardId}")
+//    public String selectBoard(@PathVariable Long boardId, Model model) {
+//        BoardDto boardDto = boardService.selectBoard(boardId);
+//
+//        model.addAttribute("boardId", boardId);
+//        model.addAttribute("board", boardDto);
+//
+//        return "/board/detail";
+//    }
 
     /**
      * READ - 게시글 단건 조회
      */
     @GetMapping("/{boardId}")
-    public String selectBoard(@PathVariable Long boardId, Model model) {
-        BoardDto boardDto = boardService.selectBoard(boardId);
+    public String boardDetail(
+            @PathVariable Long boardId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ) {
+        // 게시글 상세 정보 가져오기
+        BoardResponse boardResponse = BoardResponse.fromDto(boardService.selectBoard(boardId));
+        map.addAttribute("board", boardResponse);
 
-        model.addAttribute("boardId", boardId);
-        model.addAttribute("board", boardDto);
+        // 댓글 목록 가져오기
+        Page<BoardCommentResponse> boardComment = boardCommentService.getBoardComment(boardId, pageable)
+                .map(BoardCommentResponse::fromDto);
 
-        return "/board/detail";
+        map.addAttribute("boardComment", boardComment);
+
+        // 대댓글 목록 가져오기 (옵션: 필요한 경우)
+        Page<BoardSubCommentResponse> boardSubComment = boardSubCommentService.getBoardSubCommentList(boardId, pageable)
+                .map(BoardSubCommentResponse::fromDto);
+
+        map.addAttribute("boardSubComment", boardSubComment);
+
+        return "board/detail";  // 타임리프 템플릿 경로
     }
+
 
     /**
      * READ - 로그인 id로 모든 게시글 조회
+     * 이게 필요한지 한번 더 확인해보자
      */
     @ResponseBody
     @GetMapping("/getAllBoard")
-    public void selectAllBoardByLoginId(String loginId) {
+    public ResponseEntity<?> selectAllBoardByLoginId(String loginId) {
         boardService.findByLoginId(loginId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

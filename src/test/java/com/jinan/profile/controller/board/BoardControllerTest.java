@@ -1,6 +1,5 @@
 package com.jinan.profile.controller.board;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jinan.profile.config.ControllerTestSupport;
 import com.jinan.profile.controller.board.request.BoardRequest;
 import com.jinan.profile.domain.board.Board;
@@ -8,44 +7,34 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
 import com.jinan.profile.dto.board.BoardDto;
-import com.jinan.profile.service.UserService;
-import com.jinan.profile.service.board.BoardCommentService;
-import com.jinan.profile.service.board.BoardService;
-import com.jinan.profile.service.pagination.PaginationService;
+import com.jinan.profile.dto.user.UserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("[Board] - 컨트롤러 테스트")
+@DisplayName("게시글 controller 테스트")
 class BoardControllerTest extends ControllerTestSupport {
-
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-
-    @MockBean private UserService userService;
-    @MockBean private BoardService boardService;
-    @MockBean private PaginationService paginationService;
-    @MockBean private BoardCommentService boardCommentService;
-
 
     @Test
     @DisplayName("[페이징 적용] - 메인리스트에는 페이징 처리된 모든 게시글이 표시된다.")
@@ -77,15 +66,26 @@ class BoardControllerTest extends ControllerTestSupport {
         //given
         User user = createUser();
         Board board = createBoard(user, "테스트 데이터");
-        BoardRequest request = BoardRequest.fromEntity(board);
+
+        given(securityService.getCurrentUsername()).willReturn("wlsdks12");
+        given(userService.findByLoginId(anyString())).willReturn(UserDto.fromEntity(user));
+        given(boardRepository.save(any(Board.class))).willReturn(board);
+
+        BoardRequest request = createBoardRequest(board);
 
         //when
         mockMvc.perform(post("/board/createBoard")
                         .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    private BoardRequest createBoardRequest(Board board) {
+        return BoardRequest.builder()
+                .id(10L)
+                .title(board.getTitle())
+                .content(board.getContent())
+                .build();
     }
 
     @DisplayName("사용자가 게시글 목록에서 제목을 클릭해서 게시글을 조회한다.")
@@ -146,49 +146,70 @@ class BoardControllerTest extends ControllerTestSupport {
 
     }
 
+
+    /**
+     * 테스트 코드 내부의 시큐리티 관련 - authentication 주입방법 설명
+     * <p>
+     *      .with() 내부의 authentication(authentication) 메서드는 Spring Security의 테스트 지원 클래스인 SecurityMockMvcRequestPostProcessors에서 제공하는 메서드로,
+     *      RequestPostProcessor를 반환한다. 이 RequestPostProcessor는 요청이 실행되기 전에 요청에 대한 추가 설정을 수행하는 역할을 한다.
+     *      여기서는 요청(request)에 Authentication 객체를 주입하는 작업을 수행하게 된다.
+     *      요약하면, .with() 메서드를 사용하여 요청에 Authentication 객체를 주입하는 것은 Spring Security의 특별한 테스트 지원 기능을 사용하는 것이며, 일반적인 요청 파라미터로 Authentication 객체를 전달하는 것이 아니다.
+     * </p>
+     */
     @DisplayName("게시글을 수정할때는 이 메서드에 요청을 보내서 게시글을 작성한 사람인지 검증한다.")
     @Test
-    void test() throws Exception {
-        //given
+    void validUserController() throws Exception {
         String username = "user";
-        Authentication authentication = mock(Authentication.class);
 
-        given(authentication.getName()).willReturn(username);
-        SecurityContext securityContext = mock(SecurityContext.class);
-
-        given(securityContext.getAuthentication()).willReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
+        given(securityService.getCurrentUsername()).willReturn(username);
         given(boardService.validUser(anyLong(), eq(username))).willReturn(true);
 
-        //when & then
         mockMvc.perform(
                         get("/board/update/validUser")
-                                .param("boardId", "1")
-                )
+                                .param("boardId", "1"))
                 .andExpect(status().isOk());
+
+    }
+
+    @WithMockUser
+    @DisplayName("게시글을 작성한 사용자가 수정하기를 요청하면 문제없이 게시글이 수정된다.")
+    @Test
+    void updateBoardController() throws Exception {
+        //given
+        BoardRequest mockRequest = mock(BoardRequest.class);
+        BoardDto mockBoardDto = mock(BoardDto.class);
+        Long boardId = 1L;
+
+        // when & then
+        given(boardService.updateBoard(any(BoardRequest.class), eq(boardId), anyString()))
+                .willReturn(mockBoardDto);
+
+        mockMvc.perform(post("/board/updateBoard/" + boardId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mockRequest)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isFound());
     }
 
 
     private Board createBoard(User user, String title) {
-        return Board.of(
-                title,
-                "테스트",
-                10,
-                20,
-                user
-        );
+        return Board.builder()
+                .title(title)
+                .content("test")
+                .views(10)
+                .likes(10)
+                .user(user)
+                .build();
     }
 
     private User createUser() {
-        return User.of(
-                "wlsdks12",
-                "wlsdks12",
-                "wlsdks",
-                "wlsdks12@naver.com",
-                RoleType.ADMIN,
-                UserStatus.Y
-        );
+        return User.builder()
+                .loginId("wlsdks12")
+                .password("wlsdks12")
+                .username("wlsdks12")
+                .roleType(RoleType.ADMIN)
+                .userStatus(UserStatus.Y)
+                .build();
     }
 
 }

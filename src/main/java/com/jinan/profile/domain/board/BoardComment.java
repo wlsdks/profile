@@ -5,6 +5,7 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class BoardComment extends AuditingFields {
     private String content; // 내용
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "boardComment")
+    @OneToMany(mappedBy = "boardComment", cascade = CascadeType.ALL)
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     // 생성자 private 선언
@@ -55,6 +56,10 @@ public class BoardComment extends AuditingFields {
     // 생성자 factory method 선언
     public static BoardComment of(Board board, User user, String content) {
         return new BoardComment(null, board, user, content);
+    }
+
+    public static BoardComment of(String content) {
+        return new BoardComment(null, null, null, content);
     }
 
     // dto -> entity로 변환하는 메서드
@@ -80,4 +85,13 @@ public class BoardComment extends AuditingFields {
         return Objects.hash(getId());
     }
 
+
+    public void changeUserAndBoard(User user, Board board) {
+        this.user = user;
+        this.board = board;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }

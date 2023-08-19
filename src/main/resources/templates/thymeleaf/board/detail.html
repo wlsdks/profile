@@ -3,6 +3,8 @@
 <head>
     <title th:text="${board.title}">제목</title>
     <link rel="stylesheet" href="/css/board/detail.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/boardcomment/detail.js"></script>
 </head>
 <body>
 <div class="container">
@@ -12,7 +14,8 @@
     <div class="info">
         <div class="author-date">
             <span class="author"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></span>
-            <span th:if="${board.createdAt != null}" th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
+            <span th:if="${board.createdAt != null}"
+                  th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
             <span th:unless="${board.createdAt != null}">날짜 없음</span>
         </div>
     </div>
@@ -27,13 +30,81 @@
             <span th:text="${board.likes}">0</span>
         </div>
     </div>
+
+    <!-- 댓글 영역 -->
     <div class="comment-section">
         <div class="comment-form">
             <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
             <button onclick="addComment()">댓글 작성</button>
         </div>
-        <div id="comment-list"></div>
+
+        <!-- 댓글 리스트 추가 -->
+        <ul>
+            <li th:each="comment : ${boardComment}">
+                <div class="comment" th:data-comment-id="${comment.boardCommentId}">
+                    <div class="comment-content">
+                        <span th:text="${comment.userResponse.username}">작성자</span>: <span class="original-content" th:text="${comment.content}">내용</span>
+                    </div>
+                    <div class="comment-edit-form" style="display: none;">
+                        <textarea class="edit-input"></textarea>
+                        <button th:attr="onclick='updateComment(' + ${comment.boardCommentId} + ')'">수정 완료</button>
+                        <button th:attr="onclick='cancelEdit(' + ${comment.boardCommentId} + ')'">취소</button>
+                    </div>
+
+                    <!-- 댓글 액션 버튼 추가 -->
+                    <div class="comment-actions">
+                        <button th:attr="onclick='editComment(' + ${comment.boardCommentId} + ')'">수정</button>
+                        <button th:attr="onclick='deleteComment(' + ${comment.boardCommentId} + ')'">삭제</button>
+                        <button th:attr="onclick='showSubCommentForm(' + ${comment.boardCommentId} + ')'">대댓글 작성</button>
+                    </div>
+                </div>
+
+                <!-- 대댓글 작성 폼 추가 -->
+                <div class="subcomment-form" style="display: none;" id="subcomment-form-{commentId}">
+                    <textarea placeholder="대댓글을 작성하세요..."></textarea>
+                    <button th:attr="onclick='addSubComment(' + ${comment.boardCommentId} + ')'">저장</button>
+                </div>
+
+                <!-- 대댓글 리스트 추가 -->
+                <ul>
+                    <li th:each="subComment : ${comment.boardSubComments}">
+                        <div class="sub-comment" th:data-subcomment-id="${subComment.boardSubCommentId}">
+                            <span th:text="${subComment.userResponse.username}">작성자</span>: <span class="original-subcontent" th:text="${subComment.content}">내용</span>
+
+                            <!-- 대댓글 수정 폼 -->
+                            <div class="subcomment-edit-form" style="display: none;">
+                                <textarea class="edit-subinput"></textarea>
+                                <button th:attr="onclick='updateSubComment(' + ${subComment.boardSubCommentId} + ')'">수정 완료</button>
+                                <button th:attr="onclick='cancelSubEdit(' + ${subComment.boardSubCommentId} + ')'">취소</button>
+                            </div>
+
+                            <!-- 대댓글 액션 버튼 추가 -->
+                            <div class="subcomment-actions">
+                                <button th:attr="onclick='editSubComment(' + ${subComment.boardSubCommentId} + ')'">수정</button>
+                                <button th:attr="onclick='deleteSubComment(' + ${subComment.boardSubCommentId} + ')'">삭제</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="pagination">
+        <span th:if="${boardComment != null}">
+            <!-- 이전 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number > 0}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number - 1})}">&lt;</a>
+
+            <!-- 페이지 번호 표시 -->
+            <span th:each="i : ${#numbers.sequence(0, boardComment.totalPages - 1)}">
+                <a th:href="@{/board/{boardId}(boardId=${board.boardId},page=${i})}" th:text="${i + 1}" th:classappend="${i == boardComment.number} ? 'active' : ''"></a>
+            </span>
+
+            <!-- 다음 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number < boardComment.totalPages - 1}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number + 1})}">&gt;</a>
+        </span>
+        </div>
     </div>
+
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
         <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button" th:data-board-id="${boardId}">수정하기</a>
@@ -41,85 +112,3 @@
 </div>
 </body>
 </html>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $('.edit-button').click(function (e) {
-        e.preventDefault(); // 기본 링크 동작을 막습니다.
-        let boardId = $(this).data('board-id'); // data-board-id 속성에서 boardId 가져오기
-        let url = '/board/update/validUser?boardId=' + boardId; // 검증 URL에 boardId 포함
-
-        // 사용자 검증 요청을 보냅니다.
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function (response) {
-                // 검증 성공 시 수정 페이지로 이동합니다.
-                debugger
-                window.location.href = '/board/update/' + boardId;
-            },
-            error: function (xhr, status, error) {
-                // 검증 실패 시 에러 메시지를 표시합니다.
-                alert('유저가 다릅니다. 수정할 수 없습니다.');
-            }
-        });
-    });
-
-
-    // 댓글 작성 함수
-    function addComment() {
-        let boardId = $('.edit-button').data('board-id');
-        let content = $('#comment-input').val();
-        $.ajax({
-            url: '/board/comment/create/' + boardId,
-            method: 'POST',
-            data: { content: content },
-            success: function() {
-                getComments(boardId); // 댓글을 다시 불러옵니다.
-                $('#comment-input').val(''); // 입력창을 비웁니다.
-            }
-        });
-    }
-
-
-    // 댓글을 받아와서 뿌려주는 로직
-    function getComments(boardId) {
-        $.ajax({
-            url: '/board/comment/get/' + boardId,
-            method: 'GET',
-            success: function(comments) {
-                let commentListHtml = '';
-                comments.forEach(function(comment) {
-                    commentListHtml += '<div class="comment">' +
-                        '<span class="author">' + comment.userResponse.username + '</span>' +
-                        '<div class="content">' +
-                        '<p>' + comment.content + '</p>' +
-                        '</div>' +
-                        '<span class="date">' + comment.createdAt + '</span>' +
-                        '<div class="actions">' +
-                        '<button onclick="editComment(' + comment.boardCommentId + ')">수정</button>' +
-                        '<button onclick="deleteComment(' + comment.boardCommentId + ')">삭제</button>' +
-                        '</div>' +
-                        '</div>';
-                });
-                $('#comment-list').html(commentListHtml);
-            }
-        });
-    }
-
-    // 댓글 수정 함수
-    function editComment(commentId) {
-        // 댓글 수정 로직
-    }
-
-    // 댓글 삭제 함수
-    function deleteComment(commentId) {
-        // 댓글 삭제 로직
-    }
-
-    function likePost() {
-        alert('좋아요를 눌렀습니다!');
-        // 여기에 좋아요 기능을 처리하는 AJAX 코드를 추가할 수 있습니다.
-    }
-
-</script>
