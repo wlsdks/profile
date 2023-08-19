@@ -100,7 +100,8 @@ public class BoardCommentService {
         BoardComment comment = boardCommentRepository.findById(commentId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (!comment.getUser().getLoginId().equals(loginId)) {
+        String commentWriteUserLoginId = comment.getUser().getLoginId();
+        if (!commentWriteUserLoginId.equals(loginId)) {
             throw new ProfileApplicationException(ErrorCode.USER_NOT_AUTHORIZED);
         }
 

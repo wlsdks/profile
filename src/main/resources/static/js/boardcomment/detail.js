@@ -100,7 +100,7 @@ function deleteComment(commentId) {
             location.reload();
         },
         error: function (xhr, status, error) {
-            alert('유저가 다릅니다. 삭제할 수 없습니다.');
+            alert(xhr.responseText);
         }
     });
 }
