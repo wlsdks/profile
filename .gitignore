@@ -229,3 +229,7 @@ src/main/generated/*
 
 ### JPA BUDDY
 .jpb/
+
+
+### Gradle
+.gradle
