@@ -1,9 +1,3 @@
-// 페이지 로드가 완료되면 댓글을 불러옵니다.
-$(document).ready(function () {
-    let boardId = $('.edit-button').data('board-id'); // boardId 가져오기
-    getComments(boardId, currentPage); // 첫 페이지 댓글 불러오기
-});
-
 // 게시글 수정하기 버튼 클릭시 동작
 $('.edit-button').click(function (e) {
     e.preventDefault(); // 기본 링크 동작을 막습니다.
@@ -56,28 +50,24 @@ $(window).on('load', function () {
 
 // UPDATE - 댓글 수정창을 보여주도록 하는 함수
 function editComment(commentId) {
-    // 사용자 검증 요청
-    $.ajax({
-        url: '/board/comment/validComment?commentId=' + commentId,
-        type: 'GET',
-        success: function (response) {
-            // 댓글 요소 선택
-            let commentElement = $(`.comment[data-comment-id=${commentId}]`);
+    let commentElement = $(`.comment[data-comment-id=${commentId}]`);
+    let currentContent = commentElement.find('.original-content').text();
 
-            // 현재 댓글 내용 가져오기
-            let currentContent = commentElement.find('.content').text();
-
-            // 댓글 내용을 입력창으로 바꾸기
-            commentElement.find('.content').html(`
-                <textarea class="edit-input">${currentContent}</textarea>
-                <button onclick="updateComment(${commentId})">수정 완료</button>
-            `);
-        },
-        error: function (xhr, status, error) {
-            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
-        }
-    });
+    // 원래의 댓글 내용을 숨기고 수정 창을 표시합니다.
+    commentElement.find('.comment-content').hide();
+    commentElement.find('.comment-edit-form').show();
+    commentElement.find('.edit-input').val(currentContent);
 }
+
+function cancelEdit(commentId) {
+    let commentElement = $(`.comment[data-comment-id=${commentId}]`);
+
+    // 수정 창을 숨기고 원래의 댓글 내용을 다시 표시합니다.
+    commentElement.find('.comment-edit-form').hide();
+    commentElement.find('.comment-content').show();
+}
+
+
 
 // UPDATE - 댓글 수정 완료후 저장 요청하는 함수
 function updateComment(commentId) {
@@ -90,9 +80,8 @@ function updateComment(commentId) {
         contentType: 'application/json',
         data: JSON.stringify({content: newContent}),
         success: function () {
-            // 댓글 목록 다시 불러오기
-            let boardId = $('.edit-button').data('board-id');
-            getComments(boardId, currentPage);
+            // 페이지를 다시 로드
+            location.reload();
         },
         error: function (xhr, status, error) {
             alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
@@ -107,11 +96,8 @@ function deleteComment(commentId) {
         url: '/board/comment/delete/' + commentId,
         type: 'DELETE',
         success: function () {
-            // alert('댓글이 삭제되었습니다.');
-
-            // 댓글 목록을 다시 불러온다.
-            let boardId = $('.edit-button').data('board-id');
-            getComments(boardId, currentPage);
+            // 페이지를 다시 로드
+            location.reload();
         },
         error: function (xhr, status, error) {
             alert('유저가 다릅니다. 삭제할 수 없습니다.');
@@ -119,14 +105,40 @@ function deleteComment(commentId) {
     });
 }
 
+
 function showSubCommentForm(commentId) {
-    $("#subcomment-form-" + commentId).toggle();
+    let subCommentForm = `
+        <div class="subcomment-form" id="subcomment-form-${commentId}">
+            <textarea placeholder="대댓글을 작성하세요..." id="subcomment-input-${commentId}"></textarea>
+            <button onclick="addSubComment(${commentId})">저장</button>
+        </div>
+    `;
+
+    // 대댓글 작성 폼을 해당 댓글 아래에 추가
+    $(`.comment[data-comment-id=${commentId}]`).after(subCommentForm);
 }
 
 function addSubComment(commentId) {
-    // 대댓글 추가 로직
-    // 예: AJAX 요청을 사용하여 서버에 대댓글 내용을 전송하고, 성공적으로 추가되면 댓글 목록을 다시 불러올 수 있습니다.
+    let content = $(`#subcomment-input-${commentId}`).val();
+
+    $.ajax({
+        url: '/board/subcomment/ajax/create',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            boardSubCommentId: commentId,
+            content: content
+        }),
+        success: function () {
+            alert('대댓글이 추가되었습니다.');
+            location.reload(); // 페이지를 다시 로드하여 변경 사항을 반영
+        },
+        error: function (xhr, status, error) {
+            alert('대댓글 추가에 실패했습니다.');
+        }
+    });
 }
+
 
 function likePost() {
     alert('좋아요를 눌렀습니다!');

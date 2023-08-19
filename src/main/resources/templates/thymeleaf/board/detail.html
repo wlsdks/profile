@@ -39,22 +39,27 @@
         <!-- 댓글 리스트 추가 -->
         <ul>
             <li th:each="comment : ${boardComment}">
-                <div class="comment">
-                    <!-- comment.author를 comment.userResponse.username(예시)로 변경 -->
-                    <span th:text="${comment.userResponse.username}">작성자</span>: <span th:text="${comment.content}">내용</span>
-
+                <div class="comment" th:data-comment-id="${comment.boardCommentId}">
+                    <div class="comment-content">
+                        <span th:text="${comment.userResponse.username}">작성자</span>: <span class="original-content" th:text="${comment.content}">내용</span>
+                    </div>
+                    <div class="comment-edit-form" style="display: none;">
+                        <textarea class="edit-input"></textarea>
+                        <button th:attr="onclick='updateComment(' + ${comment.boardCommentId} + ')'">수정 완료</button>
+                        <button th:attr="onclick='cancelEdit(' + ${comment.boardCommentId} + ')'">취소</button>
+                    </div>
                     <!-- 댓글 액션 버튼 추가 -->
                     <div class="comment-actions">
-                        <button onclick="editComment(commentId)">수정</button>
-                        <button onclick="deleteComment(commentId)">삭제</button>
-                        <button onclick="showSubCommentForm(commentId)">대댓글 작성</button>
+                        <button th:attr="onclick='editComment(' + ${comment.boardCommentId} + ')'">수정</button>
+                        <button th:attr="onclick='deleteComment(' + ${comment.boardCommentId} + ')'">삭제</button>
+                        <button th:attr="onclick='showSubCommentForm(' + ${comment.boardCommentId} + ')'">대댓글 작성</button>
                     </div>
                 </div>
 
                 <!-- 대댓글 작성 폼 추가 -->
                 <div class="subcomment-form" style="display: none;" id="subcomment-form-{commentId}">
                     <textarea placeholder="대댓글을 작성하세요..."></textarea>
-                    <button onclick="addSubComment(commentId)">저장</button>
+                    <button th:attr="onclick='addSubComment(' + ${comment.boardCommentId} + ')'">저장</button>
                 </div>
 
                 <!-- 대댓글 리스트 추가 -->
@@ -63,7 +68,7 @@
                     <li th:each="subComment : ${comment.boardSubComments}">
                         <div class="sub-comment">
                             <!-- BoardSubCommentResponse에 작성자 정보가 없으므로 일단 static으로 작성자를 표시 -->
-                            <span>작성자</span>: <span th:text="${subComment.content}">내용</span>
+                            <span th:text="${subComment.userResponse.username}"></span>: <span th:text="${subComment.content}">내용</span>
                         </div>
                     </li>
                 </ul>

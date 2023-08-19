@@ -206,33 +206,37 @@ button:hover {
     background-color: #155a8a;
 }
 
-/* 대댓글 영역 스타일 */
-.subcomment-form {
-    width: 100%;
+/* 대댓글 스타일 */
+.sub-comment {
+    padding-left: 20px; /* 대댓글을 약간 들여쓰기 */
+    border-left: 2px solid #ddd; /* 대댓글의 왼쪽 경계선 */
     margin-top: 10px;
-    padding: 10px 0;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #eee;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
+}
+
+/* 대댓글 작성 폼 스타일 */
+.subcomment-form {
+    padding-left: 20px; /* 폼을 약간 들여쓰기 */
+    margin-top: 10px;
 }
 
 .subcomment-form textarea {
-    flex: 1; /* textarea가 남은 공간을 모두 차지하도록 합니다. */
-    height: 40px;
+    width: 80%; /* 텍스트 영역의 너비 조정 */
     padding: 5px;
-    margin-right: 10px; /* 버튼과의 간격을 조정합니다. */
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
 }
 
 .subcomment-form button {
-    padding: 8px 16px;
+    padding: 5px 10px;
     background-color: #1877f2;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
     font-weight: bold;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
 }
 
 /* Pagination styles */
