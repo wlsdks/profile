@@ -109,18 +109,16 @@ function deleteComment(commentId) {
 
 /** 대댓글 영역 작성/추가 **/
 function showSubCommentForm(commentId) {
-    let subCommentForm = `
-        <div class="subcomment-form" id="subcomment-form-${commentId}">
-            <textarea placeholder="대댓글을 작성하세요..." id="subcomment-input-${commentId}"></textarea>
-            <button onclick="addSubComment(${commentId})">저장</button>
-        </div>
-    `;
-
-    // 대댓글 작성 폼을 해당 댓글 아래에 추가
-    $(`.comment[data-comment-id=${commentId}]`).after(subCommentForm);
+    // 대댓글 작성 폼을 보이게 합니다.
+    $("#subcomment-form-" + commentId).show();
 }
 
+
 // 대댓글 추가하는 함수
+function hideSubCommentForm(commentId) {
+    $("#subcomment-form-" + commentId).hide();
+}
+
 function addSubComment(commentId) {
     let content = $(`#subcomment-input-${commentId}`).val();
 
