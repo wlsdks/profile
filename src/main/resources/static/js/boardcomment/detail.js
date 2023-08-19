@@ -154,7 +154,7 @@ function addSubComment(commentId) {
     });
 }
 
-/** 대댓글 수정/삭제 영역 **/
+/** 대댓글 수정 영역 **/
 function editSubComment(subCommentId) {
     let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
     let currentSubContent = subCommentElement.find('.original-subcontent').text();
@@ -164,24 +164,56 @@ function editSubComment(subCommentId) {
     subCommentElement.find('.edit-subinput').val(currentSubContent);
 }
 
+/** 대댓글 삭제 영역 **/
 function cancelSubEdit(subCommentId) {
     let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
     subCommentElement.find('.original-subcontent').show();
     subCommentElement.find('.subcomment-edit-form').hide();
 }
 
+// AJAX 요청을 사용하여 서버에 대댓글 수정 내용 전송
+// 성공적으로 수정되면 원래 내용을 수정된 내용으로 변경하고 수정 폼을 숨깁니다.
 function updateSubComment(subCommentId) {
-    // AJAX 요청을 사용하여 서버에 대댓글 수정 내용 전송
-    // 성공적으로 수정되면 원래 내용을 수정된 내용으로 변경하고 수정 폼을 숨깁니다.
+    let newSubContent = $(`.sub-comment[data-subcomment-id=${subCommentId}] .edit-subinput`).val();
+
+    $.ajax({
+        url: "/board/subcomment/ajax/update/" + subCommentId,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            boardSubCommentId: subCommentId,
+            content: newSubContent
+        }),
+        success: function () {
+            // 원래의 대댓글 내용을 수정된 내용으로 변경
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .original-subcontent`).text(newSubContent);
+            // 대댓글 수정 폼을 숨김
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .subcomment-edit-form`).hide();
+            // 원래의 대댓글 내용을 다시 표시
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .original-subcontent`).show();
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
+        }
+    });
 }
 
+// AJAX 요청을 사용하여 서버에 대댓글 삭제 요청 전송
+// 성공적으로 삭제되면 해당 대댓글을 DOM에서 제거합니다.
 function deleteSubComment(subCommentId) {
-    // AJAX 요청을 사용하여 서버에 대댓글 삭제 요청 전송
-    // 성공적으로 삭제되면 해당 대댓글을 DOM에서 제거합니다.
+    $.ajax({
+        url: "/board/subcomment/ajax/delete/" + subCommentId,
+        method: 'DELETE',
+        contentType: 'application/json',
+        success: function () {
+            // 대댓글과 그를 감싸는 <li> 태그를 DOM에서 제거
+            $(`.sub-comment[data-subcomment-id=${subCommentId}]`).closest('li').remove();
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
+        }
+    });
 }
-
-
-
 
 function likePost() {
     alert('좋아요를 눌렀습니다!');
