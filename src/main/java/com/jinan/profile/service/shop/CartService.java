@@ -7,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class ShopService {
+public class CartService {
 
-    private final ShopRepository shopRepository;
 
 }
