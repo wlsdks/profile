@@ -59,6 +59,7 @@ function editComment(commentId) {
     commentElement.find('.edit-input').val(currentContent);
 }
 
+// 댓글 수정창 [취소] 버튼 누르면 동작
 function cancelEdit(commentId) {
     let commentElement = $(`.comment[data-comment-id=${commentId}]`);
 
@@ -106,6 +107,7 @@ function deleteComment(commentId) {
 }
 
 
+/** 대댓글 영역 작성/추가 **/
 function showSubCommentForm(commentId) {
     let subCommentForm = `
         <div class="subcomment-form" id="subcomment-form-${commentId}">
@@ -118,6 +120,7 @@ function showSubCommentForm(commentId) {
     $(`.comment[data-comment-id=${commentId}]`).after(subCommentForm);
 }
 
+// 대댓글 추가하는 함수
 function addSubComment(commentId) {
     let content = $(`#subcomment-input-${commentId}`).val();
 
@@ -130,14 +133,42 @@ function addSubComment(commentId) {
             content: content
         }),
         success: function () {
-            alert('대댓글이 추가되었습니다.');
+            // alert('대댓글이 추가되었습니다.');
             location.reload(); // 페이지를 다시 로드하여 변경 사항을 반영
         },
         error: function (xhr, status, error) {
-            alert('대댓글 추가에 실패했습니다.');
+            alert(xhr.responseText);
         }
     });
 }
+
+/** 대댓글 수정/삭제 영역 **/
+function editSubComment(subCommentId) {
+    let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
+    let currentSubContent = subCommentElement.find('.original-subcontent').text();
+
+    subCommentElement.find('.original-subcontent').hide();
+    subCommentElement.find('.subcomment-edit-form').show();
+    subCommentElement.find('.edit-subinput').val(currentSubContent);
+}
+
+function cancelSubEdit(subCommentId) {
+    let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
+    subCommentElement.find('.original-subcontent').show();
+    subCommentElement.find('.subcomment-edit-form').hide();
+}
+
+function updateSubComment(subCommentId) {
+    // AJAX 요청을 사용하여 서버에 대댓글 수정 내용 전송
+    // 성공적으로 수정되면 원래 내용을 수정된 내용으로 변경하고 수정 폼을 숨깁니다.
+}
+
+function deleteSubComment(subCommentId) {
+    // AJAX 요청을 사용하여 서버에 대댓글 삭제 요청 전송
+    // 성공적으로 삭제되면 해당 대댓글을 DOM에서 제거합니다.
+}
+
+
 
 
 function likePost() {

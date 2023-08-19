@@ -215,6 +215,36 @@ button:hover {
 }
 
 /* 대댓글 작성 폼 스타일 */
+/* 대댓글 스타일 */
+.sub-comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 대댓글 내용 스타일 */
+.original-subcontent {
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* 대댓글 액션 버튼 스타일 */
+.subcomment-actions button {
+    margin-left: 5px;
+    padding: 2px 5px;
+    font-size: 12px;
+    background-color: #4c6d6c;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.subcomment-actions button:hover {
+    background-color: #e0e0e0;
+}
+
 .subcomment-form {
     padding-left: 20px; /* 폼을 약간 들여쓰기 */
     margin-top: 10px;

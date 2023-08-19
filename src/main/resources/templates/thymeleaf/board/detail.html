@@ -30,6 +30,8 @@
             <span th:text="${board.likes}">0</span>
         </div>
     </div>
+
+    <!-- 댓글 영역 -->
     <div class="comment-section">
         <div class="comment-form">
             <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
@@ -48,6 +50,7 @@
                         <button th:attr="onclick='updateComment(' + ${comment.boardCommentId} + ')'">수정 완료</button>
                         <button th:attr="onclick='cancelEdit(' + ${comment.boardCommentId} + ')'">취소</button>
                     </div>
+
                     <!-- 댓글 액션 버튼 추가 -->
                     <div class="comment-actions">
                         <button th:attr="onclick='editComment(' + ${comment.boardCommentId} + ')'">수정</button>
@@ -64,11 +67,22 @@
 
                 <!-- 대댓글 리스트 추가 -->
                 <ul>
-                    <!-- boardSubComment를 comment.boardSubComments로 변경하고 조건 수정 -->
                     <li th:each="subComment : ${comment.boardSubComments}">
-                        <div class="sub-comment">
-                            <!-- BoardSubCommentResponse에 작성자 정보가 없으므로 일단 static으로 작성자를 표시 -->
-                            <span th:text="${subComment.userResponse.username}"></span>: <span th:text="${subComment.content}">내용</span>
+                        <div class="sub-comment" th:data-subcomment-id="${subComment.boardSubCommentId}">
+                            <span th:text="${subComment.userResponse.username}">작성자</span>: <span class="original-subcontent" th:text="${subComment.content}">내용</span>
+
+                            <!-- 대댓글 수정 폼 -->
+                            <div class="subcomment-edit-form" style="display: none;">
+                                <textarea class="edit-subinput"></textarea>
+                                <button th:attr="onclick='updateSubComment(' + ${subComment.boardSubCommentId} + ')'">수정 완료</button>
+                                <button th:attr="onclick='cancelSubEdit(' + ${subComment.boardSubCommentId} + ')'">취소</button>
+                            </div>
+
+                            <!-- 대댓글 액션 버튼 추가 -->
+                            <div class="subcomment-actions">
+                                <button th:attr="onclick='editSubComment(' + ${subComment.boardSubCommentId} + ')'">수정</button>
+                                <button th:attr="onclick='deleteSubComment(' + ${subComment.boardSubCommentId} + ')'">삭제</button>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -76,18 +90,18 @@
         </ul>
 
         <div class="pagination">
-            <span th:if="${boardComment != null}">
-                <!-- 이전 페이지로 이동하는 버튼 -->
-                <a th:if="${boardComment.number > 0}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number - 1})}">&lt;</a>
+        <span th:if="${boardComment != null}">
+            <!-- 이전 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number > 0}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number - 1})}">&lt;</a>
 
-                <!-- 페이지 번호 표시 -->
-                <span th:each="i : ${#numbers.sequence(0, boardComment.totalPages - 1)}">
-                    <a th:href="@{/board/{boardId}(boardId=${board.boardId},page=${i})}" th:text="${i + 1}" th:classappend="${i == boardComment.number} ? 'active' : ''"></a>
-                </span>
-
-                <!-- 다음 페이지로 이동하는 버튼 -->
-                <a th:if="${boardComment.number < boardComment.totalPages - 1}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number + 1})}">&gt;</a>
+            <!-- 페이지 번호 표시 -->
+            <span th:each="i : ${#numbers.sequence(0, boardComment.totalPages - 1)}">
+                <a th:href="@{/board/{boardId}(boardId=${board.boardId},page=${i})}" th:text="${i + 1}" th:classappend="${i == boardComment.number} ? 'active' : ''"></a>
             </span>
+
+            <!-- 다음 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number < boardComment.totalPages - 1}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number + 1})}">&gt;</a>
+        </span>
         </div>
     </div>
 
