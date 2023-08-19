@@ -1,6 +1,6 @@
 package com.jinan.profile.service.chat;
 
-import com.jinan.profile.config.TestSecurityConfig;
+import com.jinan.profile.config.TotalTestSupport;
 import com.jinan.profile.domain.chat.ChatMap;
 import com.jinan.profile.domain.chat.ChatRoom;
 import com.jinan.profile.domain.user.User;
@@ -16,11 +16,7 @@ import com.jinan.profile.repository.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,12 +27,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 
-@DisplayName("실시간 채팅 서비스레이어 테스트")
-@Profile("test")
-@Transactional(readOnly = true)
-@Import(TestSecurityConfig.class)
-@SpringBootTest
-class MessageServiceTest {
+@DisplayName("실시간 채팅 service 테스트")
+class MessageServiceTest extends TotalTestSupport {
 
     @MockBean private UserRepository userRepository;
     @MockBean private ChatRoomRepository chatRoomRepository;

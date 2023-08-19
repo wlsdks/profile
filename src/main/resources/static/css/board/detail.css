@@ -205,3 +205,106 @@ button:hover {
 .actions button:hover {
     background-color: #155a8a;
 }
+
+/* 대댓글 스타일 */
+.sub-comment {
+    padding-left: 20px; /* 대댓글을 약간 들여쓰기 */
+    border-left: 2px solid #ddd; /* 대댓글의 왼쪽 경계선 */
+    margin-top: 10px;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
+}
+
+/* 대댓글 작성 폼 스타일 */
+/* 대댓글 스타일 */
+.sub-comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 대댓글 내용 스타일 */
+.original-subcontent {
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* 대댓글 액션 버튼 스타일 */
+.subcomment-actions button {
+    margin-left: 5px;
+    padding: 2px 5px;
+    font-size: 12px;
+    background-color: #4c6d6c;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.subcomment-actions button:hover {
+    background-color: #e0e0e0;
+}
+
+.subcomment-form {
+    padding-left: 20px; /* 폼을 약간 들여쓰기 */
+    margin-top: 10px;
+}
+
+.subcomment-form textarea {
+    width: 80%; /* 텍스트 영역의 너비 조정 */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
+}
+
+.subcomment-form button {
+    padding: 5px 10px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.9em; /* 글자 크기를 줄입니다 */
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination span {
+    margin: 0 5px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a:hover {
+    background-color: #e0e0e0;
+}
+
+.comment-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+}
+
+.comment-actions button {
+    padding: 4px 8px; /* 버튼 크기를 줄입니다. */
+    font-size: 0.8em; /* 글자 크기를 줄입니다. */
+    margin-left: 5px; /* 버튼 사이의 간격을 조정합니다. */
+}

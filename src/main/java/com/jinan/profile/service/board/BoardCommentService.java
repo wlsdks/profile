@@ -34,7 +34,7 @@ public class BoardCommentService {
      * 유저가 댓글을 작성하면 저장된다.
      */
     @Transactional
-    public void createComment(BoardCommentRequest request, Long boardId, String loginId) {
+    public BoardCommentDto createComment(BoardCommentRequest request, Long boardId, String loginId) {
 
         // 1. boardId로 board를 꺼내서 BoardRequest에 넣어야 한다.
         BoardComment boardComment = BoardComment.of(request.getContent());
@@ -49,7 +49,7 @@ public class BoardCommentService {
 
         // 4. user, board를 세팅한다. 엔티티가 영속화되지 않았기때문에 영속성 컨텍스트에 아직 포함되지 않았다. 즉, save()를 써줘야 한다.
         boardComment.changeUserAndBoard(user, board);
-        boardCommentRepository.save(boardComment);
+        return BoardCommentDto.fromEntity(boardCommentRepository.save(boardComment));
     }
 
     /**
@@ -100,7 +100,8 @@ public class BoardCommentService {
         BoardComment comment = boardCommentRepository.findById(commentId)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (!comment.getUser().getLoginId().equals(loginId)) {
+        String commentWriteUserLoginId = comment.getUser().getLoginId();
+        if (!commentWriteUserLoginId.equals(loginId)) {
             throw new ProfileApplicationException(ErrorCode.USER_NOT_AUTHORIZED);
         }
 
