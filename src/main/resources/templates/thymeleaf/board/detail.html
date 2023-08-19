@@ -14,7 +14,8 @@
     <div class="info">
         <div class="author-date">
             <span class="author"><strong>작성자:</strong> <span th:text="${board.userDto.username}">작성자</span></span>
-            <span th:if="${board.createdAt != null}" th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
+            <span th:if="${board.createdAt != null}"
+                  th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">날짜</span>
             <span th:unless="${board.createdAt != null}">날짜 없음</span>
         </div>
     </div>
@@ -29,14 +30,81 @@
             <span th:text="${board.likes}">0</span>
         </div>
     </div>
+
+    <!-- 댓글 영역 -->
     <div class="comment-section">
         <div class="comment-form">
             <textarea id="comment-input" placeholder="댓글을 작성하세요..."></textarea>
             <button onclick="addComment()">댓글 작성</button>
         </div>
-        <div id="comment-list"></div>
-        <div id="pagination"></div>
+
+        <!-- 댓글 리스트 추가 -->
+        <ul>
+            <li th:each="comment : ${boardComment}">
+                <div class="comment" th:data-comment-id="${comment.boardCommentId}">
+                    <div class="comment-content">
+                        <span th:text="${comment.userResponse.username}">작성자</span>: <span class="original-content" th:text="${comment.content}">내용</span>
+                    </div>
+                    <div class="comment-edit-form" style="display: none;">
+                        <textarea class="edit-input"></textarea>
+                        <button th:attr="onclick='updateComment(' + ${comment.boardCommentId} + ')'">수정 완료</button>
+                        <button th:attr="onclick='cancelEdit(' + ${comment.boardCommentId} + ')'">취소</button>
+                    </div>
+
+                    <!-- 댓글 액션 버튼 추가 -->
+                    <div class="comment-actions">
+                        <button th:attr="onclick='editComment(' + ${comment.boardCommentId} + ')'">수정</button>
+                        <button th:attr="onclick='deleteComment(' + ${comment.boardCommentId} + ')'">삭제</button>
+                        <button th:attr="onclick='showSubCommentForm(' + ${comment.boardCommentId} + ')'">대댓글 작성</button>
+                    </div>
+                </div>
+
+                <!-- 대댓글 작성 폼 추가 -->
+                <div class="subcomment-form" style="display: none;" id="subcomment-form-{commentId}">
+                    <textarea placeholder="대댓글을 작성하세요..."></textarea>
+                    <button th:attr="onclick='addSubComment(' + ${comment.boardCommentId} + ')'">저장</button>
+                </div>
+
+                <!-- 대댓글 리스트 추가 -->
+                <ul>
+                    <li th:each="subComment : ${comment.boardSubComments}">
+                        <div class="sub-comment" th:data-subcomment-id="${subComment.boardSubCommentId}">
+                            <span th:text="${subComment.userResponse.username}">작성자</span>: <span class="original-subcontent" th:text="${subComment.content}">내용</span>
+
+                            <!-- 대댓글 수정 폼 -->
+                            <div class="subcomment-edit-form" style="display: none;">
+                                <textarea class="edit-subinput"></textarea>
+                                <button th:attr="onclick='updateSubComment(' + ${subComment.boardSubCommentId} + ')'">수정 완료</button>
+                                <button th:attr="onclick='cancelSubEdit(' + ${subComment.boardSubCommentId} + ')'">취소</button>
+                            </div>
+
+                            <!-- 대댓글 액션 버튼 추가 -->
+                            <div class="subcomment-actions">
+                                <button th:attr="onclick='editSubComment(' + ${subComment.boardSubCommentId} + ')'">수정</button>
+                                <button th:attr="onclick='deleteSubComment(' + ${subComment.boardSubCommentId} + ')'">삭제</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="pagination">
+        <span th:if="${boardComment != null}">
+            <!-- 이전 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number > 0}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number - 1})}">&lt;</a>
+
+            <!-- 페이지 번호 표시 -->
+            <span th:each="i : ${#numbers.sequence(0, boardComment.totalPages - 1)}">
+                <a th:href="@{/board/{boardId}(boardId=${board.boardId},page=${i})}" th:text="${i + 1}" th:classappend="${i == boardComment.number} ? 'active' : ''"></a>
+            </span>
+
+            <!-- 다음 페이지로 이동하는 버튼 -->
+            <a th:if="${boardComment.number < boardComment.totalPages - 1}" th:href="@{/board/{boardId}(boardId=${board.boardId},page=${boardComment.number + 1})}">&gt;</a>
+        </span>
+        </div>
     </div>
+
     <div class="actions">
         <a href="/board/list" class="back-button">목록으로 돌아가기</a>
         <a th:href="@{/board/update/{boardId}(boardId=${boardId})}" class="edit-button" th:data-board-id="${boardId}">수정하기</a>

@@ -1,15 +1,9 @@
 package com.jinan.profile;
 
-import com.jinan.profile.config.TestSecurityConfig;
+import com.jinan.profile.config.TotalTestSupport;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 
-@Profile("test")
-@Import(TestSecurityConfig.class)
-@SpringBootTest
-class ProfileApplicationTests {
+class ProfileApplicationTests extends TotalTestSupport {
 
 	@Test
 	void contextLoads() {
