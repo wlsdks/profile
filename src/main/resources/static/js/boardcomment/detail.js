@@ -119,15 +119,13 @@ function deleteComment(commentId) {
     });
 }
 
-
-// 마우스 오버 시 액션 버튼 표시
-function showActions(element) {
-    $(element).find('.actions').show();
+function showSubCommentForm(commentId) {
+    $("#subcomment-form-" + commentId).toggle();
 }
 
-// 마우스 아웃 시 액션 버튼 숨김
-function hideActions(element) {
-    $(element).find('.actions').hide();
+function addSubComment(commentId) {
+    // 대댓글 추가 로직
+    // 예: AJAX 요청을 사용하여 서버에 대댓글 내용을 전송하고, 성공적으로 추가되면 댓글 목록을 다시 불러올 수 있습니다.
 }
 
 function likePost() {

@@ -259,3 +259,18 @@ button:hover {
 .pagination a:hover {
     background-color: #e0e0e0;
 }
+
+.comment-actions {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+}
+
+.comment-actions button {
+    padding: 4px 8px; /* 버튼 크기를 줄입니다. */
+    font-size: 0.8em; /* 글자 크기를 줄입니다. */
+    margin-left: 5px; /* 버튼 사이의 간격을 조정합니다. */
+}
