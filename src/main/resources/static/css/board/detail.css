@@ -215,7 +215,15 @@ button:hover {
 }
 
 /* 대댓글 작성 폼 스타일 */
-/* 대댓글 스타일 */
+.subcomment-form, .sub-comment {
+    display: none;
+}
+
+/* 대댓글 리스트 기본 숨김 */
+.comment + .subcomment-form + ul {
+    display: none;
+}
+
 .sub-comment {
     display: flex;
     justify-content: space-between;
@@ -224,7 +232,6 @@ button:hover {
     border-bottom: 1px solid #e0e0e0;
 }
 
-/* 대댓글 내용 스타일 */
 .original-subcontent {
     flex: 1;
     margin-right: 10px;
@@ -253,9 +260,9 @@ button:hover {
 /* 대댓글 액션 버튼 스타일 */
 .subcomment-actions button {
     margin-left: 5px;
-    padding: 3px 10px;
-    font-size: 14px;
-    background-color: #007BFF;
+    padding: 2px 8px; /* 크기 조정 */
+    font-size: 13px;  /* 글자 크기를 조절합니다. */
+    background-color: #2a3b4e; /* 배경색 변경 */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -269,9 +276,9 @@ button:hover {
 
 .subcomment-form button {
     margin-left: 10px;
-    padding: 3px 10px; /* 패딩 값을 줄여서 버튼의 사이즈를 조정합니다. */
-    font-size: 14px; /* 글자 크기를 조절합니다. */
-    background-color: #007BFF;
+    padding: 2px 8px; /* 크기 조정 */
+    font-size: 13px;  /* 글자 크기를 조절합니다. */
+    background-color: #4c6d6c; /* 배경색 변경 */
     color: #fff;
     border: none;
     border-radius: 5px;

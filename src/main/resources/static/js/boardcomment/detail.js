@@ -1,3 +1,11 @@
+$(document).ready(function() {
+    const showSubComments = sessionStorage.getItem("showSubComments");
+    if (showSubComments) {
+        toggleSubCommentsList(showSubComments);
+        sessionStorage.removeItem("showSubComments"); // 사용 후 값 삭제
+    }
+});
+
 // 게시글 수정하기 버튼 클릭시 동작
 $('.edit-button').click(function (e) {
     e.preventDefault(); // 기본 링크 동작을 막습니다.
@@ -108,17 +116,21 @@ function deleteComment(commentId) {
 
 
 /** 대댓글 영역 작성/추가 **/
-function showSubCommentForm(commentId) {
-    // 대댓글 작성 폼을 보이게 합니다.
-    $("#subcomment-form-" + commentId).show();
+function toggleSubCommentsList(commentId) {
+    // 대댓글 리스트를 토글합니다.
+    $(`.comment[data-comment-id=${commentId}]`).next('.subcomment-form').next('ul').toggle();
 }
 
+function showSubCommentForm(commentId) {
+    // 대댓글 작성 폼만 표시합니다.
+    $(`#subcomment-form-${commentId}`).show();
+}
 
-// 대댓글 추가하는 함수
 function hideSubCommentForm(commentId) {
     $("#subcomment-form-" + commentId).hide();
 }
 
+// 대댓글 추가하는 함수
 function addSubComment(commentId) {
     let content = $(`#subcomment-input-${commentId}`).val();
 
@@ -131,8 +143,10 @@ function addSubComment(commentId) {
             content: content
         }),
         success: function () {
+            console.log(content);
             // alert('대댓글이 추가되었습니다.');
-            location.reload(); // 페이지를 다시 로드하여 변경 사항을 반영
+            sessionStorage.setItem("showSubComments", commentId);
+            location.reload();
         },
         error: function (xhr, status, error) {
             alert(xhr.responseText);
