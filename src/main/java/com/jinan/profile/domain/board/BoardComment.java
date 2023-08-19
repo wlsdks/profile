@@ -5,6 +5,7 @@ import com.jinan.profile.domain.user.User;
 import com.jinan.profile.dto.board.BoardCommentDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class BoardComment extends AuditingFields {
     private String content; // 내용
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "boardComment")
+    @OneToMany(mappedBy = "boardComment", cascade = CascadeType.ALL)
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 
     // 생성자 private 선언
