@@ -168,3 +168,52 @@ CREATE TABLE IF NOT EXISTS MESSAGE_REPORT
     FOREIGN KEY (reported_id) REFERENCES USERS(user_id),
     FOREIGN KEY (message_id) REFERENCES MESSAGE(message_id)
 );
+
+CREATE TABLE IF NOT EXISTS PRODUCT
+(
+    id              BIGINT      NOT NULL    AUTO_INCREMENT,
+    name            VARCHAR(255),
+    price           DOUBLE,
+    description     TEXT,
+    product_type    VARCHAR(50),
+    PRIMARY KEY (id)
+    );
+
+CREATE TABLE IF NOT EXISTS ORDERS
+(
+    id              BIGINT      NOT NULL    AUTO_INCREMENT,
+    user_id         BIGINT,
+    order_date      TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES USERS(user_id)
+    );
+
+CREATE TABLE IF NOT EXISTS ORDER_ITEM
+(
+    id              BIGINT      NOT NULL    AUTO_INCREMENT,
+    order_id        BIGINT,
+    product_id      BIGINT,
+    quantity        INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (order_id) REFERENCES ORDERS(id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCT(id)
+    );
+
+CREATE TABLE IF NOT EXISTS CART
+(
+    id              BIGINT      NOT NULL    AUTO_INCREMENT,
+    user_id         BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES USERS(user_id)
+    );
+
+CREATE TABLE IF NOT EXISTS CART_ITEM
+(
+    id              BIGINT      NOT NULL    AUTO_INCREMENT,
+    cart_id         BIGINT,
+    product_id      BIGINT,
+    quantity        INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (cart_id) REFERENCES CART(id),
+    FOREIGN KEY (product_id) REFERENCES PRODUCT(id)
+    );
