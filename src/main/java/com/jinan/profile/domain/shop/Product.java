@@ -17,7 +17,7 @@ public class Product {
 
     private String name;
 
-    private Double price;
+    private Integer price;
 
     private String description;
 
@@ -26,7 +26,7 @@ public class Product {
 
 
     @Builder
-    private Product (Long id, String name, Double price, String description, ProductType productType) {
+    private Product (Long id, String name, Integer price, String description, ProductType productType) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -34,7 +34,7 @@ public class Product {
         this.productType = productType;
     }
 
-    public static Product of (String name, Double price, String description, ProductType productType) {
+    public static Product of (String name, Integer price, String description, ProductType productType) {
         return new Product(null, name, price, description, productType);
     }
 }

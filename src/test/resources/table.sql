@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS PRODUCT
 (
     id              BIGINT      NOT NULL    AUTO_INCREMENT,
     name            VARCHAR(255),
-    price           DOUBLE,
+    price           INT,
     description     TEXT,
     product_type    VARCHAR(50),
     PRIMARY KEY (id)
