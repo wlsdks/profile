@@ -20,11 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
 import org.springframework.http.HttpStatus;
->>>>>>> main
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
