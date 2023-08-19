@@ -8,68 +8,92 @@
     <title>게시글</title>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="header d-flex justify-content-between align-items-center mb-5">
-        <h1 class="display-5">게시판 목록</h1>
-        <a href="/main/rootPage" class="btn btn-fb-main">메인페이지</a>
+<!-- Top Navbar -->
+<div class="top-nav">
+    <div class="container d-flex justify-content-between align-items-center py-2">
+        <div class="branding">
+            <h3><a href="/main/rootPage">Recipia</a></h3>  <!-- 메인 페이지로 이동하는 브랜딩 -->
+        </div>
+        <div class="menu">
+            <a href="#">Home</a> |
+            <a href="#">Profile</a> |
+            <a href="#">Settings</a>
+        </div>
     </div>
+</div>
 
-    <div class="board-list">
-        <div th:each="board, stat : ${boardList}" class="board-item">
-            <div class="board-title">
-                <a th:href="@{/board/{id}(id=${board.boardId})}" th:text="${board.title}">제목</a>
-            </div>
-            <div class="board-info">
-                <div class="board-info-left">
-                    <span class="views" th:text="${board.views} + ' 조회수'">0 조회수</span>
-                    <span class="likes" th:text="${board.likes} + ' 좋아요'">0 좋아요</span>
-                    <span class="author" th:text="${board.userDto.username}">작성자</span>
-                </div>
-                <div class="date"
-                     th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">
-                    날짜
-                </div>
-            </div>
+<div class="container mt-5">
+    <!-- Sidebar for Ads/Utilities -->
+    <div class="sidebar">
+        <div class="ad-banner">
+            <img src="path-to-your-ad-image.jpg" alt="Ad Banner">
+        </div>
+        <div class="utilities">
+            <a href="#">Utility 1</a>
+            <a href="#">Utility 2</a>
         </div>
     </div>
 
-    <a href="/board/create" class="btn btn-fb-write mt-4 float-end">새 글 작성</a>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header d-flex justify-content-between align-items-center mb-5">
+            <h1 class="display-5">게시판 목록</h1>
+        </div>
 
-    <!--paging 추가-->
-    <div class="d-flex justify-content-center my-4">
-        <nav id="pagination" aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item" th:class="${currentPage <= 0 ? 'disabled' : ''}">
-                    <a class="page-link" th:if="${currentPage > 0}"
-                       th:href="@{/board/list?page={page}(page=${currentPage - 1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo; prev</span>
-                    </a>
-                    <a class="page-link" th:unless="${currentPage > 0}" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo; prev</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="pageNumber : ${paginationBarNumbers}"
-                    th:class="${pageNumber == currentPage ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/board/list?page={page}(page=${pageNumber})}"
-                       th:text="${pageNumber + 1}"></a>
-                </li>
-                <li class="page-item" th:class="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
-                    <a class="page-link" th:if="${currentPage < totalPages - 1}"
-                       th:href="@{/board/list?page={page}(page=${currentPage + 1})}" aria-label="Next">
-                        <span aria-hidden="true">next &raquo;</span>
-                    </a>
-                    <a class="page-link" th:unless="${currentPage < totalPages - 1}" href="#" aria-label="Next">
-                        <span aria-hidden="true">next &raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <div class="board-list">
+            <div th:each="board, stat : ${boardList}" class="board-item">
+                <div class="board-title">
+                    <a th:href="@{/board/{id}(id=${board.boardId})}" th:text="${board.title}">제목</a>
+                </div>
+                <div class="board-info">
+                    <div class="board-info-left">
+                        <span class="views" th:text="${board.views} + ' 조회수'">0 조회수</span>
+                        <span class="likes" th:text="${board.likes} + ' 좋아요'">0 좋아요</span>
+                        <span class="author" th:text="${board.userDto.username}">작성자</span>
+                    </div>
+                    <div class="date"
+                         th:text="${board.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}">
+                        날짜
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="/board/create" class="btn btn-fb-write mt-4 float-end">새 글 작성</a>
+
+        <!--paging 추가-->
+        <div class="d-flex justify-content-center my-4">
+            <nav id="pagination" aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:class="${currentPage <= 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:if="${currentPage > 0}"
+                           th:href="@{/board/list?page={page}(page=${currentPage - 1})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo; prev</span>
+                        </a>
+                        <a class="page-link" th:unless="${currentPage > 0}" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo; prev</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${paginationBarNumbers}"
+                        th:class="${pageNumber == currentPage ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/board/list?page={page}(page=${pageNumber})}"
+                           th:text="${pageNumber + 1}"></a>
+                    </li>
+                    <li class="page-item" th:class="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:if="${currentPage < totalPages - 1}"
+                           th:href="@{/board/list?page={page}(page=${currentPage + 1})}" aria-label="Next">
+                            <span aria-hidden="true">next &raquo;</span>
+                        </a>
+                        <a class="page-link" th:unless="${currentPage < totalPages - 1}" href="#" aria-label="Next">
+                            <span aria-hidden="true">next &raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-
-
 </div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"
         integrity="sha384-rrR4uZ3RO5t/9gA6L1DnT5p/7FXYv5nC3NtFtpL4HwL2BvK87pJZgyd" crossorigin="anonymous"></script>
 </body>
 </html>
-
