@@ -58,18 +58,19 @@ body {
     text-decoration: underline;
 }
 
-/* Sidebar */
+/* 우측 사이드바 */
 .sidebar {
-    position: absolute;
-    top: 100px;
-    right: -38%;
+    position: fixed;  /* sticky에서 fixed로 변경 */
+    top: 12%;
+    right: 10%;  /* 화면의 오른쪽에서 얼마나 떨어져 있어야 하는지 조절 */
     width: 200px;
-    height: fit-content;
+    height: 400px;
     padding: 20px;
-    background-color: #d0cccc;
     border-left: 1px solid #e9ebee;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    transition: all 0.6s; /* 부드럽게 움직이게 하기 위한 트랜지션 */
+    background-color: #f5f6f7;
+    border-radius: 10px; /* 모서리 둥글게 */
 }
 
 .ad-banner img {
