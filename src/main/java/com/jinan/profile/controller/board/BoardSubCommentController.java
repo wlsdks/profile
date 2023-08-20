@@ -61,8 +61,10 @@ public class BoardSubCommentController {
      * [UPDATE]
      * 대댓글 작성자는 본인이 작성한 대댓글을 수정할 수 있다.
      */
-    @PostMapping("/update")
-    public ResponseEntity<?> updateBoardSubComment(@RequestBody BoardSubCommentRequest request) {
+    @PostMapping("/update/{boardSubCommentId}")
+    public ResponseEntity<?> updateBoardSubComment(
+            @RequestBody BoardSubCommentRequest request
+    ) {
 
         String loginId = securityService.getCurrentUsername();
         boardSubCommentService.updateBoardSubComment(request, loginId);

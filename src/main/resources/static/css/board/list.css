@@ -6,156 +6,189 @@ body {
 }
 
 .container {
-    width: 40%;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    clear: both;
+    max-width: 50%;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 50px auto;
+    position: relative;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 60px;
-}
-
-.main-button {
-    padding: 10px 20px;
+/* Top Navbar */
+.top-nav {
     background-color: #1877f2;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    color: #fff;
+    margin-bottom: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.main-button:hover {
-    background-color: #155a8a;
-}
-
-h1 {
-    color: #1d2129;
+.branding h3 {
     margin: 0;
-}
-
-.board-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.board-item {
-    background-color: #f2f2f2;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.board-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-
-.board-title {
-    margin-bottom: 10px;
-}
-
-.board-title a {
-    text-decoration: none;
-    color: #333;
-    font-size: 18px;
     font-weight: bold;
-}
-
-.board-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #606770;
-    margin-top: 10px;
-}
-
-.board-info-left {
-    display: flex;
-    gap: 10px;
-}
-
-.views, .likes, .author {
-    display: flex;
-    align-items: center;
-}
-
-.date {
-    align-self: flex-end;
-}
-
-.create-button {
     display: inline-block;
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #1877f2;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+}
+
+.branding h3 a {
+    color: #050505;
+    transition: color 0.3s;
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.branding h3 a:hover {
+    color: #4c6d6c;
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.menu {
+    display: inline-block;
     float: right;
 }
 
-.create-button:hover {
+.menu a {
+    color: #050505;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+/* 우측 사이드바 */
+.sidebar {
+    position: fixed;  /* sticky에서 fixed로 변경 */
+    top: 12%;
+    right: 10%;  /* 화면의 오른쪽에서 얼마나 떨어져 있어야 하는지 조절 */
+    width: 200px;
+    height: 400px;
+    padding: 20px;
+    border-left: 1px solid #e9ebee;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    transition: all 0.6s; /* 부드럽게 움직이게 하기 위한 트랜지션 */
+    background-color: #f5f6f7;
+    border-radius: 10px; /* 모서리 둥글게 */
+}
+
+.ad-banner img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.utilities a {
+    display: block;
+    color: #333;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.utilities a:hover {
+    background-color: #e9ebee;
+}
+
+/* 게시글 카드 내부 스타일링 */
+.board-item {
+    padding: 25px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.board-item:hover {
+    transform: translateY(-5px); /* 게시글 카드를 약간 위로 움직입니다 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.board-item-link {
+    text-decoration: none;  /* 밑줄 제거 */
+    color: inherit;         /* 글자색 상속 */
+    display: block;         /* 전체 영역을 클릭 가능하게 만듭니다 */
+}
+
+.board-item-link:hover .board-title span {
+    text-decoration: underline; /* 호버 시 제목에 밑줄 추가 */
+}
+
+/* 제목에 생기는 밑줄 제거 */
+.board-item-link .board-title span {
+    text-decoration: none;
+}
+
+.board-title {
+    font-size: 24px; /* 폰트 크기 조정 */
+    margin-bottom: 10px; /* 아래 여백 추가 */
+    font-weight: 600; /* 굵기 조정 */
+    color: #333; /* 색상 조정 */
+}
+
+.board-info {
+    display: flex; /* 수평 배열 */
+    justify-content: space-between; /* 좌우 정렬 */
+}
+
+.board-info-left span {
+    margin-right: 10px; /* 각 정보 사이의 간격 조정 */
+    color: #888; /* 색상 조정 */
+}
+
+/* "새 글 작성" 버튼 */
+.btn-fb-write {
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.btn-fb-write:hover {
+    transform: scale(1.1);
     background-color: #155a8a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Pagination */
+.pagination-wrapper {
+    width: 60%;  /* 원하는 너비로 설정 */
+    margin-left: 36%;  /* 오른쪽으로 정렬 */
 }
 
 .pagination {
+    list-style-type: none;
+    padding-left: 0;
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding-left: 13%;
-    list-style: none;
-    border-radius: 0.25rem;
-    margin: 40px 0;
 }
 
 .page-item {
     display: inline;
 }
 
+/* Pagination 버튼 */
 .page-link {
-    position: relative;
-    display: block;
-    padding: 0.5rem 0.75rem;
-    margin-left: -1px;
-    line-height: 1.25;
-    color: #007bff;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 20px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.page-link:hover {
+    transform: scale(1.1);
 }
 
 .page-item.active .page-link {
-    z-index: 1;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .page-item.disabled .page-link {
-    color: #6c757d;
     pointer-events: none;
     cursor: not-allowed;
-    background-color: #fff;
-    border-color: #dee2e6;
+    background-color: #e4e6eb;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        width: 90%;
+        max-width: 90%;
+    }
+    .sidebar {
+        display: none; /* hide the sidebar on mobile */
     }
 }

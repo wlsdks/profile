@@ -171,7 +171,7 @@ button:hover {
 
 .comment {
     position: relative; /* 추가 */
-    height: 14px;
+    height: 25px;
     margin: 10px 0;
     font-size: 14px;
     display: flex;
@@ -184,6 +184,31 @@ button:hover {
     font-weight: bold;
     margin-right: 10px;
 }
+
+/* 댓글 내용 영역 스타일 */
+.comment-content {
+    display: flex;
+    flex-direction: column; /* 가로 방향으로 아이템 배치 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+
+.toggle-subcomments {
+    margin-top: 5px; /* 작성자 이름과의 간격 */
+    padding: 2px 5px; /* 버튼 패딩 조정 */
+    font-size: 10px; /* 글자 크기 조절 */
+    background-color: #FF5733; /* 버튼 배경색 변경 */
+    color: #fff; /* 글자색 */
+    border: none;
+    border-radius: 4px; /* 둥근 모서리 */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-subcomments:hover {
+    background-color: #FF7849; /* 호버 시 버튼 배경색 약간 밝게 */
+}
+
 
 .actions {
     display: flex; /* 수정/삭제 버튼을 같은 줄에 표시 */
@@ -198,8 +223,9 @@ button:hover {
     cursor: pointer;
     border-radius: 5px;
     font-weight: bold;
-    padding: 5px;
-    margin: 0 5px;
+    padding: 3px 8px; /* 패딩 조정 */
+    margin: 0 3px; /* 간격 조정 */
+    font-size: 12px; /* 글자 크기 조정 */
 }
 
 .actions button:hover {
@@ -215,7 +241,15 @@ button:hover {
 }
 
 /* 대댓글 작성 폼 스타일 */
-/* 대댓글 스타일 */
+.subcomment-form, .sub-comment {
+    display: none;
+}
+
+/* 대댓글 리스트 기본 숨김 */
+.comment + .subcomment-form + ul {
+    display: none;
+}
+
 .sub-comment {
     display: flex;
     justify-content: space-between;
@@ -224,49 +258,62 @@ button:hover {
     border-bottom: 1px solid #e0e0e0;
 }
 
-/* 대댓글 내용 스타일 */
 .original-subcontent {
     flex: 1;
     margin-right: 10px;
 }
 
+.subcomment-form {
+    background-color: #f5f5f5; /* 회색 배경색 */
+    padding: 10px; /* 패딩 추가 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    margin-bottom: 20px;
+}
+
+.subcomment-form textarea {
+    width: 99%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.subcomment-actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬합니다. */
+}
+
 /* 대댓글 액션 버튼 스타일 */
 .subcomment-actions button {
     margin-left: 5px;
-    padding: 2px 5px;
-    font-size: 12px;
-    background-color: #4c6d6c;
-    border: 1px solid #e0e0e0;
-    border-radius: 3px;
+    padding: 2px 8px; /* 크기 조정 */
+    font-size: 13px;  /* 글자 크기를 조절합니다. */
+    background-color: #2a3b4e; /* 배경색 변경 */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .subcomment-actions button:hover {
     background-color: #e0e0e0;
 }
 
-.subcomment-form {
-    padding-left: 20px; /* 폼을 약간 들여쓰기 */
-    margin-top: 10px;
-}
-
-.subcomment-form textarea {
-    width: 80%; /* 텍스트 영역의 너비 조정 */
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.9em; /* 글자 크기를 줄입니다 */
-}
-
 .subcomment-form button {
-    padding: 5px 10px;
-    background-color: #1877f2;
-    color: white;
+    margin-left: 10px;
+    padding: 2px 8px; /* 크기 조정 */
+    font-size: 13px;  /* 글자 크기를 조절합니다. */
+    background-color: #4c6d6c; /* 배경색 변경 */
+    color: #fff;
     border: none;
-    cursor: pointer;
     border-radius: 5px;
-    font-weight: bold;
-    font-size: 0.9em; /* 글자 크기를 줄입니다 */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.subcomment-form button:hover {
+    background-color: #0056b3; /* 버튼을 호버했을 때의 배경색 */
 }
 
 /* Pagination styles */

@@ -1,3 +1,11 @@
+$(document).ready(function() {
+    const showSubComments = sessionStorage.getItem("showSubComments");
+    if (showSubComments) {
+        toggleSubCommentsList(showSubComments);
+        sessionStorage.removeItem("showSubComments"); // 사용 후 값 삭제
+    }
+});
+
 // 게시글 수정하기 버튼 클릭시 동작
 $('.edit-button').click(function (e) {
     e.preventDefault(); // 기본 링크 동작을 막습니다.
@@ -108,16 +116,18 @@ function deleteComment(commentId) {
 
 
 /** 대댓글 영역 작성/추가 **/
-function showSubCommentForm(commentId) {
-    let subCommentForm = `
-        <div class="subcomment-form" id="subcomment-form-${commentId}">
-            <textarea placeholder="대댓글을 작성하세요..." id="subcomment-input-${commentId}"></textarea>
-            <button onclick="addSubComment(${commentId})">저장</button>
-        </div>
-    `;
+function toggleSubCommentsList(commentId) {
+    // 대댓글 리스트를 토글합니다.
+    $(`.comment[data-comment-id=${commentId}]`).next('.subcomment-form').next('ul').toggle();
+}
 
-    // 대댓글 작성 폼을 해당 댓글 아래에 추가
-    $(`.comment[data-comment-id=${commentId}]`).after(subCommentForm);
+function showSubCommentForm(commentId) {
+    // 대댓글 작성 폼만 표시합니다.
+    $(`#subcomment-form-${commentId}`).show();
+}
+
+function hideSubCommentForm(commentId) {
+    $("#subcomment-form-" + commentId).hide();
 }
 
 // 대댓글 추가하는 함수
@@ -133,8 +143,10 @@ function addSubComment(commentId) {
             content: content
         }),
         success: function () {
+            console.log(content);
             // alert('대댓글이 추가되었습니다.');
-            location.reload(); // 페이지를 다시 로드하여 변경 사항을 반영
+            sessionStorage.setItem("showSubComments", commentId);
+            location.reload();
         },
         error: function (xhr, status, error) {
             alert(xhr.responseText);
@@ -142,7 +154,7 @@ function addSubComment(commentId) {
     });
 }
 
-/** 대댓글 수정/삭제 영역 **/
+/** 대댓글 수정 영역 **/
 function editSubComment(subCommentId) {
     let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
     let currentSubContent = subCommentElement.find('.original-subcontent').text();
@@ -152,24 +164,56 @@ function editSubComment(subCommentId) {
     subCommentElement.find('.edit-subinput').val(currentSubContent);
 }
 
+/** 대댓글 삭제 영역 **/
 function cancelSubEdit(subCommentId) {
     let subCommentElement = $(`.sub-comment[data-subcomment-id=${subCommentId}]`);
     subCommentElement.find('.original-subcontent').show();
     subCommentElement.find('.subcomment-edit-form').hide();
 }
 
+// AJAX 요청을 사용하여 서버에 대댓글 수정 내용 전송
+// 성공적으로 수정되면 원래 내용을 수정된 내용으로 변경하고 수정 폼을 숨깁니다.
 function updateSubComment(subCommentId) {
-    // AJAX 요청을 사용하여 서버에 대댓글 수정 내용 전송
-    // 성공적으로 수정되면 원래 내용을 수정된 내용으로 변경하고 수정 폼을 숨깁니다.
+    let newSubContent = $(`.sub-comment[data-subcomment-id=${subCommentId}] .edit-subinput`).val();
+
+    $.ajax({
+        url: "/board/subcomment/ajax/update/" + subCommentId,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            boardSubCommentId: subCommentId,
+            content: newSubContent
+        }),
+        success: function () {
+            // 원래의 대댓글 내용을 수정된 내용으로 변경
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .original-subcontent`).text(newSubContent);
+            // 대댓글 수정 폼을 숨김
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .subcomment-edit-form`).hide();
+            // 원래의 대댓글 내용을 다시 표시
+            $(`.sub-comment[data-subcomment-id=${subCommentId}] .original-subcontent`).show();
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
+        }
+    });
 }
 
+// AJAX 요청을 사용하여 서버에 대댓글 삭제 요청 전송
+// 성공적으로 삭제되면 해당 대댓글을 DOM에서 제거합니다.
 function deleteSubComment(subCommentId) {
-    // AJAX 요청을 사용하여 서버에 대댓글 삭제 요청 전송
-    // 성공적으로 삭제되면 해당 대댓글을 DOM에서 제거합니다.
+    $.ajax({
+        url: "/board/subcomment/ajax/delete/" + subCommentId,
+        method: 'DELETE',
+        contentType: 'application/json',
+        success: function () {
+            // 대댓글과 그를 감싸는 <li> 태그를 DOM에서 제거
+            $(`.sub-comment[data-subcomment-id=${subCommentId}]`).closest('li').remove();
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseText); // 서버에서 보낸 에러 메시지를 표시
+        }
+    });
 }
-
-
-
 
 function likePost() {
     alert('좋아요를 눌렀습니다!');

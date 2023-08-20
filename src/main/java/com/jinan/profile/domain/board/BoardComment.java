@@ -36,6 +36,7 @@ public class BoardComment extends AuditingFields {
     private String content; // 내용
 
     @ToString.Exclude
+    @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "boardComment", cascade = CascadeType.ALL)
     private List<BoardSubComment> boardSubComments = new ArrayList<>(); // 대댓글
 

@@ -64,6 +64,7 @@ public class BoardSubCommentService {
     /**
      * UPDATE - 작성한 대댓글 수정(변경감지 update)
      */
+    @Transactional
     public void updateBoardSubComment(BoardSubCommentRequest request, String loginId) {
 
         // 1. 저장된 대댓글 엔티티를 받아온다.
@@ -83,6 +84,7 @@ public class BoardSubCommentService {
     /**
      * DELETE - 작성한 대댓글 삭제하기
      */
+    @Transactional
     public void deleteBoardSubComment(Long boardSubCommentId, String loginId) {
 
         // 1. 저장된 대댓글 엔티티를 받아온다.
