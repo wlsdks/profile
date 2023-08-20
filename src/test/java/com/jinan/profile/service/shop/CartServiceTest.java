@@ -7,6 +7,7 @@ import com.jinan.profile.domain.shop.Product;
 import com.jinan.profile.domain.user.User;
 import com.jinan.profile.domain.user.constant.RoleType;
 import com.jinan.profile.domain.user.constant.UserStatus;
+import com.jinan.profile.exception.ProfileApplicationException;
 import com.jinan.profile.repository.shop.CartRepository;
 import com.jinan.profile.repository.shop.ProductRepository;
 import com.jinan.profile.repository.user.UserRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("장바구니 Service 테스트")
 class CartServiceTest extends TotalTestSupport {
@@ -33,19 +35,53 @@ class CartServiceTest extends TotalTestSupport {
         Product savedProduct = createProduct();
         User savedUser = createUser();
         Cart cart = createCart(savedUser, List.of());
-        String loginId = "wlsdks123";
-        Long productId = 1L;
+        String loginId = savedUser.getLoginId();
+        Long productId = savedProduct.getId();
+        Integer quantity = 2;
 
         //when
-        CartItem savedCartItem = cartService.saveCartItem(loginId, productId);
+        CartItem savedCartItem = cartService.saveCartItem(loginId, productId, quantity);
 
 
         //then
         assertThat(savedCartItem).isNotNull();
         assertThat(savedCartItem).isInstanceOf(CartItem.class);
-//        assertThat(savedCartItem).isEqualTo(cartItem);
+        assertThat(savedCartItem).extracting("product").isEqualTo(savedProduct);
+    }
+
+    @DisplayName("[bad] - 존재하지 않는 회원이 상품을 장바구니에 저장하면 예외발생.")
+    @Test
+    void saveProductToCartExceptionOne() {
+        //given
+        Product savedProduct = createProduct();
+        User savedUser = createUser();
+        Cart cart = createCart(savedUser, List.of());
+        String loginId = savedUser.getLoginId();
+        Long productId = savedProduct.getId();
+        Integer quantity = 2;
+
+        //when & then
+        assertThatThrownBy(() -> cartService.saveCartItem("test", productId, quantity)).isInstanceOf(ProfileApplicationException.class);
 
     }
+
+
+    @DisplayName("[bad] - 회원이 존재하지 않는 상품을 장바구니에 저장하면 예외발생.")
+    @Test
+    void saveProductToCartExceptionTwo() {
+        //given
+        Product savedProduct = createProduct();
+        User savedUser = createUser();
+        Cart cart = createCart(savedUser, List.of());
+        String loginId = savedUser.getLoginId();
+        Long productId = savedProduct.getId();
+        Integer quantity = 2;
+
+        //when & then
+        assertThatThrownBy(() -> cartService.saveCartItem(loginId, 34L, quantity)).isInstanceOf(ProfileApplicationException.class);
+    }
+
+
 
     private Product createProduct() {
         Product product = Product.builder()

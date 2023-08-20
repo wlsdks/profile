@@ -71,6 +71,10 @@ public enum ErrorCode {
     BOARD_SUB_COMMENT_NOT_FOUND(404, "3346", "대댓글이 존재하지 않습니다."),
     NOT_VALID_BOARD_SUB_COMMENT_CONTENT(404, "3345", "대댓글의 내용은 null이거나 공백이어서는 안됩니다."),
 
+    // 8. 쇼핑
+    // 8.1 상품
+    PRODUCT_NOT_FOUND(404, "8001", "상품이 존재하지 않습니다."),
+
     // 기타
     INVALID_INPUT(404, "4222", "잘못된 입력값입니다.")
 
