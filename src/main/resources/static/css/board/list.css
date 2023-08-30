@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    max-width: 50%;
+    max-width: 60%;
     background-color: #fff;
     padding: 30px;
     border-radius: 15px;
@@ -14,23 +14,29 @@ body {
     margin: 0 auto;
 }
 
+.header {
+    border-bottom: 1px solid #e9ebee;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
 .board-item {
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     padding: 20px;
-    margin: 10px 0;
+    margin: 20px 0;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     transition: transform 0.2s;
+    border: 1px solid #e9ebee;
 }
 
 .board-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f5f6f7;
 }
 
 .board-title a {
     text-decoration: none;
-    color: #333;
+    color: #1d2129;
     font-size: 20px;
     font-weight: bold;
 }
@@ -41,11 +47,6 @@ body {
     margin-top: 15px;
 }
 
-.page-item.disabled .page-link {
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
 .btn-fb-main, .btn-fb-write {
     background-color: #1877f2;
     border: none;
@@ -54,12 +55,14 @@ body {
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .btn-fb-main:hover, .btn-fb-write:hover {
     background-color: #155a8a;
 }
 
+/* 페이징 관련 css */
 .pagination {
     list-style-type: none;
     padding-left: 0;
@@ -95,8 +98,6 @@ body {
     cursor: not-allowed;
     background-color: #e4e6eb;
 }
-
-
 
 @media (max-width: 768px) {
     .container {
