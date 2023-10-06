@@ -27,16 +27,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/user/login", "/login", "/main/rootPage", "/error.html", "/css/**", "/js/**", "/images/**"); // 로그인 페이지 및 정적 리소스 경로는 JWT 토큰 검사에서 제외합니다.
     }
 
-    /**
-     *  이 배열은 정적 리소스가 위치할 수 있는 경로를 나열하고 있다. 이 경로들은 addResourceHandlers 메서드에서 사용된다.
-     */
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-            "classpath:/static/",
-            "classpath:/public/",
-            "classpath:/",
-            "classpath:/resources/",
-            "classpath:/META-INF/resources/",
-            "classpath:/META-INF/resources/webjars/"
-    };
-
 }
