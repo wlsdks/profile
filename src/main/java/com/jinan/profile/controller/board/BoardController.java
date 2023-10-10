@@ -14,9 +14,6 @@ import com.jinan.profile.service.board.BoardService;
 import com.jinan.profile.service.board.BoardSubCommentService;
 import com.jinan.profile.service.pagination.PaginationService;
 import com.jinan.profile.service.security.SecurityService;
-import jakarta.annotation.Resource;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.concurrent.CompletableToListenableFutureAdapter;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -74,7 +70,7 @@ public class BoardController {
      * CREATE - 게시글 작성 뷰 이동
      */
     @GetMapping("/create")
-    public String boardCreateView(Model model) {
+    public String boardCreateView() {
         return "/board/create";
     }
 
