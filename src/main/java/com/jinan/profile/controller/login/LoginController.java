@@ -47,6 +47,7 @@ public class LoginController {
 
     /**
      * [Action] 로그아웃 프로세스를 동작시킨다.
+     * 이 로그아웃은 cookie 값을 삭제함으로써 jwt토큰을 없애서 동작하도록 구성하였다.
      */
     @GetMapping("/user/logout")
     public String logout(HttpServletResponse response) {
