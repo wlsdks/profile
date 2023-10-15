@@ -51,6 +51,7 @@ public class BoardController {
     /**
      * READ - 게시글 리스트 뷰 이동
      * 모든 게시글을 조회해서 리스트에 보여준다.
+     * @PageableDefault를 사용해서 Paging 객체를 설정해서 파라미터로 담았다.
      */
     @GetMapping("/list")
     public String boardListView(
