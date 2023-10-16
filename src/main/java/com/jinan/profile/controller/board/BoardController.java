@@ -87,6 +87,7 @@ public class BoardController {
 
         String loginId = securityService.getCurrentUsername();
 
+        //todo: 이 로직을 서비스에서 다 처리하고 받아도 될지 고민해보자
         User user = Optional.ofNullable(userService.findByLoginId(loginId))
                 .map(User::of)
                 .orElseThrow(() -> new ProfileApplicationException(ErrorCode.USER_NOT_FOUND));
