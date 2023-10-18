@@ -175,18 +175,17 @@ public class BoardController {
     ) {
         // 게시글 상세 정보 가져오기
         BoardResponse boardResponse = BoardResponse.fromDto(boardService.selectBoard(boardId));
-        map.addAttribute("board", boardResponse);
 
         // 댓글 목록 가져오기
         Page<BoardCommentResponse> boardComment = boardCommentService.getBoardComment(boardId, pageable)
                 .map(BoardCommentResponse::fromDto);
 
-        map.addAttribute("boardComment", boardComment);
-
         // 대댓글 목록 가져오기 (옵션: 필요한 경우)
         Page<BoardSubCommentResponse> boardSubComment = boardSubCommentService.getBoardSubCommentList(boardId, pageable)
                 .map(BoardSubCommentResponse::fromDto);
 
+        map.addAttribute("board", boardResponse);
+        map.addAttribute("boardComment", boardComment);
         map.addAttribute("boardSubComment", boardSubComment);
 
         return "board/detail";  // 타임리프 템플릿 경로
