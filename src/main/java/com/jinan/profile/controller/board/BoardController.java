@@ -149,20 +149,7 @@ public class BoardController {
         BoardDto boardDto = boardService.updateBoard(request, boardId, loginId);
         return "redirect:/board/list";
     }
-
-
-//    /**
-//     * READ - 게시글 단건 조회
-//     */
-//    @GetMapping("/{boardId}")
-//    public String selectBoard(@PathVariable Long boardId, Model model) {
-//        BoardDto boardDto = boardService.selectBoard(boardId);
-//
-//        model.addAttribute("boardId", boardId);
-//        model.addAttribute("board", boardDto);
-//
-//        return "/board/detail";
-//    }
+    
 
     /**
      * READ - 게시글 단건 조회
