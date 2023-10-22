@@ -149,7 +149,7 @@ public class BoardController {
         BoardDto boardDto = boardService.updateBoard(request, boardId, loginId);
         return "redirect:/board/list";
     }
-    
+
 
     /**
      * READ - 게시글 단건 조회
