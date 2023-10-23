@@ -35,8 +35,13 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
     private BoardSubCommentService boardSubCommentService;
     @Autowired
     private BoardSubCommentRepository boardSubCommentRepository;
-    @Autowired
-    private BoardCommentRepository boardCommentRepository;
+
+
+    @Autowired private BoardCommentRepository boardCommentRepository;
+
+
+
+
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
@@ -50,6 +55,9 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         User savedUser = createUser();
         Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
+
+        boardCommentRepository.findById();
+
 
         Long boardCommentId = 1L;
         String loginId = "wlsdks123";
