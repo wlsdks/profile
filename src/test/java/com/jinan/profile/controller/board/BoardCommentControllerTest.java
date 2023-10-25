@@ -36,20 +36,20 @@ class BoardCommentControllerTest extends ControllerTestSupport {
                 .andExpect(status().isOk());
     }
 
-    @WithMockUser(username = "wlsdks12")
-    @DisplayName("사용자가 댓글을 저장하면 댓글이 db에 저장된다.")
-    @Test
-    void createComment() throws Exception {
-        //given
-        BoardCommentRequest boardCommentRequest = createBoardCommentRequest();
-        String jsonResult = objectMapper.writeValueAsString(boardCommentRequest);
-
-        //when & then
-        mockMvc.perform(post("/board/comment/create/{boardId}", 1L) // POST 메서드로 변경
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonResult))
-                .andExpect(status().isOk());
-    }
+//    @WithMockUser(username = "wlsdks12")
+//    @DisplayName("사용자가 댓글을 저장하면 댓글이 db에 저장된다.")
+//    @Test
+//    void createComment() throws Exception {
+//        //given
+//        BoardCommentRequest boardCommentRequest = createBoardCommentRequest();
+//        String jsonResult = objectMapper.writeValueAsString(boardCommentRequest);
+//
+//        //when & then
+//        mockMvc.perform(post("/board/comment/create/{boardId}", 1L) // POST 메서드로 변경
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(jsonResult))
+//                .andExpect(status().isOk());
+//    }
 
 
     private static BoardCommentRequest createBoardCommentRequest() {

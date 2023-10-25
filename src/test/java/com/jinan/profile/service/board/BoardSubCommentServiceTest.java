@@ -56,8 +56,6 @@ class BoardSubCommentServiceTest extends TotalTestSupport {
         Board savedBoard = createBoard(savedUser);
         BoardComment savedBoardComment = createBoardComment(savedBoard, savedUser);
 
-        boardCommentRepository.findById();
-
 
         Long boardCommentId = 1L;
         String loginId = "wlsdks123";
