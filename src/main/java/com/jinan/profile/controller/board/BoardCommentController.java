@@ -39,12 +39,6 @@ public class BoardCommentController {
     private final PaginationService paginationService;
     private final SecurityService securityService;
 
-    public BoardCommentController(BoardCommentService boardCommentService, PaginationService paginationService, SecurityService securityService) {
-        this.boardCommentService = boardCommentService;
-        this.paginationService = paginationService;
-        this.securityService = securityService;
-    }
-
     /**
      * CREATE - 댓글 저장하기 ajax로 저장기능 동작
      */
